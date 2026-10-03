@@ -62,3 +62,4 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - Test the real AI in Chrome/Edge on Windows at http://localhost:5173 (`npm run dev` in WSL). This environment has no GPU.
 - Playwright WebKit (iPhone project) passes in CI; running it locally needs `sudo npx playwright install-deps webkit`.
 - `gh` CLI is logged in as `venkatarangan` (repo + workflow scopes).
+- **Local backup:** `backup.bat` (git-ignored, owner-only) wipes `C:\dev\aimade\facemango` and mirrors this folder there with robocopy, including `.git`, docs and `.env*` files. It skips anything you can rebuild: `node_modules`, `dist*`, test output, `public/models`, `*.wasm`. Update its exclude list when new download or build folders appear.

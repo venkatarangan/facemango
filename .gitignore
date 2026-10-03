@@ -24,3 +24,6 @@ Thumbs.db
 public/models
 dist-e2e
 public/emoji/*.wasm
+
+# Personal backup script (copied by itself, not tracked)
+backup.bat
