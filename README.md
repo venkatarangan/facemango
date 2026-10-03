@@ -17,10 +17,17 @@ lives in IndexedDB, and the AI runs on the device (Chrome/Edge Prompt API, or We
 
 See [`SPEC.md`](SPEC.md) for the full specification and milestones.
 
+## Documentation
+
+- [`SPEC.md`](SPEC.md): product specification and milestones
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): how the app, AI layer, engine and data fit together
+- [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md): setup, scripts, testing and gotchas
+- [`docs/STATUS.md`](docs/STATUS.md): milestone status, open items and decisions
+- [`CHANGELOG.md`](CHANGELOG.md): what changed in each milestone
+
 ## Status
 
-**M1–M4**: app shell, signup, on-device AI (Prompt API / WebLLM), feed with posts, reactions and comments, and the simulation engine (friends, engagement, living feed, photo pack).
-AI, the feed and the simulation engine arrive in M2–M7.
+**M1–M7 built** (not yet deployed): on-device AI (Prompt API / WebLLM), feed with posts, reactions and comments, the simulation engine, profiles, Mango AI chat, Memories, Photos, Wellbeing, backup/restore and all engagement features. See [`docs/STATUS.md`](docs/STATUS.md) and [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Privacy
 
