@@ -70,6 +70,8 @@ export interface Persona {
   createdAt: Timestamp;
   /** Set when a friends reset turns this persona into a former friend. */
   formerSince?: Timestamp;
+  /** A public profile asking to be friends (SPEC §8 #10). */
+  friendRequest?: { at: Timestamp; status: 'pending' | 'accepted' | 'declined' };
 }
 
 export interface Post {

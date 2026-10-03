@@ -10,13 +10,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import Typography from '@mui/material/Typography';
-import {
-  BackupError,
-  parseBackup,
-  restoreBackup,
-  type ParsedBackup,
-  type RestoreMode,
-} from '@/lib/backup/import';
+import type { ParsedBackup, RestoreMode } from '@/lib/backup/import';
 
 /** Restore (SPEC §3.11): "Restore everything" or "Restore my content + new friends". */
 export function RestoreDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -31,9 +25,12 @@ export function RestoreDialog({ open, onClose }: { open: boolean; onClose: () =>
     setError(undefined);
     setBusy(true);
     try {
+      const { parseBackup } = await import('@/lib/backup/import');
       setBackup(await parseBackup(f));
     } catch (e) {
-      setError(e instanceof BackupError ? e.message : 'Could not read that file.');
+      setError(
+        e instanceof Error && e.name === 'BackupError' ? e.message : 'Could not read that file.',
+      );
     } finally {
       setBusy(false);
     }
@@ -43,6 +40,7 @@ export function RestoreDialog({ open, onClose }: { open: boolean; onClose: () =>
     if (!backup) return;
     setBusy(true);
     try {
+      const { restoreBackup } = await import('@/lib/backup/import');
       await restoreBackup(backup, mode);
       // Reload so the AI, engine and every view start from the restored data.
       window.location.assign('/');

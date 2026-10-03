@@ -55,3 +55,14 @@ test.describe('M5 sections (mock model)', () => {
     await expect(page.getByText('Your first post on FaceMango')).toBeVisible();
   });
 });
+
+test('daily idea from Mango AI prefills the composer (mock model)', async ({ page }) => {
+  await signUpAndWaitForSetup(page);
+  const card = page.getByRole('region', { name: "Today's idea" });
+  await expect(card).toBeVisible({ timeout: 20_000 });
+  await card.getByRole('button', { name: 'Write about this' }).click();
+  const text = page
+    .getByRole('dialog', { name: 'Create post' })
+    .getByRole('textbox', { name: 'Post text' });
+  await expect(text).not.toHaveValue('');
+});

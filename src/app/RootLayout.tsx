@@ -1,4 +1,7 @@
+import { useEffect } from 'react';
 import { Outlet, ScrollRestoration, useLocation } from 'react-router';
+import { ConsentBanner } from '@/components/ConsentBanner';
+import { trackPageView } from '@/lib/analytics';
 import { useAIStore } from '@/ai';
 import { UnsupportedPage } from '@/features/ai/UnsupportedPage';
 import { Toaster } from '@/components/Toaster';
@@ -9,11 +12,13 @@ export function RootLayout() {
   const { pathname } = useLocation();
   // Tier 3: no local AI means no FaceMango (SPEC §5.1). About stays reachable.
   const blocked = unsupported && pathname !== '/about';
+  useEffect(() => trackPageView(pathname), [pathname]);
   return (
     <>
       {blocked ? <UnsupportedPage /> : <Outlet />}
       <ScrollRestoration />
       <Toaster />
+      <ConsentBanner />
       {import.meta.env.PROD && <PwaUpdatePrompt />}
     </>
   );

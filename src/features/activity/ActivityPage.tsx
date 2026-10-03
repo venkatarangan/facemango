@@ -80,7 +80,13 @@ export function ActivityPage() {
                   <ListItemButton
                     key={n.id}
                     component={RouterLink}
-                    to={n.postId ? `/post/${n.postId}` : '/notifications'}
+                    to={
+                      n.postId
+                        ? `/post/${n.postId}`
+                        : n.type === 'friendRequest'
+                          ? '/friends'
+                          : '/notifications'
+                    }
                     sx={{
                       alignItems: 'flex-start',
                       borderRadius: 0,

@@ -8,6 +8,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { AuthorAvatar } from '@/components/AuthorAvatar';
 import { db } from '@/db';
+import { FriendRequests } from './FriendRequests';
 
 /** Friends list. Profile pages arrive in M5. */
 export function FriendsPage() {
@@ -25,6 +26,7 @@ export function FriendsPage() {
           by the AI on your device.
         </Typography>
       </Box>
+      <FriendRequests />
       {friends.length === 0 && (
         <Typography color="text.secondary">FaceMango is still finding your friends…</Typography>
       )}

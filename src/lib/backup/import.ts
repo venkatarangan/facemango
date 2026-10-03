@@ -32,7 +32,9 @@ export interface ParsedBackup {
   };
 }
 
-export class BackupError extends Error {}
+export class BackupError extends Error {
+  override name = 'BackupError';
+}
 
 const FILES = ['me.md', 'friends.md', 'feed.md', 'wellbeing.md'];
 

@@ -197,13 +197,15 @@ export interface CommentRequest {
   category: CommentCategory;
   /** If set, this is a reply to that comment text by that author. */
   replyTo?: { author: string; text: string };
+  /** A fan politely sticking up for the post's author against a critic (SPEC §8 #4). */
+  defend?: boolean;
 }
 
 export function commentsPrompt(
   post: Pick<Post, 'text' | 'feeling' | 'photoDescription'>,
   postAuthor: string,
   requests: CommentRequest[],
-  context: { photoAlt?: string; recent: string[] },
+  context: { photoAlt?: string; recent: string[]; earlierPosts?: string[] },
 ): string {
   const photo = post.photoDescription ?? context.photoAlt;
   return [
@@ -215,8 +217,12 @@ export function commentsPrompt(
         `- id "${r.id}": ${personaLine(r.persona)} Tone: ${CATEGORY_TEXT[r.category]}.` +
         (r.replyTo
           ? ` This is a reply to ${r.replyTo.author}, who wrote: "${r.replyTo.text.slice(0, 160)}".`
-          : ''),
+          : '') +
+        (r.defend ? ` Politely stick up for ${postAuthor} and disagree with that criticism.` : ''),
     ),
+    context.earlierPosts?.length
+      ? `One person may naturally refer back to one of ${postAuthor}'s earlier posts: ${context.earlierPosts.map((p) => `"${p.slice(0, 80)}"`).join('; ')}`
+      : '',
     context.recent.length
       ? `Don't repeat these existing comments: ${context.recent.map((c) => `"${c.slice(0, 60)}"`).join('; ')}`
       : '',
