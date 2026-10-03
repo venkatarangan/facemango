@@ -1,88 +1,56 @@
 # CLAUDE.md — FaceMango
 
-Project context and working rules for Claude Code. **Read `SPEC.md` first.** It is the approved v1.0 specification and the source of truth for features, architecture and the library stack. This file records the decisions behind it, the working agreements, and where we are.
+Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DEVELOPMENT.md` has the code map and rules; `docs/STATUS.md` has open items.
 
 ## What this is
-**FaceMango**: a private, single-player, Facebook-style "dopamine site" (see Wikipedia "Dopamine sites", foodnevercomes.com). Every friend, like and comment is simulated by **local, on-device AI**. All data stays in the browser (IndexedDB). There is no backend.
-- Production URL: **https://face.mangoidiots.com** (GitHub Pages; DNS on Cloudflare)
-- Licence: **AGPL-3.0**, open source
-- Owner: Venkatarangan (venkatarangan@gmail.com)
-- Original brief: `input.txt`
+**FaceMango**: a private, single-player, Facebook-style "dopamine site". Every friend, like and comment is simulated by **AI running on the user's device**. All data stays in the browser (IndexedDB). No backend.
+- **Uniqueness (use this message):** unlike other feel-good apps, the data and the AI models are entirely local; nothing leaves unless the user exports it (`UNIQUENESS` in `src/lib/copy.ts`).
+- **Byline:** "The most personal social network ever built. And the most private." (`BYLINE`)
+- **Live site:** https://face.mangoidiots.com · **Repo:** https://github.com/venkatarangan/facemango (public, AGPL-3.0)
+- **Owner:** Venkatarangan (GitHub `venkatarangan`). Original brief: `input.txt`.
 
-## Current status (as of 2026-10-03)
-- ✅ **M0 Spec approved**: `SPEC.md` v1.0.
-- 🟡 **M1 Skeleton built, awaiting the user's review** on branch `m1-skeleton` (committed; `main` not created yet). Lint, typecheck, Prettier, 34 Vitest tests and 6 Playwright tests (desktop Chrome + Android) pass; the production build works.
-  - Done: local git repo, Vite 8 + React 19 + TS 6 (strict) + MUI v9, theme/tokens, new logo (`public/logo.svg`, mango + speech-bubble tail) + generated PWA icons, responsive shell (3-col / 2-col / bottom nav), Dexie schema v1 (all SPEC §6.3 tables), landing page with iOS notice + Add to Home Screen guide, signup (Name, Age 13+, City, Languages, optional photo, required data-notice checkbox), Settings (persistent-storage status, delete all data), About/privacy, placeholder pages for M2–M5 sections, PWA with update prompt, build-only CSP `<meta>`, `404.html` SPA fallback, `CNAME`, GitHub Actions workflow, README, LICENSE.
-  - Not yet verified locally: the Playwright iPhone (WebKit) project, which needs `sudo npx playwright install-deps webkit`. CI installs these deps itself.
-- 🟡 **M2–M4 committed on branch `m2-m4` (on top of M1), awaiting the user's review.** 70 Vitest tests (incl. a full engine run with the mock model) and 10 Playwright tests (desktop Chrome + Android, mock-model build) pass; lint, typecheck, Prettier and the production build are clean.
-  - **M2 AI layer:** `src/ai/` — tier detection (Prompt API → WebGPU → Unsupported), Prompt API provider, WebLLM provider in a Web Worker, priority queue (interactive before background), Zod-validated JSON with retries and a prompt-only fallback if a backend rejects the schema, AI store/progress, Unsupported screen, Settings → AI (tier, model, delete model). Model libs are self-hosted (`scripts/fetch-model-libs.mjs` → `public/models/`, gitignored).
-  - **M3 feed core:** composer (text, 1 photo → WebP, feeling, @mentions, ✨ Mango AI rewrite/“write it for me”, streamed), virtualised feed (stable order while reactions arrive), post cards, 7 reactions with animated Noto emoji (hover/long-press), threaded comments with replies, edit/delete, live time-ago, post page.
-  - **M4 engine:** `src/engine/` — personas (config mixes → AI fills details, DiceBear avatars), planner (hard caps, 3–5× likes, max critical, under-18 rules, mentions, front-loaded bursts, speed), scheduler (applies due events, writes comments just in time in batches, typing indicators, replies to the user, catch-up + “While you were away”), notifications + badges, living feed (friends post over time, incl. while away), first-run setup (friends → public profiles → 15–25 seed posts, resumable), photo pack v1 (87 CC0/PD photos in `public/photos/`, scripts in `scripts/photos/`), Credits page, basic Friends list and Activity page.
-  - **Not yet verified with a real model** (no GPU in this environment): the Prompt API and WebLLM paths need testing in Chrome/Edge on the Windows host. The parked “setup experience” design is in memory, not built (basic setup card only).
-- ✅ **M5 committed on branch `m5-m7`:** profile pages (generated on first visit and cached, cover photo, edit own profile), Mango AI chat (streamed, quick actions, "Use as post", history in `db.chat`, Dexie v2), Memories (on this day, friendversaries, first post, milestones, best post), Activity (notifications + filterable "Your activity" log), Photos (masonry + swipe/pinch lightbox), Wellbeing (on-device usage tracking in `src/lib/usage.ts`, 30-day trend, heatmap, late-night share, activity stats, mood check-ins + chart, daily goal ring + one nudge per day, Monday weekly summary card in the feed).
-- ✅ **M6 committed on branch `m5-m7`:** Advanced settings (`/settings/advanced`: circle size and mixes, comment band, likes multiplier, minimum likes, comment mix with sliders that keep a total of 100, max critical, speed presets; super-critical locked for under-18s), full backup (`src/lib/backup/`: zip of me.md / friends.md / feed.md / wellbeing.md with YAML front-matter, plus images/ and avatars/; `lastBackupAt` in meta), restore (Settings and the welcome screen; "everything" or "my content + new friends"; reloads afterwards), friends reset (`src/engine/reset.ts`: circle → former friends, their planned events cancelled, setup re-runs).
-- ✅ **M7 committed on branch `m5-m7`:** all 14 engagement features in SPEC §8 now exist. New in M7:
-  - micro-celebrations (`src/engine/celebrations.ts`: per-post reaction milestones and the first reaction → confetti, chime, toast and a milestone notification) with original synthesised sounds (`scripts/generate-sounds.mjs` → `public/sounds/`, Howler, Settings toggle)
-  - fans defend the user against critical comments, and friends refer back to earlier posts
-  - friend requests from public profiles (accept/decline on the Friends page)
-  - Mango AI daily idea card, posting streak chip, "best post this week" card
-  - opt-in local system notifications (no push server)
-  - iOS banner at most every 7 days in a non-installed Safari tab; weekly backup reminders (default on for iOS)
-  - "Install app" button; skip link
-  - GA page views only (`src/lib/analytics.ts`, set `VITE_GA_ID` / Actions variable `GA_ID`; route patterns only; EU/UK consent banner; nothing loads without an id)
-  - backup code is lazy-loaded; README has the deploy steps
-- ⏭️ **Waiting on the user:** test with a real model (Chrome/Edge on Windows); supply the GA id; approve the local build → create `main`, the GitHub repo, push and deploy (Pages + Cloudflare DNS). Not done: WebKit/Safari e2e locally (needs `sudo npx playwright install-deps webkit`), M8 realistic faces, and growing the photo pack from 87 to ~250. The user still has to test M2+ with a real model. GitHub repo + push only after the user approves.
-- Milestones M1–M8 are in `SPEC.md` §10.
+## Status (2026-10-03)
+- **Built:** M1–M7 from SPEC §10. M8 (realistic on-device faces) not started.
+- **Published:** `main` is on GitHub. GitHub Pages deploys via Actions on every push to `main`, with custom domain `face.mangoidiots.com`. Cloudflare DNS has `CNAME face → venkatarangan.github.io` (DNS only). The owner set this up.
+- **Real-model test (owner, Qwen3 on WebGPU):** friends, posts with photos, likes, comments and Activity worked. Mango AI (chat + composer) failed. It now falls back from streaming to a single reply and shows the error. **Re-test pending**; ask the owner for the error from Settings → On-device AI if it still fails.
+- **Open items:**
+  - GA id (Actions variable `GA_ID`)
+  - photo pack 87/~250
+  - parked "setup experience" for the first-run wait (in memory: `setup-experience-idea`)
+  - optional: remove the owner's Gmail address from git history (it was in older versions of this file)
 
-## Working agreements (from the user)
-- **Git:** the **local** repo `facemango` exists (`main` not created yet; M1 is committed on `m1-skeleton`). **Do NOT create the GitHub repo or push until the user has checked and okayed the local build.** The user will give GitHub access at that point. The GitHub repo name is also `facemango`.
-- Commit only when the user asks. Branch off the default branch for work.
-- Use the **best open-source frameworks, libraries and tools** available to make the UI/UX as attractive and engaging as possible. Licences must be AGPL-3.0-compatible (MIT/Apache/BSD/ISC/CC0/CC BY are fine).
-- The user prefers concise answers that lead with a recommendation. They like being asked clarifying questions for real decisions.
+## Working agreements
+- **Commits:** only when the owner asks. Work on `main` (or a short branch). The old milestone branches (`m1-skeleton`, `m2-m4`, `m5-m7`) are local-only history.
+- **Pushing:** pushing to `main` deploys the live site; make sure tests pass first.
+- **Answers:** concise, leading with a recommendation. Ask only about real product decisions; after a go-ahead, proceed without process questions.
+- **Docs and UI copy:** short. End users get friendly explanations; developer docs stay brief, since developers use AI agents to read the code.
+- **Libraries:** the best open-source ones, AGPL-3.0-compatible licences only.
 
-## Key decisions (Q&A log)
+## Key decisions
 | Topic | Decision |
 |---|---|
-| Name / domain | FaceMango · face.mangoidiots.com |
-| Byline | **"The most personal social network ever built. And the most private."** (`BYLINE` in `src/lib/copy.ts`; landing, meta, manifest, README) |
-| Logo | **Design a new one**: elegant, modern, mango-related, same colour scheme (white bg, mango-yellow accent, black text). Not based on the existing Mangoidiots mark. M1 draft: mango body that doubles as a chat bubble, black leaf. |
-| Colours | White `#FFFFFF` bg, surfaces `#FAFAFA`, accent `#FFC400`, text `#111111`. Yellow on white: `#B28900` (3.3:1) only for large text, icons and UI parts; `#8A6A00` (5:1) for body-size text. See `src/app/tokens.ts`. |
-| UI | Material UI (**MUI v9**: spec said v7, but v9 was current at M1). Must work well on PC, Mac, iPhone and Android. PWA. |
-| AI tiers | 1) Prompt API (Chrome Gemini Nano / Edge Phi-4-mini), 2) WebGPU via WebLLM with a small Qwen3/Gemma-3 model, 3) Unsupported screen. **No non-AI "Lite mode". The app works only with local AI.** Phones always use WebGPU (fine). |
-| iOS data loss | Safari may wipe data after 7 days unused. **Warn clearly on the landing/home page AND during signup** (required "I understand"), plus the Add to Home Screen guide and backup reminders. |
-| Third parties | **Google Analytics (page views only; the user supplies the tag later) and Hugging Face model downloads are acceptable.** Privacy text, docs and CSP must say so honestly. User content is never sent over the network. |
-| Friends | 20–30 friends (configurable). Mixes are configurable: gender, same/other city, shared/unknown languages, fan/neutral/critic stance. |
-| Public profiles | Default **2× the friend count**, configurable. They supply reach: likes, some comments, friend requests. |
-| Likes | **Likes = comments × random 3×–5×** per post (configurable), with a minimum-likes floor. Hard cap **1,000,000** likes per post. |
-| Comments | Default band 0–9 (single digits), configurable. Hard cap **100**. Mix: Good 60 / Appreciative 25 / Nonsense 10 / Critical 5 / Super-critical 0 (%), configurable. At most 1–2 critical by default. Never abusive. |
-| Engagement engine | Pre-planned event timeline per post in IndexedDB. Catch-up on reopen ("While you were away…"). |
-| Engagement ideas | **All 14 in SPEC §8 are approved for v1** (variable rewards, typing indicators, reply-backs, photo-aware comments, confetti, streaks, etc.). |
-| Backup | **Full backup**: me.md, friends.md, feed.md, wellbeing.md + images/ + avatars/ in a zip, with YAML front-matter. Restore: "everything" or "my content + new friends". |
-| Friends reset | Available any time and on import. **Old friends' existing likes/comments are kept as-is under the old names.** Old personas become read-only "former friends", and their future planned events are cancelled. |
-| Faces | **Approved:** v1 = AI-directed illustrated avatars (DiceBear, local SVG); v1.1 = opt-in realistic on-device faces (SD-Turbo-class via ONNX Runtime Web, desktop only). |
-| Friend post photos | **Approved:** a bundled pack of CC0/public-domain photos (~250, WebP), mixed across regions worldwide and many themes, **family-friendly**, no close-up identifiable faces, no identifiable children. Lazy-loaded, with a manifest (tags, region, alt text, source, licence) and an in-app Credits page. |
-| Assistant | **"Mango AI"** (Meta-AI-like) |
-| Wellbeing | Instead of a "30-minute" nag: a **usage tracker in the style of a mental-health tracker** (time spent, heatmap, activity, optional mood check-in, daily goal ring, weekly summary). Local only, never sent to analytics. |
-| Languages | v1 English only for posts/comments. Tamil and others later, depending on model support. |
-| Age | 13+ gate. Under-18s: Super-critical comments disabled. |
-| Hosting | GitHub Pages (via GitHub Actions) + Cloudflare DNS CNAME `face` → `<account>.github.io`. CSP via `<meta>`. SPA `404.html` fallback. |
+| Stack | Vite 8, React 19, TypeScript 6 (strict), MUI v9, Dexie, Zustand, Motion, Vitest, Playwright |
+| AI tiers | Prompt API (Chrome/Edge) → WebLLM on WebGPU (Qwen3-1.7B desktop, Gemma-3-1B phones, q4f32 fallbacks) → Unsupported screen. **No non-AI mode.** |
+| Third parties | Only Hugging Face (model weights) and Google Analytics (page views, route patterns, EU/UK consent). CDN assets are self-hosted via `npm run models`. |
+| Engagement | Comments 0–9 by default (cap 100); likes = comments × 3–5 (cap 1,000,000); mix Good 60 / Appreciative 25 / Nonsense 10 / Critical 5 / Super-critical 0; ≤2 critical per post; Super-critical off for under-18s |
+| Friends | 25 by default + 2× public profiles; reset keeps old likes and comments under "former friends" |
+| Backup | Zip of me.md, friends.md, feed.md, wellbeing.md (YAML front-matter) + images/ + avatars/; restore "everything" or "my content + new friends" |
+| iOS | Data-loss warning on the landing page and at signup; banner every 7 days in a non-installed tab; weekly backup reminders on by default |
+| Colours | White, `#FFC400` accent, `#111111` text; yellow text `#8A6A00` (body) / `#B28900` (large only) |
+| Avatars / photos | DiceBear "Personas" (CC BY 4.0); CC0/PD photo pack, family-friendly, no identifiable faces or children |
 
 ## Engineering rules
-- Hard invariants (enforce in code and tests): likes ≤ 1,000,000, comments ≤ 100 per post (`src/engine/limits.ts`). User content and wellbeing data are never sent over the network.
-- All AI calls go through the `AIProvider` interface (`src/ai/provider.ts`) and run in a Web Worker priority queue. The UI never blocks on the model.
-- Validate all AI JSON output with Zod and retry if malformed.
-- Store images as Blobs in IndexedDB. Compress user photos to WebP on the device.
-- Respect `prefers-reduced-motion`. Meet WCAG AA contrast (see the Colours row; `src/app/theme.test.ts` enforces it).
-- Follow the module layout in SPEC §6.2.
-- Never edit a shipped Dexie version; add a new `this.version(n)` instead.
-- CSP lives in `vite.config.ts` (build only). M2 must add any extra hosts WebLLM needs (e.g. its model-library wasm host) or self-host those files.
-- `SPEC.md`, `CLAUDE.md` and `input.txt` are excluded from Prettier; keep their hand formatting.
-- No third-party requests beyond Hugging Face and GA: anything a library would fetch from a CDN (WebLLM model libs, the dotLottie wasm) is copied/fetched into `public/` by `npm run models` (runs before dev/build).
-- The mock AI provider (`src/ai/mockProvider.ts`) is test-only: compiled in only when `VITE_MOCK_AI=1` (`npm run build:e2e` → `dist-e2e/`, used by Playwright). It must never ship: the app has no non-AI mode.
-- Feed order is ranked once per set of posts (not on every reaction) so cards don't jump.
+- Hard caps: likes ≤ 1,000,000 and comments ≤ 100 per post (`src/engine/limits.ts`, tested).
+- User content and wellbeing data never go over the network.
+- All AI calls go through `src/ai` (priority queue; Zod-validated JSON with retries).
+- Never edit a shipped Dexie version; add a new one (currently v2).
+- The mock model exists only in the e2e build (`VITE_MOCK_AI=1`, `dist-e2e/`).
+- Keep `SPEC.md`, `CLAUDE.md` and `input.txt` out of Prettier.
+- Lint follows React Compiler rules: no `Date.now()` or ref reads during render (use `useNow()`).
 
-## Environment notes
-- The repo lives at `C:\DevTemp\facemango` (`/mnt/c/devtemp/facemango` in WSL). The Windows host has no Node.js; use WSL (Node 22).
-- `/mnt/c` is slow for `node_modules` (npm install took ~4 min, Vitest ~75 s). Expect that, or move the repo into the WSL filesystem.
-- Playwright WebKit needs `sudo npx playwright install-deps webkit` in WSL.
-- Vitest runs in Node by default (`// @vitest-environment happy-dom` for component tests) with 3 reused threads (`isolate: false`), because worker start-up on /mnt/c otherwise times out (Vitest hard-codes 60 s). Tests that touch the DB must clear it in `beforeEach`.
+## Environment
+- Repo: `C:\DevTemp\facemango` = `/mnt/c/devtemp/facemango`. Use WSL (Node 22); the Windows host has no Node.
+- `/mnt/c` is slow: `npm install` takes ~4 min, Vitest ~90 s. Vitest uses 3 reused threads; clear the DB in `beforeEach`.
+- Test the real AI in Chrome/Edge on Windows at http://localhost:5173 (`npm run dev` in WSL). This environment has no GPU.
+- Playwright WebKit (iPhone project) passes in CI; running it locally needs `sudo npx playwright install-deps webkit`.
+- `gh` CLI is logged in as `venkatarangan` (repo + workflow scopes).
