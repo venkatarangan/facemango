@@ -11,7 +11,7 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 
 ## Status (2026-10-03)
 - **Built:** M1–M7 from SPEC §10. M8 (realistic on-device faces) not started.
-- **Published:** `main` is on GitHub. GitHub Pages deploys via Actions on every push to `main`, with custom domain `face.mangoidiots.com`. Cloudflare DNS has `CNAME face → venkatarangan.github.io` (DNS only). The owner set this up.
+- **Published and live over HTTPS:** pushing to `main` runs CI (lint, unit, e2e on Chrome/Android/iPhone) and deploys to GitHub Pages. See "Deployment" below.
 - **Real-model test (owner, Qwen3 on WebGPU):** friends, posts with photos, likes, comments and Activity worked. Mango AI (chat + composer) failed. It now falls back from streaming to a single reply and shows the error. **Re-test pending**; ask the owner for the error from Settings → On-device AI if it still fails.
 - **Open items:**
   - GA id (Actions variable `GA_ID`)
@@ -25,6 +25,14 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - **Answers:** concise, leading with a recommendation. Ask only about real product decisions; after a go-ahead, proceed without process questions.
 - **Docs and UI copy:** short. End users get friendly explanations; developer docs stay brief, since developers use AI agents to read the code.
 - **Libraries:** the best open-source ones, AGPL-3.0-compatible licences only.
+
+## Deployment
+- **Pages:** build type "GitHub Actions"; custom domain `face.mangoidiots.com` is set through the Pages API/settings. The `public/CNAME` file is for reference only; Actions-based Pages ignores it.
+- **DNS (Cloudflare, managed by the owner):** `CNAME face → venkatarangan.github.io`, DNS only (grey cloud). CAA allows Let's Encrypt.
+- **HTTPS:** a Let's Encrypt certificate issued by GitHub, renewed automatically (current one expires 2027-01-01). "Enforce HTTPS" is on.
+  - If a certificate ever gets stuck, remove and re-add the custom domain (`gh api -X PUT repos/venkatarangan/facemango/pages -f cname=…`).
+- **Deep links** (e.g. `/about`) are served from `404.html`, so they return HTTP 404 but render normally. This is expected on GitHub Pages.
+- **Checking a deploy:** `gh run list -R venkatarangan/facemango`, then `gh run watch <id>`.
 
 ## Key decisions
 | Topic | Decision |
