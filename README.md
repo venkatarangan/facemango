@@ -4,7 +4,7 @@
 
 <h1 align="center">FaceMango</h1>
 
-<p align="center"><strong>A social network that is entirely yours.</strong><br />
+<p align="center"><strong>The most personal social network ever built. And the most private.</strong><br />
 Your posts, photos and friends live only on your device. Every friend, like and comment is simulated by AI running in your browser.</p>
 
 <p align="center"><a href="https://face.mangoidiots.com">face.mangoidiots.com</a></p>
@@ -19,7 +19,7 @@ See [`SPEC.md`](SPEC.md) for the full specification and milestones.
 
 ## Status
 
-**M1 Skeleton**: app shell, theme, logo, landing page, signup, local database, PWA, tests and CI.
+**M1–M4**: app shell, signup, on-device AI (Prompt API / WebLLM), feed with posts, reactions and comments, and the simulation engine (friends, engagement, living feed, photo pack).
 AI, the feed and the simulation engine arrive in M2–M7.
 
 ## Privacy
@@ -40,14 +40,16 @@ npm run build        # type-check + production build into dist/
 npm run preview      # serve dist/ locally
 ```
 
-| Command             | What it does                                            |
-| ------------------- | ------------------------------------------------------- |
-| `npm test`          | Unit and component tests (Vitest + Testing Library)     |
-| `npm run test:e2e`  | End-to-end tests (Playwright: desktop, Android, iPhone) |
-| `npm run lint`      | ESLint                                                  |
-| `npm run format`    | Prettier                                                |
-| `npm run typecheck` | TypeScript (strict)                                     |
-| `npm run icons`     | Regenerate PWA icons from `public/logo.svg`             |
+| Command             | What it does                                                                                |
+| ------------------- | ------------------------------------------------------------------------------------------- |
+| `npm test`          | Unit and component tests (Vitest + Testing Library)                                         |
+| `npm run test:e2e`  | End-to-end tests (Playwright: desktop, Android, iPhone)                                     |
+| `npm run lint`      | ESLint                                                                                      |
+| `npm run format`    | Prettier                                                                                    |
+| `npm run typecheck` | TypeScript (strict)                                                                         |
+| `npm run icons`     | Regenerate PWA icons from `public/logo.svg`                                                 |
+| `npm run models`    | Fetch WebLLM model libraries and copy runtime assets into `public/` (runs before dev/build) |
+| `npm run build:e2e` | Test build with a mock model into `dist-e2e/` (used by Playwright; never deployed)          |
 
 First-time Playwright setup: `npx playwright install --with-deps chromium webkit`.
 

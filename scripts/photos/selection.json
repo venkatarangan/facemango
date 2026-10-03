@@ -1,0 +1,892 @@
+{
+  "_comment": "Hand-curated after visual review. See README.md for the format. Never renumber a shipped id.",
+  "photos": [
+    {
+      "id": "food-south-asia-001",
+      "candidate": "sa-dosa-1",
+      "region": "south-asia",
+      "country": "India",
+      "themes": ["food"],
+      "tags": ["dosa", "masala dosa", "chutney", "sambar", "breakfast", "south indian"],
+      "season": null,
+      "alt": "A golden ghee masala dosa folded into a cone on a plate, with small cups of coconut chutney and sambar beside it"
+    },
+    {
+      "id": "food-south-asia-002",
+      "candidate": "sa-idli-2",
+      "region": "south-asia",
+      "country": "India",
+      "themes": ["food"],
+      "tags": ["idli", "sambar", "filter coffee", "breakfast", "south indian", "tamil nadu"],
+      "season": null,
+      "alt": "Four soft white idlis in a steel plate of vegetable sambar, next to a steel tumbler of frothy coffee"
+    },
+    {
+      "id": "food-south-asia-003",
+      "candidate": "sa-meals-1",
+      "region": "south-asia",
+      "country": "India",
+      "themes": ["food", "family"],
+      "tags": ["banana leaf", "meals", "rice", "papad", "vada", "south indian", "festive lunch"],
+      "season": null,
+      "alt": "A full South Indian meal laid out on a banana leaf: rice, papads, vadas, vegetable dishes, dal and a steel tumbler of water"
+    },
+    {
+      "id": "travel-south-asia-001",
+      "candidate": "sa-mahabalipuram-2",
+      "region": "south-asia",
+      "country": "India",
+      "themes": ["travel"],
+      "tags": [
+        "mahabalipuram",
+        "mamallapuram",
+        "shore temple",
+        "tamil nadu",
+        "heritage",
+        "chennai day trip"
+      ],
+      "season": null,
+      "alt": "The ancient Shore Temple at Mahabalipuram under a bright blue sky with white clouds, seen across a sandy courtyard"
+    },
+    {
+      "id": "travel-south-asia-002",
+      "candidate": "sa-gopuram-2",
+      "region": "south-asia",
+      "country": "India",
+      "themes": ["travel"],
+      "tags": ["madurai", "meenakshi temple", "gopuram", "tamil nadu", "architecture"],
+      "season": null,
+      "alt": "A towering carved gopuram of the Meenakshi Temple in Madurai rising above green treetops against a pale sky"
+    },
+    {
+      "id": "festivals-south-asia-001",
+      "candidate": "sa-kolam-2",
+      "region": "south-asia",
+      "country": "India",
+      "themes": ["festivals"],
+      "tags": ["pongal", "kolam", "chennai", "tamil nadu", "sankranti", "tradition"],
+      "season": "winter",
+      "alt": "A white chalk kolam drawn on a doorstep for Pongal, showing sugarcane, pots and palm trees with a Tamil Pongal greeting written below"
+    },
+    {
+      "id": "festivals-south-asia-002",
+      "candidate": "sa-rangoli-2",
+      "region": "south-asia",
+      "country": "India",
+      "themes": ["festivals", "hobbies"],
+      "tags": ["rangoli", "kolam", "diwali", "colours", "art", "tamil culture"],
+      "season": null,
+      "alt": "A bright rangoli of red, green, blue and yellow powder in a flower-and-peacock pattern on a stone floor"
+    },
+    {
+      "id": "travel-south-asia-003",
+      "candidate": "sa-marina-2",
+      "region": "south-asia",
+      "country": "India",
+      "themes": ["travel", "nature"],
+      "tags": ["marina beach", "chennai", "bay of bengal", "waves", "sea", "morning walk"],
+      "season": null,
+      "alt": "Foamy waves rolling onto the sand of Marina Beach in Chennai under a hazy grey sky"
+    },
+    {
+      "id": "travel-south-asia-004",
+      "candidate": "sa-kanyakumari-2",
+      "region": "south-asia",
+      "country": "India",
+      "themes": ["travel", "nature"],
+      "tags": [
+        "kanyakumari",
+        "thiruvalluvar statue",
+        "vivekananda rock",
+        "tamil nadu",
+        "sea",
+        "sunrise"
+      ],
+      "season": null,
+      "alt": "Waves breaking over dark rocks at Kanyakumari, with the Thiruvalluvar statue and Vivekananda Rock Memorial on the horizon under dramatic clouds"
+    },
+    {
+      "id": "weather-south-asia-001",
+      "candidate": "sa-rain2-2",
+      "region": "south-asia",
+      "country": "India",
+      "themes": ["weather", "nature"],
+      "tags": ["monsoon", "western ghats", "clouds", "lake", "rain", "maharashtra"],
+      "season": "monsoon",
+      "alt": "Heavy monsoon clouds over green hills of the Western Ghats, with a calm lake below reflecting the grey sky"
+    },
+    {
+      "id": "sports-south-asia-001",
+      "candidate": "sa-cricket2-1",
+      "region": "south-asia",
+      "country": "India",
+      "themes": ["sports"],
+      "tags": ["cricket", "stadium", "dharamshala", "himachal pradesh", "match day", "mountains"],
+      "season": null,
+      "alt": "The green outfield and stands of the cricket stadium in Dharamshala, with floodlight towers and hills under a cloudy sky"
+    },
+    {
+      "id": "food-east-asia-001",
+      "candidate": "ea-ramen-1",
+      "region": "east-asia",
+      "country": "Japan",
+      "themes": ["food"],
+      "tags": ["ramen", "shio ramen", "noodles", "kyoto", "japanese food", "lunch"],
+      "season": null,
+      "alt": "A bowl of shio ramen topped with sliced pork, spring onions and bean sprouts on a restaurant counter in Kyoto"
+    },
+    {
+      "id": "food-east-asia-002",
+      "candidate": "ea-dimsum-1",
+      "region": "east-asia",
+      "country": "Hong Kong",
+      "themes": ["food", "family"],
+      "tags": ["dim sum", "yum cha", "bamboo steamers", "breakfast", "hong kong", "cantonese"],
+      "season": null,
+      "alt": "A table crowded with open bamboo steamers of dim sum, with hands reaching in for a shared breakfast"
+    },
+    {
+      "id": "travel-east-asia-001",
+      "candidate": "ea-fushimi-1",
+      "region": "east-asia",
+      "country": "Japan",
+      "themes": ["travel"],
+      "tags": ["fushimi inari", "torii gates", "kyoto", "shrine", "forest path"],
+      "season": null,
+      "alt": "A path running through a tunnel of bright orange torii gates surrounded by green forest at Fushimi Inari in Kyoto"
+    },
+    {
+      "id": "nature-east-asia-001",
+      "candidate": "ea-sakura-1",
+      "region": "east-asia",
+      "country": "Japan",
+      "themes": ["nature", "weather"],
+      "tags": ["cherry blossom", "sakura", "hanami", "kyoto", "river", "spring"],
+      "season": "spring",
+      "alt": "Rows of pink-white cherry blossom trees along the Takano River in Kyoto, with Mount Hiei behind under a dappled sky"
+    },
+    {
+      "id": "nature-east-asia-002",
+      "candidate": "ea-fuji-2",
+      "region": "east-asia",
+      "country": "Japan",
+      "themes": ["nature", "travel"],
+      "tags": ["mount fuji", "sunset", "lake", "snow-capped", "japan"],
+      "season": "spring",
+      "alt": "Snow-capped Mount Fuji at sunset, reflected in a calm lake under a pink and blue sky"
+    },
+    {
+      "id": "city-east-asia-001",
+      "candidate": "ea-seoul-2",
+      "region": "east-asia",
+      "country": "South Korea",
+      "themes": ["city"],
+      "tags": ["seoul", "cheonggyecheon", "night walk", "stream", "city lights"],
+      "season": null,
+      "alt": "Cheonggyecheon stream in Seoul at night, with lit walkways, trees and distant pedestrians beneath glowing office towers"
+    },
+    {
+      "id": "travel-east-asia-002",
+      "candidate": "ea-greatwall-1",
+      "region": "east-asia",
+      "country": "China",
+      "themes": ["travel", "nature"],
+      "tags": ["great wall", "mutianyu", "beijing", "hiking", "mountains", "summer"],
+      "season": "summer",
+      "alt": "The Great Wall of China snaking over lush green mountains at Mutianyu under a blue sky with white clouds"
+    },
+    {
+      "id": "festivals-east-asia-001",
+      "candidate": "ea-lantern-2",
+      "region": "east-asia",
+      "country": "Taiwan",
+      "themes": ["festivals"],
+      "tags": ["red lanterns", "lantern festival", "lunar new year", "taichung", "celebration"],
+      "season": "winter",
+      "alt": "Dozens of round red lanterns strung against a clear blue sky above green trees in Taichung Park"
+    },
+    {
+      "id": "sports-east-asia-001",
+      "candidate": "am-baseball-1",
+      "region": "east-asia",
+      "country": "Japan",
+      "themes": ["sports"],
+      "tags": ["baseball", "stadium", "tokyo", "sunny day", "empty stands"],
+      "season": "autumn",
+      "alt": "Rows of blue seats overlooking a sunlit baseball field with tall netting at a municipal stadium in Tokyo"
+    },
+    {
+      "id": "pets-east-asia-001",
+      "candidate": "me-camel-1",
+      "region": "east-asia",
+      "country": "Mongolia",
+      "themes": ["pets", "nature", "travel"],
+      "tags": ["camel", "bactrian camel", "gobi desert", "mongolia", "steppe"],
+      "season": "summer",
+      "alt": "A two-humped Bactrian camel standing on the dry plain of the Gobi Desert with mountains in the distance"
+    },
+    {
+      "id": "food-southeast-asia-001",
+      "candidate": "se-pho-1",
+      "region": "southeast-asia",
+      "country": null,
+      "themes": ["food"],
+      "tags": ["pho", "noodle soup", "vietnamese food", "tofu", "herbs", "lime"],
+      "season": null,
+      "alt": "A steaming bowl of vegetarian pho with tofu, noodles, peppers and fried shallots, with a basket of lime, herbs and bean sprouts"
+    },
+    {
+      "id": "food-southeast-asia-002",
+      "candidate": "se-nasilemak-1",
+      "region": "southeast-asia",
+      "country": null,
+      "themes": ["food"],
+      "tags": ["nasi lemak", "coconut rice", "fried chicken", "sambal", "malaysian food"],
+      "season": null,
+      "alt": "A plate of nasi lemak with coconut rice, fried chicken, a boiled egg, cucumber, peanuts, anchovies and sambal on a wooden table"
+    },
+    {
+      "id": "food-southeast-asia-003",
+      "candidate": "se-satay-1",
+      "region": "southeast-asia",
+      "country": "Indonesia",
+      "themes": ["food"],
+      "tags": ["satay", "peanut sauce", "bali", "indonesian food", "vegetarian"],
+      "season": null,
+      "alt": "A small plate of vegetable satay in peanut sauce with sliced chilli, tomato and cucumber, beside a bowl of curry and rice"
+    },
+    {
+      "id": "nature-southeast-asia-001",
+      "candidate": "se-rice-1",
+      "region": "southeast-asia",
+      "country": "Indonesia",
+      "themes": ["nature", "travel"],
+      "tags": ["rice terraces", "tegallalang", "bali", "ubud", "palm trees", "green"],
+      "season": null,
+      "alt": "Lush green rice terraces stepping down a hillside at Tegallalang in Bali, framed by tall coconut palms"
+    },
+    {
+      "id": "travel-southeast-asia-001",
+      "candidate": "se-angkor-1",
+      "region": "southeast-asia",
+      "country": "Cambodia",
+      "themes": ["travel"],
+      "tags": ["angkor wat", "sunrise", "siem reap", "temple", "lotus pond"],
+      "season": null,
+      "alt": "The silhouette of Angkor Wat's towers at sunrise, mirrored in a still pond dotted with pink lotus flowers"
+    },
+    {
+      "id": "city-southeast-asia-001",
+      "candidate": "se-singapore-2",
+      "region": "southeast-asia",
+      "country": "Singapore",
+      "themes": ["city"],
+      "tags": ["singapore", "marina bay", "skyline", "night", "reflections"],
+      "season": null,
+      "alt": "Singapore's brightly lit financial district skyline at night, with colourful reflections across Marina Bay"
+    },
+    {
+      "id": "nature-southeast-asia-002",
+      "candidate": "se-elnido-2",
+      "region": "southeast-asia",
+      "country": "Philippines",
+      "themes": ["nature", "travel"],
+      "tags": ["el nido", "palawan", "sunset", "fishing boat", "beach", "golden hour"],
+      "season": null,
+      "alt": "Two fishermen in a small boat, silhouetted against an orange and gold sunset sky over calm water at El Nido"
+    },
+    {
+      "id": "city-southeast-asia-002",
+      "candidate": "se-hoian-1",
+      "region": "southeast-asia",
+      "country": "Vietnam",
+      "themes": ["city", "weather"],
+      "tags": ["hoi an", "rainy day", "lanterns", "old town", "vietnam", "bicycles"],
+      "season": "monsoon",
+      "alt": "A quiet rain-soaked street in Hoi An Old Town lined with yellow shop-houses, hanging silk lanterns and parked bicycles"
+    },
+    {
+      "id": "hobbies-southeast-asia-001",
+      "candidate": "gl-garden-2",
+      "region": "southeast-asia",
+      "country": "Philippines",
+      "themes": ["hobbies", "nature"],
+      "tags": ["vegetable garden", "farm", "bulacan", "gardening", "countryside"],
+      "season": null,
+      "alt": "Neat rows of leafy vegetables growing beside a small farmhouse under a bright sky in Bulacan"
+    },
+    {
+      "id": "food-middle-east-001",
+      "candidate": "me-falafel-1",
+      "region": "middle-east",
+      "country": null,
+      "themes": ["food"],
+      "tags": ["falafel", "street food", "vegetarian", "levantine food"],
+      "season": null,
+      "alt": "A green plate piled with crisp golden falafel balls on a patterned tablecloth"
+    },
+    {
+      "id": "food-middle-east-002",
+      "candidate": "me-tea-2",
+      "region": "middle-east",
+      "country": "Turkey",
+      "themes": ["food"],
+      "tags": ["turkish tea", "tea glass", "teapot", "istanbul", "relaxing"],
+      "season": null,
+      "alt": "A hand pouring red Turkish tea from a glass teapot into a small glass on a white table"
+    },
+    {
+      "id": "nature-middle-east-001",
+      "candidate": "me-wadirum-1",
+      "region": "middle-east",
+      "country": "Jordan",
+      "themes": ["nature", "travel"],
+      "tags": ["wadi rum", "desert", "red sand", "rock formations", "jordan"],
+      "season": null,
+      "alt": "Red sand and towering weathered sandstone rocks in the Wadi Rum desert under a deep blue sky"
+    },
+    {
+      "id": "travel-middle-east-001",
+      "candidate": "me-cappadocia-1",
+      "region": "middle-east",
+      "country": "Turkey",
+      "themes": ["travel"],
+      "tags": ["cappadocia", "hot air balloons", "sunrise flight", "turkey", "adventure"],
+      "season": null,
+      "alt": "Dozens of hot air balloons floating across a cloudy sky over Cappadocia, seen from another balloon"
+    },
+    {
+      "id": "city-middle-east-001",
+      "candidate": "me-dubai-1",
+      "region": "middle-east",
+      "country": "United Arab Emirates",
+      "themes": ["city"],
+      "tags": ["dubai", "burj khalifa", "skyline", "night", "reflections"],
+      "season": null,
+      "alt": "Dubai's skyline at night with the Burj Khalifa rising in the middle, its lights reflected in still water"
+    },
+    {
+      "id": "city-middle-east-002",
+      "candidate": "me-souk-1",
+      "region": "middle-east",
+      "country": null,
+      "themes": ["city", "food"],
+      "tags": ["spice souk", "bazaar", "spices", "market", "colours"],
+      "season": null,
+      "alt": "Heaped sacks of colourful spices, dried flowers and herbs on display at a spice bazaar"
+    },
+    {
+      "id": "city-middle-east-003",
+      "candidate": "me-muscat-2",
+      "region": "middle-east",
+      "country": "Oman",
+      "themes": ["city", "travel"],
+      "tags": ["muscat", "dhow", "harbour", "mountains", "corniche", "oman"],
+      "season": null,
+      "alt": "Traditional wooden boats moored in the harbour at Muscat, with white buildings and rugged brown mountains behind"
+    },
+    {
+      "id": "nature-middle-east-002",
+      "candidate": "me-oman-1",
+      "region": "middle-east",
+      "country": "Oman",
+      "themes": ["nature", "travel"],
+      "tags": ["wadi shab", "canyon", "hiking", "emerald pool", "oman"],
+      "season": null,
+      "alt": "Steep red-brown canyon walls of Wadi Shab in Oman reflected in a clear green pool"
+    },
+    {
+      "id": "city-middle-east-004",
+      "candidate": "me-doha-1",
+      "region": "middle-east",
+      "country": "Qatar",
+      "themes": ["city"],
+      "tags": ["doha", "west bay", "skyline", "night", "corniche", "qatar"],
+      "season": null,
+      "alt": "The towers of Doha's West Bay lit up at night, their colourful lights reflected across the dark water of the bay",
+      "crop": {
+        "bottom": 0.02
+      }
+    },
+    {
+      "id": "food-africa-001",
+      "candidate": "af-jollof-2",
+      "region": "africa",
+      "country": "Nigeria",
+      "themes": ["food"],
+      "tags": ["jollof rice", "egg", "nigerian food", "west african food", "party rice"],
+      "season": null,
+      "alt": "A close-up of smoky orange jollof rice with a boiled egg resting on top"
+    },
+    {
+      "id": "food-africa-002",
+      "candidate": "af-injera-2",
+      "region": "africa",
+      "country": null,
+      "themes": ["food", "family"],
+      "tags": ["injera", "ethiopian food", "sharing platter", "vegetarian", "fasting platter"],
+      "season": null,
+      "alt": "A large Ethiopian sharing platter of injera topped with colourful lentil, vegetable and greens stews on a restaurant table"
+    },
+    {
+      "id": "pets-africa-001",
+      "candidate": "af-safari-1",
+      "region": "africa",
+      "country": null,
+      "themes": ["pets", "nature"],
+      "tags": ["giraffe", "safari", "sunset", "wildlife", "savanna"],
+      "season": null,
+      "alt": "A giraffe stretching its long neck to feed on tree leaves in warm golden sunset light"
+    },
+    {
+      "id": "pets-africa-002",
+      "candidate": "af-elephant-2",
+      "region": "africa",
+      "country": "Tanzania",
+      "themes": ["pets", "nature", "travel"],
+      "tags": ["elephants", "safari", "acacia tree", "savanna", "tanzania", "wildlife"],
+      "season": null,
+      "alt": "A family of elephants walking across dry golden grassland beneath a flat-topped acacia tree in Tanzania"
+    },
+    {
+      "id": "pets-africa-003",
+      "candidate": "af-lion-1",
+      "region": "africa",
+      "country": "Kenya",
+      "themes": ["pets", "nature"],
+      "tags": ["lions", "masai mara", "safari", "kenya", "wildlife", "big cats"],
+      "season": null,
+      "alt": "Two lionesses resting together on green grass in Kenya's Masai Mara, one nuzzling the other"
+    },
+    {
+      "id": "nature-africa-001",
+      "candidate": "af-sahara-1",
+      "region": "africa",
+      "country": "Morocco",
+      "themes": ["nature", "travel"],
+      "tags": ["sahara", "merzouga", "sand dunes", "sunset", "footprints", "morocco"],
+      "season": null,
+      "alt": "A lone figure silhouetted on the crest of a Sahara sand dune at sunset, with footprints trailing up the slope"
+    },
+    {
+      "id": "travel-africa-001",
+      "candidate": "af-pyramids-1",
+      "region": "africa",
+      "country": "Egypt",
+      "themes": ["travel"],
+      "tags": ["pyramids", "giza", "egypt", "desert", "wonder of the world"],
+      "season": null,
+      "alt": "The Great Pyramids of Giza rising from golden sand under a blue sky"
+    },
+    {
+      "id": "city-africa-001",
+      "candidate": "af-marrakech-2",
+      "region": "africa",
+      "country": "Morocco",
+      "themes": ["city", "travel"],
+      "tags": ["marrakech", "souk", "bougainvillea", "motorbike", "morocco"],
+      "season": null,
+      "alt": "A motorbike parked between two wooden benches against an old stone wall topped with red and white bougainvillea in Marrakech"
+    },
+    {
+      "id": "city-africa-002",
+      "candidate": "af-nairobi-1",
+      "region": "africa",
+      "country": "Kenya",
+      "themes": ["city"],
+      "tags": ["nairobi", "city centre", "buses", "kenya", "sunny day"],
+      "season": null,
+      "alt": "A sunny Nairobi street with an orange city bus passing under the Nairobi City County arch, with office towers behind"
+    },
+    {
+      "id": "food-europe-001",
+      "candidate": "eu-croissant-2",
+      "region": "europe",
+      "country": null,
+      "themes": ["food"],
+      "tags": ["croissant", "breakfast", "jam", "cafe", "weekend"],
+      "season": null,
+      "alt": "Two flaky croissants on a white plate with a knife and a small glass dish of red jam on a wooden table"
+    },
+    {
+      "id": "food-europe-002",
+      "candidate": "eu-pizza-1",
+      "region": "europe",
+      "country": null,
+      "themes": ["food"],
+      "tags": ["pizza", "margherita", "pizza cutter", "italian food", "dinner"],
+      "season": null,
+      "alt": "A pizza cutter slicing through a margherita pizza with melted mozzarella, tomato and basil"
+    },
+    {
+      "id": "travel-europe-001",
+      "candidate": "eu-eiffel-1",
+      "region": "europe",
+      "country": "France",
+      "themes": ["travel"],
+      "tags": ["eiffel tower", "paris", "champ de mars", "landmark", "france"],
+      "season": null,
+      "alt": "The Eiffel Tower rising above the green lawns of the Champ de Mars under a deep blue sky"
+    },
+    {
+      "id": "city-europe-001",
+      "candidate": "eu-amsterdam-2",
+      "region": "europe",
+      "country": "Netherlands",
+      "themes": ["city"],
+      "tags": ["amsterdam", "canal", "bicycle", "houseboat", "netherlands"],
+      "season": null,
+      "alt": "An old rusty bicycle chained to a railing beside an Amsterdam canal, with houseboats and leafy trees behind"
+    },
+    {
+      "id": "festivals-europe-001",
+      "candidate": "eu-xmas-1",
+      "region": "europe",
+      "country": "Belgium",
+      "themes": ["festivals", "weather"],
+      "tags": ["christmas market", "brussels", "fairy lights", "church", "winter night"],
+      "season": "winter",
+      "alt": "A busy Christmas market at night in Brussels, with lit wooden stalls in front of a church glowing red and gold"
+    },
+    {
+      "id": "travel-europe-002",
+      "candidate": "eu-santorini-2",
+      "region": "europe",
+      "country": "Greece",
+      "themes": ["travel"],
+      "tags": ["santorini", "oia", "white houses", "aegean sea", "cliffs", "greece"],
+      "season": "summer",
+      "alt": "White-washed houses of Oia clinging to the cliffs of Santorini above the deep blue Aegean Sea"
+    },
+    {
+      "id": "city-europe-002",
+      "candidate": "eu-london-2",
+      "region": "europe",
+      "country": "United Kingdom",
+      "themes": ["city"],
+      "tags": ["london", "double-decker bus", "routemaster", "black cab", "traffic"],
+      "season": null,
+      "alt": "A classic red Routemaster double-decker bus in central London traffic beside a black taxi"
+    },
+    {
+      "id": "weather-europe-001",
+      "candidate": "eu-snow-2",
+      "region": "europe",
+      "country": "Iceland",
+      "themes": ["weather", "nature"],
+      "tags": ["snow", "winter", "village", "fjord", "reflection", "iceland"],
+      "season": "winter",
+      "alt": "A small snowy village at the foot of a white mountain, perfectly reflected in a still fjord in Iceland"
+    },
+    {
+      "id": "work-europe-001",
+      "candidate": "gl-library-1",
+      "region": "europe",
+      "country": "United Kingdom",
+      "themes": ["work", "travel"],
+      "tags": ["library", "reading room", "study", "books", "manchester", "gothic"],
+      "season": null,
+      "alt": "The ornate gothic reading room of the John Rylands Library in Manchester, with wooden bookcases and stained-glass windows"
+    },
+    {
+      "id": "food-americas-001",
+      "candidate": "am-tacos-2",
+      "region": "americas",
+      "country": null,
+      "themes": ["food"],
+      "tags": ["tacos", "tortilla", "mexican food", "dinner"],
+      "season": null,
+      "alt": "Soft tortilla tacos with grilled fillings and fresh toppings in paper-lined baskets, with small cups of salsa between them"
+    },
+    {
+      "id": "nature-americas-001",
+      "candidate": "am-grandcanyon-1",
+      "region": "americas",
+      "country": "United States",
+      "themes": ["nature", "travel"],
+      "tags": ["grand canyon", "arizona", "national park", "canyon", "hiking"],
+      "season": "winter",
+      "alt": "Layered red and orange cliffs of the Grand Canyon stretching to the horizon, with pine trees and patches of snow on the rim"
+    },
+    {
+      "id": "city-americas-001",
+      "candidate": "am-nyc-2",
+      "region": "americas",
+      "country": "United States",
+      "themes": ["city"],
+      "tags": ["new york", "manhattan", "skyline", "east river", "summer"],
+      "season": "summer",
+      "alt": "The Midtown Manhattan skyline across the East River, seen past green shrubs under a bright blue sky with fluffy clouds"
+    },
+    {
+      "id": "travel-americas-001",
+      "candidate": "am-machupicchu-2",
+      "region": "americas",
+      "country": "Peru",
+      "themes": ["travel", "nature"],
+      "tags": ["machu picchu", "peru", "inca", "mountains", "clouds"],
+      "season": null,
+      "alt": "The terraces and stone ruins of Machu Picchu beneath green peaks wrapped in drifting clouds"
+    },
+    {
+      "id": "nature-americas-002",
+      "candidate": "am-foliage-2",
+      "region": "americas",
+      "country": "United States",
+      "themes": ["nature", "weather"],
+      "tags": ["autumn", "fall foliage", "vermont", "trail", "golden leaves"],
+      "season": "autumn",
+      "alt": "A leaf-covered trail through a golden canopy of autumn trees in Vermont"
+    },
+    {
+      "id": "city-americas-002",
+      "candidate": "am-rio-2",
+      "region": "americas",
+      "country": "Brazil",
+      "themes": ["city", "travel"],
+      "tags": ["rio de janeiro", "sugarloaf", "sunset", "bay", "brazil"],
+      "season": null,
+      "alt": "Rio de Janeiro and Sugarloaf Mountain at sunset, with sun rays spreading over the bay and green hills"
+    },
+    {
+      "id": "sports-americas-001",
+      "candidate": "gl-hiking-2",
+      "region": "americas",
+      "country": "United States",
+      "themes": ["sports", "nature"],
+      "tags": ["hiking", "yellowstone", "trail", "mountains", "outdoors"],
+      "season": "summer",
+      "alt": "Two hikers walking up a grassy mountain trail in Yellowstone National Park under a blue sky with clouds"
+    },
+    {
+      "id": "festivals-americas-001",
+      "candidate": "gl-fireworks-2",
+      "region": "americas",
+      "country": "United States",
+      "themes": ["festivals"],
+      "tags": ["fireworks", "celebration", "night sky", "fourth of july", "holiday"],
+      "season": "summer",
+      "alt": "Bursts of golden and green fireworks lighting up the night sky"
+    },
+    {
+      "id": "hobbies-americas-001",
+      "candidate": "gl-guitar-1",
+      "region": "americas",
+      "country": "Brazil",
+      "themes": ["hobbies"],
+      "tags": ["guitar", "music", "resonator guitar", "street musician", "black and white"],
+      "season": null,
+      "alt": "A black-and-white close-up of a musician's hand picking the strings of a resonator guitar"
+    },
+    {
+      "id": "family-americas-001",
+      "candidate": "gl-familysil-1",
+      "region": "americas",
+      "country": "United States",
+      "themes": ["family", "nature"],
+      "tags": ["family", "beach", "sunset", "silhouette", "together", "maine"],
+      "season": "summer",
+      "alt": "A family silhouetted at the water's edge watching a glowing orange and pink sunset over the sea"
+    },
+    {
+      "id": "food-oceania-001",
+      "candidate": "oc-pavlova-1",
+      "region": "oceania",
+      "country": null,
+      "themes": ["food"],
+      "tags": ["pavlova", "meringue", "raspberries", "dessert", "baking", "celebration"],
+      "season": null,
+      "alt": "A tall pavlova topped with whipped cream and a glossy raspberry sauce on a marble surface"
+    },
+    {
+      "id": "food-oceania-002",
+      "candidate": "oc-flatwhite-1",
+      "region": "oceania",
+      "country": null,
+      "themes": ["food"],
+      "tags": ["flat white", "latte art", "chai latte", "cake", "cafe"],
+      "season": null,
+      "alt": "A flat white with latte art, a jar of chai latte and a slice of lemon layer cake on a wooden board at a cafe table"
+    },
+    {
+      "id": "pets-oceania-001",
+      "candidate": "oc-kangaroo-2",
+      "region": "oceania",
+      "country": "Australia",
+      "themes": ["pets", "nature"],
+      "tags": ["kangaroo", "eastern grey kangaroo", "wildlife", "australia", "cute"],
+      "season": null,
+      "alt": "A curious eastern grey kangaroo looking up close at the camera"
+    },
+    {
+      "id": "travel-oceania-001",
+      "candidate": "oc-harbour-2",
+      "region": "oceania",
+      "country": "Australia",
+      "themes": ["travel", "city"],
+      "tags": ["sydney harbour bridge", "sydney opera house", "harbour", "australia"],
+      "season": null,
+      "alt": "The Sydney Harbour Bridge spanning the deep blue harbour under a clear sky, with the Opera House visible beyond"
+    },
+    {
+      "id": "nature-oceania-001",
+      "candidate": "oc-milford-2",
+      "region": "oceania",
+      "country": "New Zealand",
+      "themes": ["nature", "travel"],
+      "tags": ["milford sound", "fiord", "mitre peak", "reflection", "new zealand"],
+      "season": null,
+      "alt": "Mitre Peak and the steep green cliffs of Milford Sound reflected in calm water under a blue sky"
+    },
+    {
+      "id": "nature-oceania-002",
+      "candidate": "oc-uluru-1",
+      "region": "oceania",
+      "country": "Australia",
+      "themes": ["nature", "travel"],
+      "tags": ["uluru", "outback", "sunset", "red centre", "australia"],
+      "season": null,
+      "alt": "Uluru glowing deep orange at sunset above golden spinifex grass under a stormy grey sky"
+    },
+    {
+      "id": "sports-oceania-001",
+      "candidate": "oc-surf-1",
+      "region": "oceania",
+      "country": "Australia",
+      "themes": ["sports", "hobbies"],
+      "tags": ["surfing", "bondi beach", "sunset", "surfboard", "silhouette"],
+      "season": "summer",
+      "alt": "The silhouette of a surfer carrying a board against a vivid pink and purple sunset at Bondi Beach"
+    },
+    {
+      "id": "nature-oceania-003",
+      "candidate": "oc-tekapo-1",
+      "region": "oceania",
+      "country": "New Zealand",
+      "themes": ["nature"],
+      "tags": ["lake tekapo", "lupins", "flowers", "turquoise lake", "new zealand"],
+      "season": "summer",
+      "alt": "Purple and pink lupins blooming along the turquoise water of Lake Tekapo, with distant mountains"
+    },
+    {
+      "id": "hobbies-oceania-001",
+      "candidate": "oc-queenstown-1",
+      "region": "oceania",
+      "country": "New Zealand",
+      "themes": ["hobbies", "sports", "nature"],
+      "tags": ["paragliding", "queenstown", "adventure", "mountains", "new zealand"],
+      "season": null,
+      "alt": "A yellow paraglider soaring high above a wide valley and mountains near Queenstown"
+    },
+    {
+      "id": "pets-global-001",
+      "candidate": "gl-cat-1",
+      "region": "global",
+      "country": null,
+      "themes": ["pets"],
+      "tags": ["cat", "kitten", "blue eyes", "tabby", "cute"],
+      "season": null,
+      "alt": "A fluffy tabby and white cat with striking blue eyes looking straight at the camera"
+    },
+    {
+      "id": "pets-global-002",
+      "candidate": "ea-shiba-2",
+      "region": "global",
+      "country": null,
+      "themes": ["pets"],
+      "tags": ["dog", "shiba inu", "window", "cute", "home"],
+      "season": null,
+      "alt": "A Shiba Inu dog sitting by a window, gazing outside"
+    },
+    {
+      "id": "pets-global-003",
+      "candidate": "gl-dog-1",
+      "region": "global",
+      "country": null,
+      "themes": ["pets"],
+      "tags": ["dog", "border collie", "grass", "park", "happy"],
+      "season": null,
+      "alt": "A black and white border collie lying on bright green grass with its ears perked up"
+    },
+    {
+      "id": "weather-global-001",
+      "candidate": "gl-rainwindow-1",
+      "region": "global",
+      "country": null,
+      "themes": ["weather"],
+      "tags": ["rain", "raindrops", "window", "cosy", "rainy day"],
+      "season": null,
+      "alt": "Raindrops scattered across a window pane against a dark grey background"
+    },
+    {
+      "id": "hobbies-global-001",
+      "candidate": "gl-knitting-2",
+      "region": "global",
+      "country": null,
+      "themes": ["hobbies"],
+      "tags": ["yarn", "cotton thread", "knitting", "crochet", "crafts", "colours"],
+      "season": null,
+      "alt": "Rows of colourful cotton thread spools in orange, pink, purple, blue and teal"
+    },
+    {
+      "id": "hobbies-global-002",
+      "candidate": "gl-baking-1",
+      "region": "global",
+      "country": null,
+      "themes": ["hobbies", "food"],
+      "tags": ["baking", "bread", "dough", "homemade", "sourdough"],
+      "season": null,
+      "alt": "A round of bubbly bread dough resting on a floured wooden board, with a mixing bowl behind it"
+    },
+    {
+      "id": "work-global-001",
+      "candidate": "gl-laptop-1",
+      "region": "global",
+      "country": null,
+      "themes": ["work"],
+      "tags": ["laptop", "desk", "work from home", "office", "books"],
+      "season": null,
+      "alt": "A laptop on a light wooden desk seen from above, with a stack of books, a notebook and pen, a phone and a white desk lamp"
+    },
+    {
+      "id": "work-global-002",
+      "candidate": "gl-notebook-1",
+      "region": "global",
+      "country": null,
+      "themes": ["work"],
+      "tags": ["study", "notebook", "sticky notes", "laptop", "pen", "exams"],
+      "season": null,
+      "alt": "A notebook, colourful sticky notes, a highlighter and a pen beside a laptop keyboard on a wooden desk"
+    },
+    {
+      "id": "family-global-001",
+      "candidate": "gl-hands-1",
+      "region": "global",
+      "country": null,
+      "themes": ["family"],
+      "tags": ["holding hands", "couple", "love", "walk", "together"],
+      "season": null,
+      "alt": "Two people holding hands as they walk along a sunny street, shown from the waist down"
+    },
+    {
+      "id": "festivals-global-001",
+      "candidate": "gl-cake-2",
+      "region": "global",
+      "country": null,
+      "themes": ["festivals", "family"],
+      "tags": ["birthday", "cake", "candles", "celebration", "party"],
+      "season": null,
+      "alt": "A birthday cake decorated with icing roses and Happy Birthday written in chocolate, with lit candles on top"
+    },
+    {
+      "id": "festivals-global-002",
+      "candidate": "me-ramadan-1",
+      "region": "global",
+      "country": null,
+      "themes": ["festivals"],
+      "tags": ["ramadan", "eid", "lanterns", "decorations", "shopping"],
+      "season": null,
+      "alt": "Golden lantern-shaped stands, small dome-topped candle holders and a Ramadan sign on display in a shop"
+    }
+  ]
+}

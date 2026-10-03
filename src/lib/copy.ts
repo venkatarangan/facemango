@@ -2,6 +2,9 @@
 
 export const TAGLINE = 'A social network that is entirely yours.';
 
+/** Byline under the logo and in store/search descriptions. */
+export const BYLINE = 'The most personal social network ever built. And the most private.';
+
 export const PRIVACY_STATEMENT =
   'Your posts, photos, friends, comments and wellbeing stats are stored only in this browser on this device. ' +
   'FaceMango has no servers and no accounts, and never uploads your content. ' +

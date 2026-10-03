@@ -35,6 +35,12 @@ export const routes: RouteObject[] = [
         },
       },
       {
+        path: 'credits',
+        lazy: async () => ({
+          Component: (await import('@/features/credits/CreditsPage')).CreditsPage,
+        }),
+      },
+      {
         path: 'about',
         lazy: async () => ({ Component: (await import('@/features/about/AboutPage')).AboutPage }),
       },
@@ -48,7 +54,13 @@ export const routes: RouteObject[] = [
           { index: true, element: <HomePage /> },
           {
             path: 'friends',
-            lazy: async () => ({ Component: (await placeholders()).FriendsPage }),
+            lazy: async () => ({
+              Component: (await import('@/features/friends/FriendsPage')).FriendsPage,
+            }),
+          },
+          {
+            path: 'post/:id',
+            lazy: async () => ({ Component: (await import('@/features/feed/PostPage')).PostPage }),
           },
           {
             path: 'assistant',
@@ -60,7 +72,9 @@ export const routes: RouteObject[] = [
           },
           {
             path: 'notifications',
-            lazy: async () => ({ Component: (await placeholders()).ActivityPage }),
+            lazy: async () => ({
+              Component: (await import('@/features/activity/ActivityPage')).ActivityPage,
+            }),
           },
           { path: 'photos', lazy: async () => ({ Component: (await placeholders()).PhotosPage }) },
           {

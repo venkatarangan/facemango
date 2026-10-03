@@ -31,6 +31,7 @@ import { AVATAR_MAX_PX, compressToWebP } from '@/lib/imaging';
 import { isIOS } from '@/lib/platform';
 import { firstName } from '@/lib/text';
 import { IosDataNotice } from './IosDataNotice';
+import { AIProgressStrip } from '@/features/ai/AIProgress';
 import {
   LANGUAGE_OPTIONS,
   signupSchema,
@@ -122,6 +123,7 @@ export function SignupPage() {
 
           <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2.5}>
+              <AIProgressStrip />
               <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                 <Badge
                   overlap="circular"

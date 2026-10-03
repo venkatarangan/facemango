@@ -14,7 +14,12 @@ Project context and working rules for Claude Code. **Read `SPEC.md` first.** It 
 - 🟡 **M1 Skeleton built, awaiting the user's review** on branch `m1-skeleton` (committed; `main` not created yet). Lint, typecheck, Prettier, 34 Vitest tests and 6 Playwright tests (desktop Chrome + Android) pass; the production build works.
   - Done: local git repo, Vite 8 + React 19 + TS 6 (strict) + MUI v9, theme/tokens, new logo (`public/logo.svg`, mango + speech-bubble tail) + generated PWA icons, responsive shell (3-col / 2-col / bottom nav), Dexie schema v1 (all SPEC §6.3 tables), landing page with iOS notice + Add to Home Screen guide, signup (Name, Age 13+, City, Languages, optional photo, required data-notice checkbox), Settings (persistent-storage status, delete all data), About/privacy, placeholder pages for M2–M5 sections, PWA with update prompt, build-only CSP `<meta>`, `404.html` SPA fallback, `CNAME`, GitHub Actions workflow, README, LICENSE.
   - Not yet verified locally: the Playwright iPhone (WebKit) project, which needs `sudo npx playwright install-deps webkit`. CI installs these deps itself.
-- ⏭️ **Next: M2 AI layer** (once the user okays M1). Then the GitHub repo + push, but only after the user approves.
+- 🟡 **M2–M4 committed on branch `m2-m4` (on top of M1), awaiting the user's review.** 70 Vitest tests (incl. a full engine run with the mock model) and 10 Playwright tests (desktop Chrome + Android, mock-model build) pass; lint, typecheck, Prettier and the production build are clean.
+  - **M2 AI layer:** `src/ai/` — tier detection (Prompt API → WebGPU → Unsupported), Prompt API provider, WebLLM provider in a Web Worker, priority queue (interactive before background), Zod-validated JSON with retries and a prompt-only fallback if a backend rejects the schema, AI store/progress, Unsupported screen, Settings → AI (tier, model, delete model). Model libs are self-hosted (`scripts/fetch-model-libs.mjs` → `public/models/`, gitignored).
+  - **M3 feed core:** composer (text, 1 photo → WebP, feeling, @mentions, ✨ Mango AI rewrite/“write it for me”, streamed), virtualised feed (stable order while reactions arrive), post cards, 7 reactions with animated Noto emoji (hover/long-press), threaded comments with replies, edit/delete, live time-ago, post page.
+  - **M4 engine:** `src/engine/` — personas (config mixes → AI fills details, DiceBear avatars), planner (hard caps, 3–5× likes, max critical, under-18 rules, mentions, front-loaded bursts, speed), scheduler (applies due events, writes comments just in time in batches, typing indicators, replies to the user, catch-up + “While you were away”), notifications + badges, living feed (friends post over time, incl. while away), first-run setup (friends → public profiles → 15–25 seed posts, resumable), photo pack v1 (87 CC0/PD photos in `public/photos/`, scripts in `scripts/photos/`), Credits page, basic Friends list and Activity page.
+  - **Not yet verified with a real model** (no GPU in this environment): the Prompt API and WebLLM paths need testing in Chrome/Edge on the Windows host. The parked “setup experience” design is in memory, not built (basic setup card only).
+- ⏭️ **Next:** the user tests M2–M4 with a real model; then M5 (profiles, Mango AI chat, Memories, Photos, Wellbeing, full Activity log). GitHub repo + push only after the user approves.
 - Milestones M1–M8 are in `SPEC.md` §10.
 
 ## Working agreements (from the user)
@@ -27,6 +32,7 @@ Project context and working rules for Claude Code. **Read `SPEC.md` first.** It 
 | Topic | Decision |
 |---|---|
 | Name / domain | FaceMango · face.mangoidiots.com |
+| Byline | **"The most personal social network ever built. And the most private."** (`BYLINE` in `src/lib/copy.ts`; landing, meta, manifest, README) |
 | Logo | **Design a new one**: elegant, modern, mango-related, same colour scheme (white bg, mango-yellow accent, black text). Not based on the existing Mangoidiots mark. M1 draft: mango body that doubles as a chat bubble, black leaf. |
 | Colours | White `#FFFFFF` bg, surfaces `#FAFAFA`, accent `#FFC400`, text `#111111`. Yellow on white: `#B28900` (3.3:1) only for large text, icons and UI parts; `#8A6A00` (5:1) for body-size text. See `src/app/tokens.ts`. |
 | UI | Material UI (**MUI v9**: spec said v7, but v9 was current at M1). Must work well on PC, Mac, iPhone and Android. PWA. |
@@ -59,8 +65,12 @@ Project context and working rules for Claude Code. **Read `SPEC.md` first.** It 
 - Never edit a shipped Dexie version; add a new `this.version(n)` instead.
 - CSP lives in `vite.config.ts` (build only). M2 must add any extra hosts WebLLM needs (e.g. its model-library wasm host) or self-host those files.
 - `SPEC.md`, `CLAUDE.md` and `input.txt` are excluded from Prettier; keep their hand formatting.
+- No third-party requests beyond Hugging Face and GA: anything a library would fetch from a CDN (WebLLM model libs, the dotLottie wasm) is copied/fetched into `public/` by `npm run models` (runs before dev/build).
+- The mock AI provider (`src/ai/mockProvider.ts`) is test-only: compiled in only when `VITE_MOCK_AI=1` (`npm run build:e2e` → `dist-e2e/`, used by Playwright). It must never ship: the app has no non-AI mode.
+- Feed order is ranked once per set of posts (not on every reaction) so cards don't jump.
 
 ## Environment notes
 - The repo lives at `C:\DevTemp\facemango` (`/mnt/c/devtemp/facemango` in WSL). The Windows host has no Node.js; use WSL (Node 22).
 - `/mnt/c` is slow for `node_modules` (npm install took ~4 min, Vitest ~75 s). Expect that, or move the repo into the WSL filesystem.
 - Playwright WebKit needs `sudo npx playwright install-deps webkit` in WSL.
+- Vitest runs in Node by default (`// @vitest-environment jsdom` for component tests) with 3 reused threads; spawning many jsdom workers on /mnt/c times out.

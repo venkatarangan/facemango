@@ -40,12 +40,15 @@ export interface Persona {
   age: number;
   city: string;
   country: string;
+  /** World region, used to pick fitting photos from the pack. */
+  region?: string;
   languages: string[];
   occupation: string;
   interests: string[];
   likes: string[];
   dislikes: string[];
   writingStyle: string;
+  bio?: string;
   /** 0..1 */
   agreeableness: number;
   stance: Stance;
@@ -76,6 +79,8 @@ export interface Post {
   /** media.id (user photo) or a photo-pack id prefixed with "pack:". */
   photo?: string;
   feeling?: string;
+  /** AI description of the user's photo (multimodal models only), used for photo-aware comments. */
+  photoDescription?: string;
   mentions: Id[];
   createdAt: Timestamp;
   editedAt?: Timestamp;

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Outlet } from 'react-router';
 import Box from '@mui/material/Box';
 import { TopBar } from './TopBar';
@@ -5,12 +6,20 @@ import { NavList } from './NavList';
 import { RightRail } from './RightRail';
 import { BottomNav } from './BottomNav';
 import { useProfile } from '@/app/useProfile';
+import { startAI } from '@/ai';
+import { startEngine } from '@/engine';
 
 const RAIL_TOP = { xs: 56, md: 64 };
 
 /** Responsive shell (SPEC §6.4): 3 columns on desktop, 2 on tablet, 1 + bottom nav on phones. */
 export function AppShell() {
   const profile = useProfile();
+  const signedUp = !!profile;
+  useEffect(() => {
+    if (!signedUp) return;
+    void startAI({ userGesture: false });
+    startEngine();
+  }, [signedUp]);
   if (!profile) return null; // RequireProfile guarantees this after loading.
 
   return (

@@ -28,7 +28,7 @@ test('landing → signup → home feed, and the profile survives a reload', asyn
   await expect(page.getByText("What's on your mind, Kavya?")).toBeVisible();
 
   await page.reload();
-  await expect(page.getByRole('heading', { name: /Welcome to FaceMango, Kavya/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: "What's on your mind, Kavya?" })).toBeVisible();
   // Signed-up users skip the landing page.
   await page.goto('/welcome');
   await expect(page).toHaveURL(/\/$/);

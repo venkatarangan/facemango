@@ -1,19 +1,8 @@
-import PeopleAltRounded from '@mui/icons-material/PeopleAltRounded';
 import AutoAwesomeRounded from '@mui/icons-material/AutoAwesomeRounded';
 import AutoStoriesRounded from '@mui/icons-material/AutoStoriesRounded';
-import NotificationsRounded from '@mui/icons-material/NotificationsRounded';
 import PhotoLibraryRounded from '@mui/icons-material/PhotoLibraryRounded';
 import SpaRounded from '@mui/icons-material/SpaRounded';
 import { ComingSoon } from '@/components/ComingSoon';
-
-export const FriendsPage = () => (
-  <ComingSoon
-    icon={<PeopleAltRounded />}
-    title="Friends"
-    description="20–30 AI friends and their profile pages, plus friend requests from public profiles."
-    milestone="M4–M5"
-  />
-);
 
 export const AssistantPage = () => (
   <ComingSoon
@@ -30,15 +19,6 @@ export const MemoriesPage = () => (
     title="Memories"
     description="On this day, friendversaries and milestone recaps."
     milestone="M5"
-  />
-);
-
-export const ActivityPage = () => (
-  <ComingSoon
-    icon={<NotificationsRounded />}
-    title="Activity"
-    description="Reactions, comments, replies, mentions, birthdays and friend requests, plus your activity log."
-    milestone="M4–M5"
   />
 );
 

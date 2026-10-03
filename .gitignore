@@ -5,6 +5,7 @@ dev-dist
 coverage
 *.local
 .env*
+!.env.e2e
 !.env.example
 # Playwright
 test-results
@@ -18,3 +19,8 @@ playwright/.cache
 .DS_Store
 Thumbs.db
 *.tsbuildinfo
+
+# Downloaded at dev/build time (scripts/fetch-model-libs.mjs)
+public/models
+dist-e2e
+public/emoji/*.wasm

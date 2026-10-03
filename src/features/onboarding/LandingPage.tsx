@@ -14,8 +14,10 @@ import SaveAltRounded from '@mui/icons-material/SaveAltRounded';
 import ArrowForwardRounded from '@mui/icons-material/ArrowForwardRounded';
 import { LogoMark, Wordmark } from '@/components/brand/Logo';
 import { brand } from '@/app/tokens';
+import { BYLINE } from '@/lib/copy';
 import { isIOS } from '@/lib/platform';
 import { requestPersistentStorage } from '@/lib/storage';
+import { startAI } from '@/ai';
 import { IosDataNotice } from './IosDataNotice';
 import { PreviewPost } from './PreviewPost';
 
@@ -45,6 +47,8 @@ export function LandingPage() {
   const getStarted = () => {
     // persist() must run inside the user gesture on some browsers; don't wait for it.
     void requestPersistentStorage();
+    // Model download starts on this tap (a user gesture is required) and runs during signup.
+    void startAI({ userGesture: true });
     navigate('/signup');
   };
 
@@ -80,6 +84,19 @@ export function LandingPage() {
               </motion.div>
               <Wordmark size={36} />
             </Stack>
+            <Typography
+              variant="overline"
+              component="p"
+              sx={{
+                color: brand.mangoTextStrong,
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                lineHeight: 1.6,
+                mt: '8px !important',
+              }}
+            >
+              {BYLINE}
+            </Typography>
             <Typography
               variant="h2"
               component="h1"

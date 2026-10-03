@@ -14,6 +14,8 @@ import Typography from '@mui/material/Typography';
 import { useProfile } from '@/app/useProfile';
 import { UserAvatar } from '@/components/UserAvatar';
 import { deleteAllData } from '@/db';
+import { deleteDownloadedModel, startAI, useAIStore } from '@/ai';
+import { useUiStore } from '@/app/uiStore';
 import {
   formatBytes,
   getPersistenceStatus,
@@ -47,6 +49,8 @@ export function SettingsPage() {
   const [persistence, setPersistence] = useState<PersistenceStatus>();
   const [usage, setUsage] = useState<string>();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const ai = useAIStore();
+  const showToast = useUiStore((s) => s.showToast);
 
   useEffect(() => {
     void getPersistenceStatus().then(setPersistence);
@@ -83,6 +87,70 @@ export function SettingsPage() {
               ))}
             </Stack>
           </div>
+        </Stack>
+      </Section>
+
+      <Section title="On-device AI">
+        <Stack spacing={1}>
+          <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 2 }}>
+            <Typography>Engine</Typography>
+            <Typography color="text.secondary">
+              {ai.tier === 'prompt-api'
+                ? 'Built-in browser AI (Prompt API)'
+                : ai.tier === 'webgpu'
+                  ? 'WebLLM on WebGPU'
+                  : '—'}
+            </Typography>
+          </Stack>
+          <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 2 }}>
+            <Typography>Model</Typography>
+            <Typography color="text.secondary">{ai.modelLabel ?? '—'}</Typography>
+          </Stack>
+          <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 2 }}>
+            <Typography>Status</Typography>
+            <Chip
+              size="small"
+              label={
+                ai.status === 'ready'
+                  ? 'Ready'
+                  : ai.status === 'downloading'
+                    ? `Downloading ${Math.round(ai.progress * 100)}%`
+                    : ai.status
+              }
+              color={ai.status === 'ready' ? 'success' : 'default'}
+            />
+          </Stack>
+          {ai.tier === 'webgpu' && (
+            <Button
+              variant="outlined"
+              sx={{ alignSelf: 'flex-start', mt: 1 }}
+              onClick={() =>
+                void deleteDownloadedModel().then((ok) =>
+                  showToast(
+                    ok
+                      ? 'Model deleted. It will download again next time you open FaceMango.'
+                      : 'Nothing to delete.',
+                  ),
+                )
+              }
+            >
+              Delete downloaded model
+            </Button>
+          )}
+          {ai.tier === 'prompt-api' && (
+            <Typography variant="body2" color="text.secondary">
+              The built-in model is managed by your browser (see chrome://on-device-internals).
+            </Typography>
+          )}
+          {(ai.status === 'error' || ai.status === 'needs-gesture') && (
+            <Button
+              variant="contained"
+              sx={{ alignSelf: 'flex-start' }}
+              onClick={() => void startAI({ userGesture: true })}
+            >
+              Start AI setup
+            </Button>
+          )}
         </Stack>
       </Section>
 

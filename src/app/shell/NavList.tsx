@@ -5,11 +5,14 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { isActive, navItems } from '@/app/nav';
 import { UserAvatar } from '@/components/UserAvatar';
+import Badge from '@mui/material/Badge';
 import type { Profile } from '@/db';
+import { useUnreadCount } from '@/features/activity/useUnreadCount';
 
 /** Vertical navigation used by the desktop left column and the phone menu page. */
 export function NavList({ profile, dense = false }: { profile: Profile; dense?: boolean }) {
   const { pathname } = useLocation();
+  const unread = useUnreadCount();
   return (
     <List component="nav" aria-label="Main" dense={dense} sx={{ display: 'grid', gap: 0.25 }}>
       <ListItemButton component={RouterLink} to="/settings">
@@ -28,7 +31,15 @@ export function NavList({ profile, dense = false }: { profile: Profile; dense?: 
             selected={selected}
             aria-current={selected ? 'page' : undefined}
           >
-            <ListItemIcon sx={{ minWidth: 44, color: 'text.primary' }}>{item.icon}</ListItemIcon>
+            <ListItemIcon sx={{ minWidth: 44, color: 'text.primary' }}>
+              {item.path === '/notifications' ? (
+                <Badge badgeContent={unread} color="error" max={99}>
+                  {item.icon}
+                </Badge>
+              ) : (
+                item.icon
+              )}
+            </ListItemIcon>
             <ListItemText
               primary={item.label}
               slotProps={{ primary: { sx: { fontWeight: selected ? 700 : 500 } } }}
