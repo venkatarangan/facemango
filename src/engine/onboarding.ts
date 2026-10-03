@@ -78,7 +78,11 @@ async function setup(): Promise<void> {
     // 3. Seed feed: back-dated posts over the last three days, newest first so the top fills fast.
     const seedTarget = await getMeta<number>('seedTarget', randInt(rng, 15, 25));
     await setMeta('seedTarget', seedTarget);
-    const seeded = await db.posts.where('authorId').notEqual(ME).count();
+    // Count only posts by the current circle, so a friends reset seeds a fresh feed.
+    const circle = new Set(
+      (await db.personas.where('kind').anyOf('friend', 'public').primaryKeys()) as string[],
+    );
+    const seeded = await db.posts.filter((p) => circle.has(p.authorId)).count();
     setSetup({ stage: 'seed', done: seeded, total: seedTarget });
     const now = Date.now();
     for (let i = seeded; i < seedTarget; i++) {

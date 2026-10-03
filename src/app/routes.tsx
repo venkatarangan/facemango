@@ -103,6 +103,13 @@ export const routes: RouteObject[] = [
             }),
           },
           {
+            path: 'settings/advanced',
+            lazy: async () => ({
+              Component: (await import('@/features/settings/AdvancedSettingsPage'))
+                .AdvancedSettingsPage,
+            }),
+          },
+          {
             path: 'menu',
             lazy: async () => ({
               Component: (await import('@/features/settings/MenuPage')).MenuPage,

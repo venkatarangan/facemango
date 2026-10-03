@@ -1,5 +1,11 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { useNavigate } from 'react-router';
+import { Link as RouterLink, useNavigate } from 'react-router';
+import { format } from 'date-fns';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from '@/db';
+import { resetFriends } from '@/engine/reset';
+import { buildBackup, downloadBlob } from '@/lib/backup/export';
+import { RestoreDialog } from '@/features/backup/RestoreDialog';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -49,6 +55,13 @@ export function SettingsPage() {
   const [persistence, setPersistence] = useState<PersistenceStatus>();
   const [usage, setUsage] = useState<string>();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [resetOpen, setResetOpen] = useState(false);
+  const [restoreOpen, setRestoreOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const lastBackupAt = useLiveQuery(
+    async () => (await db.meta.get('lastBackupAt'))?.value as number | undefined,
+    [],
+  );
   const ai = useAIStore();
   const showToast = useUiStore((s) => s.showToast);
 
@@ -154,6 +167,56 @@ export function SettingsPage() {
         </Stack>
       </Section>
 
+      <Section title="Engagement">
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+          Friend count, mixes, how many likes and comments you get, and how fast they arrive.
+        </Typography>
+        <Button variant="outlined" component={RouterLink} to="/settings/advanced">
+          Advanced settings
+        </Button>
+      </Section>
+
+      <Section title="Backup & restore">
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+          Download everything (posts, photos, friends, feed and wellbeing) as Markdown and images in
+          a zip file.
+          {lastBackupAt
+            ? ` Last backup: ${format(lastBackupAt, 'd MMMM yyyy, h:mm a')}.`
+            : ' No backup yet.'}
+        </Typography>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
+          <Button
+            variant="contained"
+            disabled={exporting}
+            onClick={async () => {
+              setExporting(true);
+              try {
+                const { blob, filename } = await buildBackup();
+                downloadBlob(blob, filename);
+                showToast('Backup downloaded. Keep it somewhere safe.');
+              } finally {
+                setExporting(false);
+              }
+            }}
+          >
+            {exporting ? 'Preparing…' : 'Download backup'}
+          </Button>
+          <Button variant="outlined" onClick={() => setRestoreOpen(true)}>
+            Restore from a backup
+          </Button>
+        </Stack>
+      </Section>
+
+      <Section title="Friends">
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+          Start over with a new circle of friends. Your posts stay; old friends&apos; likes and
+          comments stay under their names.
+        </Typography>
+        <Button variant="outlined" onClick={() => setResetOpen(true)}>
+          Reset friends
+        </Button>
+      </Section>
+
       <Section title="Storage">
         <Stack spacing={1.5}>
           <Stack
@@ -203,6 +266,29 @@ export function SettingsPage() {
         FaceMango v{__APP_VERSION__} · AGPL-3.0
       </Typography>
 
+      <RestoreDialog open={restoreOpen} onClose={() => setRestoreOpen(false)} />
+      <Dialog open={resetOpen} onClose={() => setResetOpen(false)}>
+        <DialogTitle>Reset friends?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Your current friends become former friends: their existing likes and comments stay, but
+            they won&apos;t engage any more. FaceMango then finds a new circle using your advanced
+            settings.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setResetOpen(false)}>Cancel</Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setResetOpen(false);
+              void resetFriends().then(() => navigate('/'));
+            }}
+          >
+            Reset friends
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
         <DialogTitle>Delete everything?</DialogTitle>
         <DialogContent>

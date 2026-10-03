@@ -20,6 +20,7 @@ import { requestPersistentStorage } from '@/lib/storage';
 import { startAI } from '@/ai';
 import { IosDataNotice } from './IosDataNotice';
 import { PreviewPost } from './PreviewPost';
+import { RestoreDialog } from '@/features/backup/RestoreDialog';
 
 const highlights = [
   {
@@ -43,6 +44,7 @@ export function LandingPage() {
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
   const [ios] = useState(() => isIOS());
+  const [restoreOpen, setRestoreOpen] = useState(false);
 
   const getStarted = () => {
     // persist() must run inside the user gesture on some browsers; don't wait for it.
@@ -148,6 +150,14 @@ export function LandingPage() {
                 How it works
               </Button>
             </Stack>
+            <Link
+              component="button"
+              onClick={() => setRestoreOpen(true)}
+              color="text.secondary"
+              sx={{ alignSelf: { xs: 'center', md: 'flex-start' }, fontWeight: 600 }}
+            >
+              Have a backup? Restore it
+            </Link>
             {ios && (
               <Box sx={{ maxWidth: 560, mx: { xs: 'auto', md: 0 }, textAlign: 'left' }}>
                 <IosDataNotice />
@@ -213,6 +223,7 @@ export function LandingPage() {
           · Open source (AGPL-3.0)
         </Typography>
       </Container>
+      <RestoreDialog open={restoreOpen} onClose={() => setRestoreOpen(false)} />
     </Box>
   );
 }
