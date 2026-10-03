@@ -1,0 +1,52 @@
+Write the top-level specification for this, for getting my approval, ask questions for clarification, architecture choices. give suggestions to make this app super engaging and addictive. 
+
+I wish to develop my own dopamine sites as described in https://en.wikipedia.org/wiki/Dopamine_sites and like foodnevercomes.com.
+
+I want to replicate facebook feed. We can focus on implementing the centre feed, AI like in Meta AI, memories, activities, photos. The colour scheme can be white background, but yellow accent and black text. Material UI design that works well on PC, Mac, iPhone & Android. 
+
+The app uses Prompt API for local AI when available, downloading as needed, if none available or non prompt api supported browsers, then use "WebGPU with a small Gemma or Qwen model" as available. All fails, then tell the user the support is not available. 
+
+The app on open asks for a quick signup: Name, Age, City and Languages known. 
+After that a series of auto created, simulated posts with individual engagement variations will be shown. User can create their own post just like in facebook, no schedule right now, attach a photo and submit. All data remains in the browser. 
+
+Using these it creates a set of 20-30 friends, each with their profiles which can be created on the first access of that page with dummy photos, about, likes and dislikes. There can be a gender mix too. Friends needs to have critical views to the users and also the same views as the user. These mixes and numbers can be configured from an advanced configuration page - where the gender mix percentage, friends in the same city or other cities mix, friends with languages same as you and not known you, how fast you want likes and comments, how much engagement you want and so on. THey can also configure do they how much of comment variety they need: Good (by default 60%), Appreciative (by default 25%), Nonsense (by default 1o%), Critical (by default 5%), Super Critical (by default zero). 
+
+Once posted, by default the posts are liked and comments added normally in single digits, unless users configures for faster and larger engagement. No post gets more than 1million likes. Comments are normally about 0-25, unless user configures it to be more, even then the maximum limit is 100. Comments are automatically generated with a mix of both good, appreciative, nonsense (a few), critical (just 1 or 2). 
+
+Just like in facebook, each post says how long ago a post was posted. 
+
+In v1, the app can support English alone for post and comments. We will implement Tamil and other languages depending on the local AI support available. 
+
+The prime benefit of this app, all the data is stored locally on the browser and if the user prompts exports all the user generated data, posts like my user or comment alone into a local markdown file and images. We can add restore the data on a new install if the user supplies the markdown. There is no cloud or any other third party data storage, that is the selling point. We will add google analytics on the app views alone, I will supply that tag later. 
+
+clarifications:
+
+1. Phones won't use the Prompt API and will use webgpu - noted, fine. 
+2. iOS can delete the app's data - make it clear in the app homepage and during sign up. 
+3. Two things clash with the "no third party" promise - google analytics and models from huggingface are fine, change the text, docs, and rules accordingly. 
+4.  Engagement ideas  - good idea, implement them.
+
+1. Default likes: single digits like comments, or a bit higher, e.g. 5–40? - They can be three times or five times the comment, randomly decided, again configurable in advanced. 
+
+2. No-AI fallback: can I add a "Lite mode" with template comments instead of stopping on unsupported devices? - No need, works only with local ai.
+
+3. Big like counts: with only 20–30 friends, should larger counts come from "friends of friends / public"? - Adding Public profiles are a good idea, keep them double of friends number, again configurable in advanced. 
+ 
+4. Export scope: your posts only, or also a full backup so a restore brings back the same friends and comments? - Do the backup of friends as well, but while importing or anytime the friends list can be reset. 
+
+5. Friend photos: are local cartoon avatars fine, or do you want realistic faces? - do this to be the best of the underlying models capability. 
+
+Shall we name it FaceMango and then the url be face.mangoidiots.com when we go into production. 
+
+Do you have any more questions?
+---
+1. Is the faces plan above OK: - YES
+2. Should friends' posts include photos from a bundled pack of free-to-use images - that's a great idea do it. Ensure you have a mixed set of photos, that are family friendly, around the world.
+3. When you reset friends, what happens to their likes and comments on your posts? - Keep them as they are, under the old names.
+4. Mango AI - Yes
+5. Do you want an optional reminder like "you've been here 30 minutes", or quiet hours? - you can show a usage like a mental health tracker
+6.  face.mangoidiots.com should be hosted in github pages, I will give you access when we go to that stage, DNS is with cloudflare. 
+7. open source - it can even be AGPL, no worries, so please make use of the best frameworks, libraries and tools out there to make the UX and UI as attractive and engaging as possible. 
+---
+1. Should I base the FaceMango logo on an existing Mangoidiots mango mark, or design a new SVG? - Design a new one, keep it elegant and modern, but same colour schemes and mango related. 
+2. Which GitHub account and repo name should I use, for example facemango? I need it by M7, or earlier if you want automatic builds from day one. - Facemango is fine. You can create the local repo by that name and also the github name once I have okayed the local build. 

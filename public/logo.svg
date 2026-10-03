@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="FaceMango">
+  <defs>
+    <linearGradient id="fm-body" x1="0.2" y1="0.05" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#FFD84D"/>
+      <stop offset="0.55" stop-color="#FFC400"/>
+      <stop offset="1" stop-color="#FFA600"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#fm-body)" d="M318 132C404 124 456 196 446 282C436 368 366 428 282 438C226 444 176 436 136 418C116 428 92 440 70 446C82 426 94 406 100 388C78 340 90 272 136 216C182 160 246 138 318 132Z"/>
+  <path fill="none" stroke="#111111" stroke-width="14" stroke-linecap="round" d="M318 136C320 120 326 104 336 92"/>
+  <path fill="#111111" d="M334 96C350 52 400 32 456 40C446 90 396 116 334 96Z"/>
+  <path fill="none" stroke="#FFC400" stroke-width="6" stroke-linecap="round" d="M350 88C384 70 414 58 440 50"/>
+  <path fill="none" stroke="#FFFFFF" stroke-opacity="0.65" stroke-width="20" stroke-linecap="round" d="M150 270C160 226 194 192 244 176"/>
+</svg>

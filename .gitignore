@@ -1,0 +1,20 @@
+node_modules
+dist
+dist-ssr
+dev-dist
+coverage
+*.local
+.env*
+!.env.example
+# Playwright
+test-results
+playwright-report
+blob-report
+playwright/.cache
+# Editors / OS
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+*.tsbuildinfo
