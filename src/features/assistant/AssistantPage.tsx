@@ -15,7 +15,7 @@ import AutoAwesomeRounded from '@mui/icons-material/AutoAwesomeRounded';
 import SendRounded from '@mui/icons-material/SendRounded';
 import StopRounded from '@mui/icons-material/StopRounded';
 import DeleteSweepRounded from '@mui/icons-material/DeleteSweepRounded';
-import { getAI, useAIStore } from '@/ai';
+import { describeAIError, getAI, useAIStore } from '@/ai';
 import { brand } from '@/app/tokens';
 import { db, ME, type ChatMessage } from '@/db';
 import {
@@ -109,8 +109,9 @@ export function AssistantPage() {
         out += delta;
         setStreaming({ text: out, draft: request.draft });
       }
-    } catch {
-      if (!out) out = 'Sorry, I couldn’t answer that just now. Please try again.';
+    } catch (error) {
+      if (!out)
+        out = `Sorry, I couldn’t answer that just now (${describeAIError(error)}). Please try again.`;
     } finally {
       const clean = out.trim().replace(/^["“]|["”]$/g, '');
       await addChatMessage('assistant', clean, request.draft);

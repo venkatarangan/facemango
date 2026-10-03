@@ -14,7 +14,7 @@ import SaveAltRounded from '@mui/icons-material/SaveAltRounded';
 import ArrowForwardRounded from '@mui/icons-material/ArrowForwardRounded';
 import { LogoMark, Wordmark } from '@/components/brand/Logo';
 import { brand } from '@/app/tokens';
-import { BYLINE } from '@/lib/copy';
+import { BYLINE, SOURCE_URL, UNIQUENESS } from '@/lib/copy';
 import { isIOS } from '@/lib/platform';
 import { requestPersistentStorage } from '@/lib/storage';
 import { startAI } from '@/ai';
@@ -25,18 +25,18 @@ import { RestoreDialog } from '@/features/backup/RestoreDialog';
 const highlights = [
   {
     icon: <LockRounded />,
-    title: 'Private by design',
-    body: 'No servers, no accounts. Your posts and photos never leave this device.',
+    title: 'Nothing leaves your device',
+    body: 'No servers, no accounts, no uploads. Your posts and photos stay with you.',
   },
   {
     icon: <MemoryRounded />,
-    title: 'AI friends, on your device',
-    body: 'Friends, likes and comments are simulated by AI that runs right in your browser.',
+    title: 'AI friends that live here',
+    body: 'Friends who post, like and comment, all imagined by AI running in your browser.',
   },
   {
     icon: <SaveAltRounded />,
     title: 'Yours to keep',
-    body: 'Export everything to Markdown and images whenever you like, and restore it anywhere.',
+    body: 'Export everything whenever you like, and bring it back on any device.',
   },
 ];
 
@@ -130,8 +130,7 @@ export function LandingPage() {
               color="text.secondary"
               sx={{ fontWeight: 400, maxWidth: 560, mx: { xs: 'auto', md: 0 } }}
             >
-              Your posts, photos and friends live only on your device. Every friend, like and
-              comment is simulated by AI running right here in your browser.
+              {UNIQUENESS}
             </Typography>
             <Stack
               direction={{ xs: 'column', sm: 'row' }}
@@ -220,7 +219,10 @@ export function LandingPage() {
           <Link component={RouterLink} to="/about" color="inherit">
             Privacy & about
           </Link>{' '}
-          · Open source (AGPL-3.0)
+          ·{' '}
+          <Link href={SOURCE_URL} target="_blank" rel="noreferrer" color="inherit">
+            Open source
+          </Link>
         </Typography>
       </Container>
       <RestoreDialog open={restoreOpen} onClose={() => setRestoreOpen(false)} />

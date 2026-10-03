@@ -5,6 +5,10 @@ export const TAGLINE = 'A social network that is entirely yours.';
 /** Byline under the logo and in store/search descriptions. */
 export const BYLINE = 'The most personal social network ever built. And the most private.';
 
+/** What sets FaceMango apart from other dopamine apps. */
+export const UNIQUENESS =
+  "Other feel-good apps run on someone else's servers. FaceMango runs entirely on your device: your posts, your friends, even the AI behind them. Nothing ever leaves unless you export it.";
+
 export const PRIVACY_STATEMENT =
   'Your posts, photos, friends, comments and wellbeing stats are stored only in this browser on this device. ' +
   'FaceMango has no servers and no accounts, and never uploads your content. ' +
@@ -21,3 +25,5 @@ export const LOCAL_DATA_NOTICE =
 
 export const SIMULATED_FRIENDS_NOTE =
   'Every friend, like and comment on FaceMango is simulated by AI running on your device. None of them are real people.';
+
+export const SOURCE_URL = 'https://github.com/venkatarangan/facemango';

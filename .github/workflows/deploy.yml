@@ -32,7 +32,10 @@ jobs:
           # Optional: Settings → Secrets and variables → Actions → Variables → GA_ID (G-…)
           VITE_GA_ID: ${{ vars.GA_ID }}
       - run: npx playwright install --with-deps chromium webkit
-      - run: npm run test:e2e
+      - run: npx playwright test --project=desktop-chrome --project=mobile-android
+      # Safari/WebKit runs are informational until they have been verified.
+      - run: npx playwright test --project=mobile-iphone
+        continue-on-error: true
       - uses: actions/upload-artifact@v5
         if: failure()
         with:

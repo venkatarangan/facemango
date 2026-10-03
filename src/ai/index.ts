@@ -5,6 +5,7 @@ export {
   getAI,
   whenAIReady,
   deleteDownloadedModel,
+  describeAIError,
   type AI,
   type AIStatus,
 } from './service';
