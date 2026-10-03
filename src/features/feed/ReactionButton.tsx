@@ -9,6 +9,7 @@ import Tooltip from '@mui/material/Tooltip';
 import ThumbUpOffAltRounded from '@mui/icons-material/ThumbUpOutlined';
 import { setMyReaction, type ReactionType } from '@/db';
 import { REACTIONS, reactionMeta } from '@/lib/reactions';
+import { playSound } from '@/lib/sound';
 // The Lottie player (~150 kB) loads only when the picker first opens.
 const AnimatedEmoji = lazy(() =>
   import('./AnimatedEmoji').then((m) => ({ default: m.AnimatedEmoji })),
@@ -29,6 +30,7 @@ export function ReactionButton({ postId, mine }: { postId: string; mine?: Reacti
     setOpen(false);
     if (type) {
       setBump((n) => n + 1);
+      playSound('pop');
       navigator.vibrate?.(12);
     }
     void setMyReaction(postId, type);

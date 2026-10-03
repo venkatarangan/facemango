@@ -28,6 +28,9 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+        env:
+          # Optional: Settings → Secrets and variables → Actions → Variables → GA_ID (G-…)
+          VITE_GA_ID: ${{ vars.GA_ID }}
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v5

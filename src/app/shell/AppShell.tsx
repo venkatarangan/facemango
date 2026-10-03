@@ -10,6 +10,8 @@ import { startAI } from '@/ai';
 import { startEngine } from '@/engine';
 import { startUsageTracking } from '@/lib/usage';
 import { WellbeingNudges } from '@/features/wellbeing/WellbeingNudges';
+import { Celebrations } from '@/features/celebrations/Celebrations';
+import { loadSoundPreference } from '@/lib/sound';
 
 const RAIL_TOP = { xs: 56, md: 64 };
 
@@ -22,11 +24,31 @@ export function AppShell() {
     void startAI({ userGesture: false });
     startEngine();
     startUsageTracking();
+    void loadSoundPreference();
   }, [signedUp]);
   if (!profile) return null; // RequireProfile guarantees this after loading.
 
   return (
     <Box sx={{ minHeight: '100dvh' }}>
+      <Box
+        component="a"
+        href="#main"
+        sx={{
+          position: 'absolute',
+          left: 8,
+          top: -48,
+          zIndex: 2000,
+          px: 2,
+          py: 1,
+          borderRadius: 2,
+          bgcolor: 'primary.main',
+          color: 'text.primary',
+          fontWeight: 700,
+          '&:focus': { top: 8 },
+        }}
+      >
+        Skip to content
+      </Box>
       <TopBar profile={profile} />
       <Box
         sx={{
@@ -86,6 +108,7 @@ export function AppShell() {
       </Box>
       <BottomNav />
       <WellbeingNudges />
+      <Celebrations />
     </Box>
   );
 }

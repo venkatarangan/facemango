@@ -12,9 +12,11 @@ import { loadPhotoManifest, isPackPhoto, packPhotoId } from '@/lib/photos';
 import { createPersonaPost } from './friendPosts';
 import { notify, snippet } from './notifications';
 import { COMMENT_SYSTEM, commentBatchSchema, commentsPrompt, type CommentRequest } from './prompts';
-import { defaultRng, uniform, weightedSample } from './random';
+import { chance, defaultRng, pick, uniform, weightedSample } from './random';
 import { getEngagementConfig, getMeta, setMeta } from './settings';
 import { setTyping, useEngineStore } from './store';
+import { checkFirstReaction, checkPostMilestones } from './celebrations';
+import { playSound } from '@/lib/sound';
 
 const TICK_IDLE_MS = 2500;
 const TYPING_LOOKAHEAD_MS = 20_000;
@@ -86,6 +88,7 @@ export async function step(now: number): Promise<boolean> {
   }
 
   if (setupDone && (await maybePostFromFriend(ai, now))) return true;
+  if (setupDone) await maybeFriendRequest(now);
   return reactions.length > 0;
 }
 
@@ -124,6 +127,12 @@ async function applyReactions(events: PlannedEvent[]): Promise<void> {
         list.map((e) => ({ key: e.id, changes: { status: 'applied' as const } })),
       );
     });
+    const fresh = await db.posts.get(postId);
+    if (total && fresh?.authorId === ME) {
+      const sum = Object.values(fresh.reactionCounts).reduce((n, c) => n + (c ?? 0), 0);
+      await checkFirstReaction(postId);
+      await checkPostMilestones(postId, sum);
+    }
     if (total && list[0]?.payload?.userPost) {
       const first = named.length ? (await db.personas.get(named[0]!))?.name : undefined;
       const others = total - (first ? 1 : 0);
@@ -207,6 +216,7 @@ async function writeComments(ai: AI, events: PlannedEvent[]): Promise<void> {
       persona: personas.get(e.personaId!)!,
       category: (e.payload?.category as CommentCategory | undefined) ?? 'good',
       replyTo: target ? { author: await nameOf(target.authorId), text: target.text } : undefined,
+      defend: !!e.payload?.defend,
       event: e,
     });
   }
@@ -228,6 +238,8 @@ async function writeComments(ai: AI, events: PlannedEvent[]): Promise<void> {
       commentsPrompt(post, authorName, requests, {
         photoAlt,
         recent: existing.slice(-6).map((c) => c.text),
+        earlierPosts:
+          isUserPost && chance(defaultRng, 0.35) ? await earlierUserPosts(post) : undefined,
       }),
       commentBatchSchema,
       { system: COMMENT_SYSTEM, maxTokens: 70 * requests.length + 40, temperature: 0.9 },
@@ -283,6 +295,12 @@ async function writeComments(ai: AI, events: PlannedEvent[]): Promise<void> {
   });
   if (isUserPost) setTyping(postId, []);
 
+  if (created.length && (isUserPost || created.some((c) => c.isReply))) playSound('ping');
+  if (isUserPost)
+    await planPushback(
+      post,
+      created.map((c) => c.comment),
+    );
   for (const { comment, persona, isReply } of created) {
     const replyToMe = isReply && byId.get(comment.parentId!)?.authorId === ME;
     if (isUserPost || replyToMe) {
@@ -321,4 +339,59 @@ async function maybePostFromFriend(ai: AI, now: number): Promise<boolean> {
   const backlogCap = now - 3 * interval();
   await setMeta('nextFriendPostAt', Math.max(createdAt + interval(), backlogCap));
   return !!post;
+}
+
+async function earlierUserPosts(post: Post): Promise<string[]> {
+  const mine = await db.posts.where('authorId').equals(ME).reverse().sortBy('createdAt');
+  return mine
+    .filter((p) => p.id !== post.id && p.createdAt < post.createdAt && p.text)
+    .slice(0, 2)
+    .map((p) => p.text);
+}
+
+/** Critics get pushback: a fan friend defends the user (SPEC §8 #4). */
+async function planPushback(post: Post, comments: Comment[]): Promise<void> {
+  const critical = comments.filter(
+    (c) => !c.parentId && (c.category === 'critical' || c.category === 'superCritical'),
+  );
+  if (!critical.length) return;
+  const config = await getEngagementConfig();
+  const fans = (await db.personas.where('kind').equals('friend').toArray()).filter(
+    (p) => p.stance === 'fan',
+  );
+  for (const c of critical) {
+    const defenders = fans.filter((f) => f.id !== c.authorId);
+    if (!defenders.length || !chance(defaultRng, 0.6)) continue;
+    await db.events.add({
+      id: crypto.randomUUID(),
+      type: 'reply',
+      status: 'planned',
+      dueAt: Date.now() + (uniform(defaultRng, 1, 6) * 60_000) / config.speed,
+      postId: post.id,
+      personaId: pick(defaultRng, defenders).id,
+      payload: { replyTo: c.id, category: 'appreciative', defend: true, userPost: true },
+    });
+  }
+}
+
+/** Friend requests trickle in from public profiles (SPEC §8 #10), at most 3 pending. */
+async function maybeFriendRequest(now: number): Promise<void> {
+  const nextAt = await getMeta<number>('nextFriendRequestAt', 0);
+  if (now < nextAt) return;
+  const config = await getEngagementConfig();
+  await setMeta(
+    'nextFriendRequestAt',
+    now + (uniform(defaultRng, 3, 9) * 3_600_000) / config.speed,
+  );
+  if (!nextAt) return;
+  const publics = await db.personas.where('kind').equals('public').toArray();
+  if (publics.filter((p) => p.friendRequest?.status === 'pending').length >= 3) return;
+  const candidates = publics.filter((p) => !p.friendRequest);
+  const [persona] = weightedSample(defaultRng, candidates, (p) => p.activity + 0.1, 1);
+  if (!persona) return;
+  await db.personas.update(persona.id, { friendRequest: { at: now, status: 'pending' } });
+  await notify('friendRequest', `${persona.name} sent you a friend request`, {
+    personaId: persona.id,
+    createdAt: now,
+  });
 }

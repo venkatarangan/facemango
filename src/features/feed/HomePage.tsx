@@ -5,8 +5,10 @@ import Button from '@mui/material/Button';
 import ButtonBase from '@mui/material/ButtonBase';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
 import AddPhotoAlternateRounded from '@mui/icons-material/AddPhotoAlternateRounded';
@@ -19,9 +21,13 @@ import { useEngineStore } from '@/engine/store';
 import { ComposerDialog } from '@/features/compose/ComposerDialog';
 import { SetupCard } from '@/features/ai/SetupCard';
 import { WeeklySummaryCard } from '@/features/wellbeing/WeeklySummaryCard';
-import { IosDataNotice } from '@/features/onboarding/IosDataNotice';
-import { isIOS, isStandalone } from '@/lib/platform';
+import { postingStreak } from '@/lib/streak';
 import { firstName } from '@/lib/text';
+import { useNow } from '@/lib/useNow';
+import { BackupReminderCard } from './cards/BackupReminderCard';
+import { BestPostCard } from './cards/BestPostCard';
+import { DailyIdeaCard } from './cards/DailyIdeaCard';
+import { IosBanner } from './cards/IosBanner';
 import { FeedList } from './FeedList';
 import { useAuthors } from './useAuthors';
 
@@ -46,16 +52,23 @@ function AwayBanner() {
 
 export function HomePage() {
   const authors = useAuthors();
-  const [showIosNotice] = useState(() => isIOS() && !isStandalone());
+  const now = useNow();
   const [composerOpen, setComposerOpen] = useState(false);
   const [editing, setEditing] = useState<Post | null>(null);
+  const [prefill, setPrefill] = useState<string | undefined>();
   const setupDone = useEngineStore((s) => s.setup.stage === 'done');
-  const myPosts = useLiveQuery(() => db.posts.where('authorId').equals(ME).count(), []);
+  const myPostTimes = useLiveQuery(
+    async () => (await db.posts.where('authorId').equals(ME).toArray()).map((p) => p.createdAt),
+    [],
+  );
   const me = authors?.get(ME);
   if (!authors || !me) return null;
 
-  const openComposer = () => {
+  // Low-key posting streak (SPEC §8 #12).
+  const streak = postingStreak(myPostTimes ?? [], now);
+  const openComposer = (text?: string) => {
     setEditing(null);
+    setPrefill(text);
     setComposerOpen(true);
   };
 
@@ -66,7 +79,7 @@ export function HomePage() {
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
             <AuthorAvatar author={me} />
             <ButtonBase
-              onClick={openComposer}
+              onClick={() => openComposer()}
               sx={{
                 flex: 1,
                 justifyContent: 'flex-start',
@@ -84,6 +97,15 @@ export function HomePage() {
             >
               What&apos;s on your mind, {firstName(me.name)}?
             </ButtonBase>
+            {streak >= 2 && (
+              <Tooltip title={`You've posted ${streak} days in a row`}>
+                <Chip
+                  label={`🔥 ${streak}`}
+                  size="small"
+                  aria-label={`${streak}-day posting streak`}
+                />
+              </Tooltip>
+            )}
           </Stack>
           <Divider sx={{ my: 1.5 }} />
           <Stack
@@ -95,19 +117,19 @@ export function HomePage() {
           >
             <Button
               startIcon={<AddPhotoAlternateRounded sx={{ color: '#43A047' }} />}
-              onClick={openComposer}
+              onClick={() => openComposer()}
             >
               Photo
             </Button>
             <Button
               startIcon={<EmojiEmotionsRounded sx={{ color: brand.mangoText }} />}
-              onClick={openComposer}
+              onClick={() => openComposer()}
             >
               Feeling
             </Button>
             <Button
               startIcon={<AutoAwesomeRounded sx={{ color: brand.mangoText }} />}
-              onClick={openComposer}
+              onClick={() => openComposer()}
             >
               Mango AI
             </Button>
@@ -117,10 +139,13 @@ export function HomePage() {
 
       <AwayBanner />
       <SetupCard />
+      <IosBanner />
+      <BackupReminderCard />
       <WeeklySummaryCard />
-      {showIosNotice && <IosDataNotice />}
+      {setupDone && <DailyIdeaCard onUse={(idea) => openComposer(`${idea}\n\n`)} />}
+      <BestPostCard />
 
-      {setupDone && myPosts === 0 && (
+      {setupDone && myPostTimes?.length === 0 && (
         <Card
           sx={{
             borderColor: alpha(brand.mango, 0.6),
@@ -134,7 +159,7 @@ export function HomePage() {
             <Typography color="text.secondary" sx={{ mt: 0.5, mb: 1.5 }}>
               Share your first post and see who reacts first.
             </Typography>
-            <Button variant="contained" onClick={openComposer}>
+            <Button variant="contained" onClick={() => openComposer()}>
               Write your first post
             </Button>
           </CardContent>
@@ -150,11 +175,12 @@ export function HomePage() {
       />
 
       <ComposerDialog
-        key={editing?.id ?? 'new'}
+        key={editing?.id ?? `new-${prefill ?? ''}`}
         open={composerOpen}
         onClose={() => setComposerOpen(false)}
         me={me}
         editing={editing}
+        initialText={prefill}
       />
     </Stack>
   );

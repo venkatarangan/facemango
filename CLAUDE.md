@@ -21,7 +21,17 @@ Project context and working rules for Claude Code. **Read `SPEC.md` first.** It 
   - **Not yet verified with a real model** (no GPU in this environment): the Prompt API and WebLLM paths need testing in Chrome/Edge on the Windows host. The parked “setup experience” design is in memory, not built (basic setup card only).
 - ✅ **M5 committed on branch `m5-m7`:** profile pages (generated on first visit and cached, cover photo, edit own profile), Mango AI chat (streamed, quick actions, "Use as post", history in `db.chat`, Dexie v2), Memories (on this day, friendversaries, first post, milestones, best post), Activity (notifications + filterable "Your activity" log), Photos (masonry + swipe/pinch lightbox), Wellbeing (on-device usage tracking in `src/lib/usage.ts`, 30-day trend, heatmap, late-night share, activity stats, mood check-ins + chart, daily goal ring + one nudge per day, Monday weekly summary card in the feed).
 - ✅ **M6 committed on branch `m5-m7`:** Advanced settings (`/settings/advanced`: circle size and mixes, comment band, likes multiplier, minimum likes, comment mix with sliders that keep a total of 100, max critical, speed presets; super-critical locked for under-18s), full backup (`src/lib/backup/`: zip of me.md / friends.md / feed.md / wellbeing.md with YAML front-matter, plus images/ and avatars/; `lastBackupAt` in meta), restore (Settings and the welcome screen; "everything" or "my content + new friends"; reloads afterwards), friends reset (`src/engine/reset.ts`: circle → former friends, their planned events cancelled, setup re-runs).
-- ⏭️ **In progress (user away, asked to commit each and continue):** M7 (engagement features, polish, GA hook, deploy prep). The user still has to test M2+ with a real model. GitHub repo + push only after the user approves.
+- ✅ **M7 committed on branch `m5-m7`:** all 14 engagement features in SPEC §8 now exist. New in M7:
+  - micro-celebrations (`src/engine/celebrations.ts`: per-post reaction milestones and the first reaction → confetti, chime, toast and a milestone notification) with original synthesised sounds (`scripts/generate-sounds.mjs` → `public/sounds/`, Howler, Settings toggle)
+  - fans defend the user against critical comments, and friends refer back to earlier posts
+  - friend requests from public profiles (accept/decline on the Friends page)
+  - Mango AI daily idea card, posting streak chip, "best post this week" card
+  - opt-in local system notifications (no push server)
+  - iOS banner at most every 7 days in a non-installed Safari tab; weekly backup reminders (default on for iOS)
+  - "Install app" button; skip link
+  - GA page views only (`src/lib/analytics.ts`, set `VITE_GA_ID` / Actions variable `GA_ID`; route patterns only; EU/UK consent banner; nothing loads without an id)
+  - backup code is lazy-loaded; README has the deploy steps
+- ⏭️ **Waiting on the user:** test with a real model (Chrome/Edge on Windows); supply the GA id; approve the local build → create `main`, the GitHub repo, push and deploy (Pages + Cloudflare DNS). Not done: WebKit/Safari e2e locally (needs `sudo npx playwright install-deps webkit`), M8 realistic faces, and growing the photo pack from 87 to ~250. The user still has to test M2+ with a real model. GitHub repo + push only after the user approves.
 - Milestones M1–M8 are in `SPEC.md` §10.
 
 ## Working agreements (from the user)

@@ -4,8 +4,18 @@ import { format } from 'date-fns';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/db';
 import { resetFriends } from '@/engine/reset';
-import { buildBackup, downloadBlob } from '@/lib/backup/export';
 import { RestoreDialog } from '@/features/backup/RestoreDialog';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+import { backupRemindersEnabled } from '@/lib/backup/reminders';
+import { promptInstall, useInstallStore } from '@/lib/install';
+import { setSoundsEnabled, soundsEnabled } from '@/lib/sound';
+import {
+  disableSystemNotifications,
+  enableSystemNotifications,
+  systemNotificationsEnabled,
+} from '@/lib/systemNotify';
+import { isStandalone } from '@/lib/platform';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -58,6 +68,15 @@ export function SettingsPage() {
   const [resetOpen, setResetOpen] = useState(false);
   const [restoreOpen, setRestoreOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [sounds, setSounds] = useState(soundsEnabled());
+  const prefs = useLiveQuery(
+    async () => ({
+      notify: await systemNotificationsEnabled(),
+      backups: await backupRemindersEnabled(),
+    }),
+    [],
+  );
+  const installPrompt = useInstallStore((s) => s.prompt);
   const lastBackupAt = useLiveQuery(
     async () => (await db.meta.get('lastBackupAt'))?.value as number | undefined,
     [],
@@ -167,6 +186,55 @@ export function SettingsPage() {
         </Stack>
       </Section>
 
+      <Section title="Preferences">
+        <Stack>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={sounds}
+                onChange={(e) => {
+                  setSounds(e.target.checked);
+                  void setSoundsEnabled(e.target.checked);
+                }}
+              />
+            }
+            label="Sounds"
+          />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={!!prefs?.notify}
+                onChange={async (e) => {
+                  if (e.target.checked) {
+                    const ok = await enableSystemNotifications();
+                    if (!ok) showToast('Notifications are blocked in your browser settings.');
+                  } else {
+                    await disableSystemNotifications();
+                  }
+                }}
+              />
+            }
+            label="Notify me about reactions and comments while FaceMango is in the background"
+          />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={!!prefs?.backups}
+                onChange={(e) =>
+                  void db.settings.put({ key: 'backupReminders', value: e.target.checked })
+                }
+              />
+            }
+            label="Remind me to back up every week"
+          />
+        </Stack>
+        {installPrompt && !isStandalone() && (
+          <Button variant="contained" sx={{ mt: 1.5 }} onClick={() => void promptInstall()}>
+            Install FaceMango as an app
+          </Button>
+        )}
+      </Section>
+
       <Section title="Engagement">
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
           Friend count, mixes, how many likes and comments you get, and how fast they arrive.
@@ -191,6 +259,7 @@ export function SettingsPage() {
             onClick={async () => {
               setExporting(true);
               try {
+                const { buildBackup, downloadBlob } = await import('@/lib/backup/export');
                 const { blob, filename } = await buildBackup();
                 downloadBlob(blob, filename);
                 showToast('Backup downloaded. Keep it somewhere safe.');

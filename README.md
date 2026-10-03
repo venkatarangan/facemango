@@ -73,9 +73,19 @@ e2e/          Playwright tests
 
 ## Deployment
 
-GitHub Actions builds, tests and deploys `main` to GitHub Pages. The custom domain comes from
-`public/CNAME`; Cloudflare DNS points `face` at `<account>.github.io`. The CSP ships as a `<meta>`
-tag (GitHub Pages can't set headers), and `404.html` is a copy of `index.html` so deep links work.
+GitHub Actions (`.github/workflows/deploy.yml`) lints, type-checks, tests (unit + Playwright), builds and deploys `main` to GitHub Pages.
+
+One-time setup once the GitHub repo exists:
+
+1. **Pages:** Settings → Pages → Source: **GitHub Actions**. Custom domain: `face.mangoidiots.com` (also in `public/CNAME`). Tick **Enforce HTTPS** once the certificate is issued.
+2. **Cloudflare DNS:** add `CNAME face → <account>.github.io`, **DNS only** (grey cloud) while GitHub issues the certificate. You can turn the proxy on afterwards if you want.
+3. **Google Analytics (optional):** Settings → Secrets and variables → Actions → Variables → `GA_ID` = your `G-…` id. Without it, no analytics code loads. EU/UK visitors are asked for consent first. Only page views with route patterns (`/post/:id`) are sent.
+
+Notes:
+
+- The CSP ships as a `<meta>` tag (GitHub Pages can't set headers). Allowed outside hosts: Hugging Face (model weights) and Google Analytics/Tag Manager.
+- `404.html` is a copy of `index.html`, so deep links work.
+- `npm run build` first runs `npm run models`, which downloads the WebLLM model libraries into `public/models/` and copies the Lottie player, so they're served from our own origin.
 
 ## Licence
 

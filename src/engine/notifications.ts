@@ -1,4 +1,5 @@
 import { db, type NotificationType } from '@/db';
+import { showSystemNotification } from '@/lib/systemNotify';
 
 export async function notify(
   type: NotificationType,
@@ -14,6 +15,7 @@ export async function notify(
     postId: extra.postId,
     personaId: extra.personaId,
   });
+  void showSystemNotification(text, extra.postId ?? type);
 }
 
 export async function markAllRead(): Promise<void> {
