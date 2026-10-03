@@ -25,7 +25,7 @@ import AddPhotoAlternateRounded from '@mui/icons-material/AddPhotoAlternateRound
 import EmojiEmotionsRounded from '@mui/icons-material/EmojiEmotionsRounded';
 import AlternateEmailRounded from '@mui/icons-material/AlternateEmailRounded';
 import AutoAwesomeRounded from '@mui/icons-material/AutoAwesomeRounded';
-import { useAIStore, getAI } from '@/ai';
+import { describeAIError, useAIStore, getAI } from '@/ai';
 import { brand } from '@/app/tokens';
 import { useObjectUrl } from '@/app/useProfile';
 import { useUiStore } from '@/app/uiStore';
@@ -149,9 +149,9 @@ export function ComposerDialog({ open, onClose, me, editing, initialText }: Comp
         setText(out);
       }
       if (!out.trim()) setText(original);
-    } catch {
+    } catch (error) {
       setText(original);
-      showToast('Mango AI could not help this time.');
+      showToast(`Mango AI could not help this time: ${describeAIError(error)}`);
     } finally {
       setAiBusy(false);
     }

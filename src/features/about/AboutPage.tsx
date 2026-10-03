@@ -1,23 +1,54 @@
+import type { ReactNode } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router';
-import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
+import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import ArrowBackRounded from '@mui/icons-material/ArrowBackRounded';
 import { Logo } from '@/components/brand/Logo';
 import { brand } from '@/app/tokens';
-import { IOS_DATA_NOTICE, PRIVACY_STATEMENT, SIMULATED_FRIENDS_NOTE } from '@/lib/copy';
+import { BYLINE, IOS_DATA_NOTICE, SOURCE_URL, UNIQUENESS } from '@/lib/copy';
 
-const howItWorks = [
-  'You sign up with a name, age, city and languages. That profile stays in this browser.',
-  'FaceMango runs an AI model on your device: Chrome and Edge provide one built in; other browsers download a small open model from Hugging Face once.',
-  'The AI invents 20–30 friends and a wider circle of public profiles who post, react and comment.',
-  'Everything is stored in IndexedDB on this device. Export a backup to Markdown and images at any time.',
+const steps = [
+  'Tell FaceMango a little about yourself: your name, age, city and languages.',
+  'Your browser gets a small AI model. Chrome and Edge have one built in; other browsers download one once.',
+  'The AI imagines 20–30 friends and a wider circle of people around you. They post, react and comment on what you share.',
+  'Everything stays in this browser. Back it up whenever you like.',
 ];
+
+const privacy = [
+  'No account and no servers: your posts, photos, friends and stats are stored only on this device.',
+  'The AI runs on your device. Nothing you write is sent to it over the internet.',
+  'The only downloads are the AI model (from your browser or Hugging Face) and the app itself.',
+  'Google Analytics counts page views, and nothing else. It never sees your posts, profile or stats.',
+];
+
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <Card component="section" aria-label={title}>
+      <CardContent>
+        <Typography variant="h6" component="h2" gutterBottom>
+          {title}
+        </Typography>
+        {children}
+      </CardContent>
+    </Card>
+  );
+}
+
+const List = ({ items, ordered }: { items: string[]; ordered?: boolean }) => (
+  <Box component={ordered ? 'ol' : 'ul'} sx={{ pl: 2.5, m: 0, display: 'grid', gap: 0.75 }}>
+    {items.map((item) => (
+      <Typography component="li" key={item}>
+        {item}
+      </Typography>
+    ))}
+  </Box>
+);
 
 export function AboutPage() {
   const navigate = useNavigate();
@@ -36,52 +67,53 @@ export function AboutPage() {
               <Typography variant="h5" component="h1" gutterBottom>
                 About FaceMango
               </Typography>
-              <Typography color="text.secondary">{SIMULATED_FRIENDS_NOTE}</Typography>
-            </CardContent>
-          </Card>
-          <Card component="section">
-            <CardContent>
-              <Typography variant="h6" component="h2" gutterBottom>
-                How it works
-              </Typography>
-              <Box component="ol" sx={{ pl: 2.5, m: 0, display: 'grid', gap: 1 }}>
-                {howItWorks.map((step) => (
-                  <Typography component="li" key={step}>
-                    {step}
-                  </Typography>
-                ))}
-              </Box>
-            </CardContent>
-          </Card>
-          <Card component="section">
-            <CardContent>
-              <Typography variant="h6" component="h2" gutterBottom>
-                Privacy
-              </Typography>
-              <Typography>{PRIVACY_STATEMENT}</Typography>
-              <Typography sx={{ mt: 1.5 }} color="text.secondary">
-                {IOS_DATA_NOTICE}
+              <Typography sx={{ fontWeight: 600 }}>{BYLINE}</Typography>
+              <Typography color="text.secondary" sx={{ mt: 1 }}>
+                A cosy, Facebook-style feed where friends cheer you on. The twist: every friend is
+                imagined by AI, and they are not real people.
               </Typography>
             </CardContent>
           </Card>
-          <Card component="section">
-            <CardContent>
-              <Typography variant="h6" component="h2" gutterBottom>
-                Open source
-              </Typography>
-              <Typography color="text.secondary">
-                FaceMango is free software under the GNU Affero General Public License v3.0. You
-                must be 13 or older to use it.
-              </Typography>
+          <Section title="What makes it different">
+            <Typography>{UNIQUENESS}</Typography>
+          </Section>
+          <Section title="How it works">
+            <List items={steps} ordered />
+          </Section>
+          <Section title="Your privacy">
+            <List items={privacy} />
+          </Section>
+          <Section title="Keep your data safe">
+            <Typography>
+              Clearing your browser data removes FaceMango. Download a backup now and then from
+              Settings → Backup &amp; restore.
+            </Typography>
+            <Typography color="text.secondary" sx={{ mt: 1 }}>
+              {IOS_DATA_NOTICE}
+            </Typography>
+          </Section>
+          <Section title="The fine print">
+            <Typography color="text.secondary">
+              For ages 13 and up. Free and open source (AGPL-3.0).
+            </Typography>
+            <Stack direction="row" spacing={2} sx={{ mt: 1.5 }}>
+              <Link
+                href={SOURCE_URL}
+                target="_blank"
+                rel="noreferrer"
+                sx={{ fontWeight: 600, color: 'text.primary' }}
+              >
+                Source code
+              </Link>
               <Link
                 component={RouterLink}
                 to="/credits"
-                sx={{ display: 'inline-block', mt: 1.5, fontWeight: 600, color: 'text.primary' }}
+                sx={{ fontWeight: 600, color: 'text.primary' }}
               >
-                Credits for photos, avatars and emoji
+                Credits
               </Link>
-            </CardContent>
-          </Card>
+            </Stack>
+          </Section>
         </Stack>
       </Container>
     </Box>

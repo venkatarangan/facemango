@@ -19,6 +19,8 @@ export interface AIState {
   progress: number;
   progressText?: string;
   error?: string;
+  /** The most recent generation error, shown in Settings → On-device AI for troubleshooting. */
+  lastError?: string;
 }
 
 export const useAIStore = create<AIState>(() => ({ status: 'idle', progress: 0 }));
@@ -38,7 +40,8 @@ export interface AI {
 
 export const queue = new AIQueue();
 
-function wrap(provider: AIProvider): AI {
+/** Wraps a provider so calls are queued, and streaming falls back to a single reply. */
+export function wrapProvider(provider: AIProvider): AI {
   const prio = (o?: GenerateOptions): AIPriority => o?.priority ?? 'background';
   return {
     tier: provider.tier,
@@ -50,7 +53,27 @@ function wrap(provider: AIProvider): AI {
     async *stream(prompt, o) {
       const release = await queue.acquire(prio(o), o?.signal);
       try {
-        yield* provider.stream(prompt, o);
+        let yielded = false;
+        try {
+          for await (const delta of provider.stream(prompt, o)) {
+            if (!delta) continue;
+            yielded = true;
+            yield delta;
+          }
+        } catch (error) {
+          if (yielded || o?.signal?.aborted) throw error;
+          reportAIError('Streaming failed; retrying without streaming', error);
+        }
+        // Streaming produced nothing (error or empty output): ask once for the whole reply.
+        if (!yielded && !o?.signal?.aborted) {
+          try {
+            const text = await provider.generate(prompt, o);
+            if (text) yield text;
+          } catch (error) {
+            reportAIError('Generation failed', error);
+            throw error;
+          }
+        }
       } finally {
         release();
       }
@@ -63,6 +86,19 @@ function wrap(provider: AIProvider): AI {
 }
 
 let ai: AI | null = null;
+
+/** Logs an AI error to the console and keeps a short copy for Settings. */
+export function reportAIError(context: string, error: unknown): void {
+  console.error(`[FaceMango AI] ${context}`, error);
+  const message = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
+  set({ lastError: `${context}: ${message}`.slice(0, 300) });
+}
+
+/** A short, user-facing description of an AI error. */
+export function describeAIError(error: unknown): string {
+  const message = error instanceof Error ? error.message : String(error);
+  return message.length > 120 ? `${message.slice(0, 117)}…` : message;
+}
 let starting: Promise<void> | null = null;
 const readyWaiters: ((ai: AI) => void)[] = [];
 
@@ -77,7 +113,7 @@ export function whenAIReady(): Promise<AI> {
 }
 
 function becomeReady(provider: AIProvider, label: string) {
-  ai = wrap(provider);
+  ai = wrapProvider(provider);
   set({
     status: 'ready',
     tier: provider.tier,

@@ -152,6 +152,11 @@ export function SettingsPage() {
               color={ai.status === 'ready' ? 'success' : 'default'}
             />
           </Stack>
+          {ai.lastError && (
+            <Typography variant="caption" color="text.secondary" sx={{ wordBreak: 'break-word' }}>
+              Last AI error: {ai.lastError}
+            </Typography>
+          )}
           {ai.tier === 'webgpu' && (
             <Button
               variant="outlined"

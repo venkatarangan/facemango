@@ -1,100 +1,48 @@
-<p align="center">
-  <img src="public/logo.svg" alt="" width="96" height="96" />
-</p>
+<p align="center"><img src="public/logo.svg" alt="" width="88" height="88" /></p>
 
 <h1 align="center">FaceMango</h1>
 
-<p align="center"><strong>The most personal social network ever built. And the most private.</strong><br />
-Your posts, photos and friends live only on your device. Every friend, like and comment is simulated by AI running in your browser.</p>
+<p align="center"><strong>The most personal social network ever built. And the most private.</strong></p>
 
 <p align="center"><a href="https://face.mangoidiots.com">face.mangoidiots.com</a></p>
 
----
+FaceMango is a cosy, Facebook-style feed where friends like, comment and cheer you on. Every
+friend is imagined by AI.
 
-FaceMango is a private, single-player, Facebook-style feed in the spirit of
-[dopamine sites](https://en.wikipedia.org/wiki/Dopamine_sites). There is no backend: all data
-lives in IndexedDB, and the AI runs on the device (Chrome/Edge Prompt API, or WebLLM on WebGPU).
+**What makes it different:** other feel-good apps run on someone else's servers. FaceMango runs
+entirely on your device: your posts, your friends, even the AI behind them. Nothing ever leaves
+unless you export it.
 
-See [`SPEC.md`](SPEC.md) for the full specification and milestones.
+## Using it
 
-## Documentation
+1. Open [face.mangoidiots.com](https://face.mangoidiots.com) in Chrome or Edge on a computer, Safari
+   on iPhone/iPad (iOS 26+) or Mac, or Chrome on Android.
+2. Tap **Get started** and fill in a quick profile. Your browser sets up a small AI model; the first
+   time takes a few minutes.
+3. Post something and watch your friends react.
 
-- [`SPEC.md`](SPEC.md): product specification and milestones
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): how the app, AI layer, engine and data fit together
-- [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md): setup, scripts, testing and gotchas
-- [`docs/STATUS.md`](docs/STATUS.md): milestone status, open items and decisions
-- [`CHANGELOG.md`](CHANGELOG.md): what changed in each milestone
+**Good to know**
 
-## Status
+- No account, no cloud. Clearing your browser data erases FaceMango, so use **Settings → Backup &
+  restore** now and then.
+- On iPhone, add FaceMango to your Home Screen; Safari may otherwise erase site data after 7 days
+  without a visit.
+- The friends are simulated, not real people. For ages 13+.
+- Google Analytics counts page views only. It never sees your posts, profile or stats.
 
-**M1–M7 built** (not yet deployed): on-device AI (Prompt API / WebLLM), feed with posts, reactions and comments, the simulation engine, profiles, Mango AI chat, Memories, Photos, Wellbeing, backup/restore and all engagement features. See [`docs/STATUS.md`](docs/STATUS.md) and [`CHANGELOG.md`](CHANGELOG.md).
-
-## Privacy
-
-Your posts, photos, friends, comments and wellbeing stats are stored only in this browser on this
-device. FaceMango has no servers and no accounts, and never uploads your content. To run AI on your
-device, FaceMango downloads an AI model, either through your browser (Chrome/Edge) or from Hugging
-Face. Google Analytics counts page views only. It never sees your posts, profile or usage stats.
-
-## Development
-
-Requires Node.js 22+.
+## For developers
 
 ```bash
 npm install
-npm run dev          # http://localhost:5173
-npm run build        # type-check + production build into dist/
-npm run preview      # serve dist/ locally
+npm run dev        # http://localhost:5173
+npm test           # unit tests
+npm run test:e2e   # Playwright (uses a mock model)
 ```
 
-| Command             | What it does                                                                                |
-| ------------------- | ------------------------------------------------------------------------------------------- |
-| `npm test`          | Unit and component tests (Vitest + Testing Library)                                         |
-| `npm run test:e2e`  | End-to-end tests (Playwright: desktop, Android, iPhone)                                     |
-| `npm run lint`      | ESLint                                                                                      |
-| `npm run format`    | Prettier                                                                                    |
-| `npm run typecheck` | TypeScript (strict)                                                                         |
-| `npm run icons`     | Regenerate PWA icons from `public/logo.svg`                                                 |
-| `npm run models`    | Fetch WebLLM model libraries and copy runtime assets into `public/` (runs before dev/build) |
-| `npm run build:e2e` | Test build with a mock model into `dist-e2e/` (used by Playwright; never deployed)          |
-
-First-time Playwright setup: `npx playwright install --with-deps chromium webkit`.
-
-### Stack
-
-Vite · React 19 · TypeScript · MUI · Motion · React Router · Zustand · Dexie (IndexedDB) ·
-React Hook Form + Zod · vite-plugin-pwa · Vitest · Playwright.
-
-### Layout
-
-```
-src/
-  app/        routes, responsive shell, theme, tokens
-  features/   onboarding, feed, settings, about, … (one folder per section)
-  engine/     simulation config and hard limits
-  ai/         AIProvider interface (implementations in M2)
-  db/         Dexie schema, types and helpers
-  lib/        platform detection, storage, imaging, copy
-e2e/          Playwright tests
-```
-
-## Deployment
-
-GitHub Actions (`.github/workflows/deploy.yml`) lints, type-checks, tests (unit + Playwright), builds and deploys `main` to GitHub Pages.
-
-One-time setup once the GitHub repo exists:
-
-1. **Pages:** Settings → Pages → Source: **GitHub Actions**. Custom domain: `face.mangoidiots.com` (also in `public/CNAME`). Tick **Enforce HTTPS** once the certificate is issued.
-2. **Cloudflare DNS:** add `CNAME face → <account>.github.io`, **DNS only** (grey cloud) while GitHub issues the certificate. You can turn the proxy on afterwards if you want.
-3. **Google Analytics (optional):** Settings → Secrets and variables → Actions → Variables → `GA_ID` = your `G-…` id. Without it, no analytics code loads. EU/UK visitors are asked for consent first. Only page views with route patterns (`/post/:id`) are sent.
-
-Notes:
-
-- The CSP ships as a `<meta>` tag (GitHub Pages can't set headers). Allowed outside hosts: Hugging Face (model weights) and Google Analytics/Tag Manager.
-- `404.html` is a copy of `index.html`, so deep links work.
-- `npm run build` first runs `npm run models`, which downloads the WebLLM model libraries into `public/models/` and copies the Lottie player, so they're served from our own origin.
+React + TypeScript + MUI, Dexie (IndexedDB), the Prompt API or WebLLM (WebGPU) for the AI.
+Start with [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md); the product spec is [`SPEC.md`](SPEC.md).
+Changes are in [`CHANGELOG.md`](CHANGELOG.md), open items in [`docs/STATUS.md`](docs/STATUS.md).
 
 ## Licence
 
-[GNU AGPL-3.0](LICENSE). Friends on FaceMango are simulated, not real people. You must be 13 or
-older to use it.
+[AGPL-3.0](LICENSE). Photo, avatar and emoji credits are on the in-app Credits page.
