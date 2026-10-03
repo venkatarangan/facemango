@@ -9,9 +9,12 @@ import NotificationsRounded from '@mui/icons-material/NotificationsRounded';
 import { Logo } from '@/components/brand/Logo';
 import { UserAvatar } from '@/components/UserAvatar';
 import type { Profile } from '@/db';
+import Badge from '@mui/material/Badge';
 import { brand } from '@/app/tokens';
+import { useUnreadCount } from '@/features/activity/useUnreadCount';
 
 export function TopBar({ profile }: { profile: Profile }) {
+  const unread = useUnreadCount();
   return (
     <AppBar
       position="sticky"
@@ -41,7 +44,9 @@ export function TopBar({ profile }: { profile: Profile }) {
             aria-label="Activity"
             sx={{ display: { xs: 'none', md: 'inline-flex' } }}
           >
-            <NotificationsRounded />
+            <Badge badgeContent={unread} color="error" max={99}>
+              <NotificationsRounded />
+            </Badge>
           </IconButton>
         </Tooltip>
         <Tooltip title="Menu">

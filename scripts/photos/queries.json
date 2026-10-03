@@ -1,0 +1,1094 @@
+{
+  "_comment": "Search queries for fetch.mjs. Each entry downloads up to `n` licence-verified candidates into the work folder. `key` prefixes the candidate ids. Region/themes here are hints only; final metadata lives in selection.json.",
+  "defaults": {
+    "n": 2
+  },
+  "queries": [
+    {
+      "key": "sa-dosa",
+      "region": "south-asia",
+      "themes": ["food"],
+      "q": "dosa chutney sambar"
+    },
+    {
+      "key": "sa-idli",
+      "region": "south-asia",
+      "themes": ["food"],
+      "q": "idli sambar"
+    },
+    {
+      "key": "sa-filtercoffee",
+      "region": "south-asia",
+      "themes": ["food"],
+      "q": "filter coffee tumbler dabara"
+    },
+    {
+      "key": "sa-meals",
+      "region": "south-asia",
+      "themes": ["food"],
+      "q": "south indian meals banana leaf"
+    },
+    {
+      "key": "sa-biryani",
+      "region": "south-asia",
+      "themes": ["food"],
+      "q": "biryani"
+    },
+    {
+      "key": "sa-marina",
+      "region": "south-asia",
+      "themes": ["travel"],
+      "q": "Marina Beach Chennai"
+    },
+    {
+      "key": "sa-mahabalipuram",
+      "region": "south-asia",
+      "themes": ["travel"],
+      "q": "Mahabalipuram shore temple"
+    },
+    {
+      "key": "sa-gopuram",
+      "region": "south-asia",
+      "themes": ["travel"],
+      "q": "Madurai Meenakshi gopuram"
+    },
+    {
+      "key": "sa-chennai",
+      "region": "south-asia",
+      "themes": ["city"],
+      "q": "Chennai street"
+    },
+    {
+      "key": "sa-kolam",
+      "region": "south-asia",
+      "themes": ["festivals"],
+      "q": "pongal kolam"
+    },
+    {
+      "key": "sa-diya",
+      "region": "south-asia",
+      "themes": ["festivals"],
+      "q": "diwali diya lamps"
+    },
+    {
+      "key": "sa-munnar",
+      "region": "south-asia",
+      "themes": ["nature"],
+      "q": "Munnar tea plantation"
+    },
+    {
+      "key": "sa-kodai",
+      "region": "south-asia",
+      "themes": ["nature"],
+      "q": "Kodaikanal lake"
+    },
+    {
+      "key": "sa-monsoon",
+      "region": "south-asia",
+      "themes": ["weather"],
+      "q": "monsoon rain India street"
+    },
+    {
+      "key": "sa-himalaya",
+      "region": "south-asia",
+      "themes": ["nature", "travel"],
+      "q": "Annapurna Himalaya Nepal"
+    },
+    {
+      "key": "sa-srilanka",
+      "region": "south-asia",
+      "themes": ["travel"],
+      "q": "Ella Sri Lanka train bridge"
+    },
+    {
+      "key": "sa-cricket",
+      "region": "south-asia",
+      "themes": ["sports"],
+      "q": "cricket stadium Chepauk"
+    },
+    {
+      "key": "ea-ramen",
+      "region": "east-asia",
+      "themes": ["food"],
+      "q": "ramen bowl"
+    },
+    {
+      "key": "ea-dimsum",
+      "region": "east-asia",
+      "themes": ["food"],
+      "q": "dim sum"
+    },
+    {
+      "key": "ea-sushi",
+      "region": "east-asia",
+      "themes": ["food"],
+      "q": "sushi plate"
+    },
+    {
+      "key": "ea-fushimi",
+      "region": "east-asia",
+      "themes": ["travel"],
+      "q": "Fushimi Inari torii"
+    },
+    {
+      "key": "ea-sakura",
+      "region": "east-asia",
+      "themes": ["nature", "weather"],
+      "q": "cherry blossom sakura"
+    },
+    {
+      "key": "ea-fuji",
+      "region": "east-asia",
+      "themes": ["nature", "travel"],
+      "q": "Mount Fuji"
+    },
+    {
+      "key": "ea-maple",
+      "region": "east-asia",
+      "themes": ["nature", "weather"],
+      "q": "autumn maple Kyoto"
+    },
+    {
+      "key": "ea-seoul",
+      "region": "east-asia",
+      "themes": ["city"],
+      "q": "Seoul night street"
+    },
+    {
+      "key": "ea-tokyo",
+      "region": "east-asia",
+      "themes": ["city"],
+      "q": "Tokyo street night"
+    },
+    {
+      "key": "ea-greatwall",
+      "region": "east-asia",
+      "themes": ["travel"],
+      "q": "Great Wall of China"
+    },
+    {
+      "key": "ea-lantern",
+      "region": "east-asia",
+      "themes": ["festivals"],
+      "q": "lantern festival red lanterns"
+    },
+    {
+      "key": "ea-shiba",
+      "region": "east-asia",
+      "themes": ["pets"],
+      "q": "Shiba Inu dog"
+    },
+    {
+      "key": "ea-bibimbap",
+      "region": "east-asia",
+      "themes": ["food"],
+      "q": "bibimbap"
+    },
+    {
+      "key": "se-pho",
+      "region": "southeast-asia",
+      "themes": ["food"],
+      "q": "pho noodle soup"
+    },
+    {
+      "key": "se-nasilemak",
+      "region": "southeast-asia",
+      "themes": ["food"],
+      "q": "nasi lemak"
+    },
+    {
+      "key": "se-satay",
+      "region": "southeast-asia",
+      "themes": ["food"],
+      "q": "satay grill"
+    },
+    {
+      "key": "se-rice",
+      "region": "southeast-asia",
+      "themes": ["nature", "travel"],
+      "q": "Bali rice terraces"
+    },
+    {
+      "key": "se-halong",
+      "region": "southeast-asia",
+      "themes": ["travel"],
+      "q": "Ha Long Bay"
+    },
+    {
+      "key": "se-angkor",
+      "region": "southeast-asia",
+      "themes": ["travel"],
+      "q": "Angkor Wat"
+    },
+    {
+      "key": "se-singapore",
+      "region": "southeast-asia",
+      "themes": ["city"],
+      "q": "Marina Bay Singapore skyline"
+    },
+    {
+      "key": "se-bangkok",
+      "region": "southeast-asia",
+      "themes": ["city", "food"],
+      "q": "Bangkok street food market"
+    },
+    {
+      "key": "se-fruit",
+      "region": "southeast-asia",
+      "themes": ["food"],
+      "q": "tropical fruit market mangosteen"
+    },
+    {
+      "key": "se-elnido",
+      "region": "southeast-asia",
+      "themes": ["travel", "nature"],
+      "q": "El Nido Palawan beach"
+    },
+    {
+      "key": "se-lantern",
+      "region": "southeast-asia",
+      "themes": ["festivals"],
+      "q": "Hoi An lanterns"
+    },
+    {
+      "key": "se-rain",
+      "region": "southeast-asia",
+      "themes": ["weather"],
+      "q": "tropical rain storm Vietnam"
+    },
+    {
+      "key": "me-mezze",
+      "region": "middle-east",
+      "themes": ["food"],
+      "q": "hummus mezze"
+    },
+    {
+      "key": "me-dates",
+      "region": "middle-east",
+      "themes": ["food"],
+      "q": "dates fruit arabic coffee"
+    },
+    {
+      "key": "me-wadirum",
+      "region": "middle-east",
+      "themes": ["nature", "travel"],
+      "q": "Wadi Rum desert"
+    },
+    {
+      "key": "me-petra",
+      "region": "middle-east",
+      "themes": ["travel"],
+      "q": "Petra Treasury"
+    },
+    {
+      "key": "me-dubai",
+      "region": "middle-east",
+      "themes": ["city"],
+      "q": "Dubai skyline"
+    },
+    {
+      "key": "me-souk",
+      "region": "middle-east",
+      "themes": ["city", "travel"],
+      "q": "spice souk"
+    },
+    {
+      "key": "me-istanbul",
+      "region": "middle-east",
+      "themes": ["city", "travel"],
+      "q": "Istanbul Bosphorus"
+    },
+    {
+      "key": "me-tea",
+      "region": "middle-east",
+      "themes": ["food"],
+      "q": "Turkish tea glass"
+    },
+    {
+      "key": "me-camel",
+      "region": "middle-east",
+      "themes": ["pets"],
+      "q": "camel desert"
+    },
+    {
+      "key": "me-fanous",
+      "region": "middle-east",
+      "themes": ["festivals"],
+      "q": "Ramadan lanterns fanous"
+    },
+    {
+      "key": "me-oman",
+      "region": "middle-east",
+      "themes": ["nature"],
+      "q": "Oman wadi"
+    },
+    {
+      "key": "me-baklava",
+      "region": "middle-east",
+      "themes": ["food"],
+      "q": "baklava"
+    },
+    {
+      "key": "af-kilimanjaro",
+      "region": "africa",
+      "themes": ["nature", "travel"],
+      "q": "Kilimanjaro"
+    },
+    {
+      "key": "af-safari",
+      "region": "africa",
+      "themes": ["pets", "nature"],
+      "q": "giraffe savanna"
+    },
+    {
+      "key": "af-elephant",
+      "region": "africa",
+      "themes": ["pets", "nature"],
+      "q": "elephants Serengeti"
+    },
+    {
+      "key": "af-tablemtn",
+      "region": "africa",
+      "themes": ["travel", "city"],
+      "q": "Table Mountain Cape Town"
+    },
+    {
+      "key": "af-jollof",
+      "region": "africa",
+      "themes": ["food"],
+      "q": "jollof rice"
+    },
+    {
+      "key": "af-injera",
+      "region": "africa",
+      "themes": ["food"],
+      "q": "injera"
+    },
+    {
+      "key": "af-marrakech",
+      "region": "africa",
+      "themes": ["city", "travel"],
+      "q": "Marrakech souk"
+    },
+    {
+      "key": "af-sahara",
+      "region": "africa",
+      "themes": ["nature"],
+      "q": "Sahara dunes Merzouga"
+    },
+    {
+      "key": "af-victoria",
+      "region": "africa",
+      "themes": ["nature", "travel"],
+      "q": "Victoria Falls"
+    },
+    {
+      "key": "af-zanzibar",
+      "region": "africa",
+      "themes": ["travel"],
+      "q": "Zanzibar beach dhow"
+    },
+    {
+      "key": "af-pyramids",
+      "region": "africa",
+      "themes": ["travel"],
+      "q": "Giza pyramids"
+    },
+    {
+      "key": "af-coffee",
+      "region": "africa",
+      "themes": ["food", "hobbies"],
+      "q": "Ethiopian coffee ceremony jebena"
+    },
+    {
+      "key": "af-baobab",
+      "region": "africa",
+      "themes": ["nature"],
+      "q": "Avenue of the Baobabs"
+    },
+    {
+      "key": "af-lagos",
+      "region": "africa",
+      "themes": ["city"],
+      "q": "Lagos skyline"
+    },
+    {
+      "key": "eu-eiffel",
+      "region": "europe",
+      "themes": ["travel"],
+      "q": "Eiffel Tower"
+    },
+    {
+      "key": "eu-croissant",
+      "region": "europe",
+      "themes": ["food"],
+      "q": "croissant breakfast"
+    },
+    {
+      "key": "eu-pizza",
+      "region": "europe",
+      "themes": ["food"],
+      "q": "pizza margherita"
+    },
+    {
+      "key": "eu-alps",
+      "region": "europe",
+      "themes": ["nature"],
+      "q": "Swiss Alps lake"
+    },
+    {
+      "key": "eu-amsterdam",
+      "region": "europe",
+      "themes": ["city"],
+      "q": "Amsterdam canal bicycles"
+    },
+    {
+      "key": "eu-xmas",
+      "region": "europe",
+      "themes": ["festivals", "weather"],
+      "q": "Christmas market"
+    },
+    {
+      "key": "eu-santorini",
+      "region": "europe",
+      "themes": ["travel"],
+      "q": "Santorini Oia"
+    },
+    {
+      "key": "eu-london",
+      "region": "europe",
+      "themes": ["city"],
+      "q": "London double decker bus"
+    },
+    {
+      "key": "eu-snow",
+      "region": "europe",
+      "themes": ["weather"],
+      "q": "snowy village winter"
+    },
+    {
+      "key": "eu-lavender",
+      "region": "europe",
+      "themes": ["nature"],
+      "q": "lavender field Provence"
+    },
+    {
+      "key": "eu-autumn",
+      "region": "europe",
+      "themes": ["nature", "weather"],
+      "q": "autumn forest path"
+    },
+    {
+      "key": "eu-gelato",
+      "region": "europe",
+      "themes": ["food"],
+      "q": "gelato"
+    },
+    {
+      "key": "am-grandcanyon",
+      "region": "americas",
+      "themes": ["nature", "travel"],
+      "q": "Grand Canyon"
+    },
+    {
+      "key": "am-nyc",
+      "region": "americas",
+      "themes": ["city"],
+      "q": "Manhattan skyline"
+    },
+    {
+      "key": "am-tacos",
+      "region": "americas",
+      "themes": ["food"],
+      "q": "tacos"
+    },
+    {
+      "key": "am-machupicchu",
+      "region": "americas",
+      "themes": ["travel"],
+      "q": "Machu Picchu"
+    },
+    {
+      "key": "am-yosemite",
+      "region": "americas",
+      "themes": ["nature"],
+      "q": "Yosemite valley"
+    },
+    {
+      "key": "am-foliage",
+      "region": "americas",
+      "themes": ["nature", "weather"],
+      "q": "fall foliage Vermont"
+    },
+    {
+      "key": "am-banff",
+      "region": "americas",
+      "themes": ["nature", "travel"],
+      "q": "Moraine Lake Banff"
+    },
+    {
+      "key": "am-havana",
+      "region": "americas",
+      "themes": ["city"],
+      "q": "Havana classic car"
+    },
+    {
+      "key": "am-pie",
+      "region": "americas",
+      "themes": ["food", "festivals"],
+      "q": "pumpkin pie"
+    },
+    {
+      "key": "am-bbq",
+      "region": "americas",
+      "themes": ["food"],
+      "q": "barbecue brisket"
+    },
+    {
+      "key": "am-baseball",
+      "region": "americas",
+      "themes": ["sports"],
+      "q": "baseball stadium"
+    },
+    {
+      "key": "am-patagonia",
+      "region": "americas",
+      "themes": ["nature"],
+      "q": "Torres del Paine"
+    },
+    {
+      "key": "am-diademuertos",
+      "region": "americas",
+      "themes": ["festivals"],
+      "q": "marigold Día de Muertos altar"
+    },
+    {
+      "key": "am-rio",
+      "region": "americas",
+      "themes": ["travel", "city"],
+      "q": "Rio de Janeiro Sugarloaf"
+    },
+    {
+      "key": "oc-opera",
+      "region": "oceania",
+      "themes": ["travel", "city"],
+      "q": "Sydney Opera House"
+    },
+    {
+      "key": "oc-reef",
+      "region": "oceania",
+      "themes": ["nature"],
+      "q": "Great Barrier Reef coral"
+    },
+    {
+      "key": "oc-kangaroo",
+      "region": "oceania",
+      "themes": ["pets", "nature"],
+      "q": "kangaroo"
+    },
+    {
+      "key": "oc-koala",
+      "region": "oceania",
+      "themes": ["pets"],
+      "q": "koala"
+    },
+    {
+      "key": "oc-milford",
+      "region": "oceania",
+      "themes": ["nature", "travel"],
+      "q": "Milford Sound"
+    },
+    {
+      "key": "oc-pavlova",
+      "region": "oceania",
+      "themes": ["food"],
+      "q": "pavlova dessert"
+    },
+    {
+      "key": "oc-uluru",
+      "region": "oceania",
+      "themes": ["nature", "travel"],
+      "q": "Uluru"
+    },
+    {
+      "key": "oc-surf",
+      "region": "oceania",
+      "themes": ["sports"],
+      "q": "surfing Bondi"
+    },
+    {
+      "key": "oc-fiji",
+      "region": "oceania",
+      "themes": ["travel"],
+      "q": "Fiji island beach"
+    },
+    {
+      "key": "oc-melbourne",
+      "region": "oceania",
+      "themes": ["city", "food"],
+      "q": "Melbourne laneway cafe"
+    },
+    {
+      "key": "oc-flatwhite",
+      "region": "oceania",
+      "themes": ["food"],
+      "q": "flat white coffee"
+    },
+    {
+      "key": "oc-tekapo",
+      "region": "oceania",
+      "themes": ["nature"],
+      "q": "Lake Tekapo lupins"
+    },
+    {
+      "key": "gl-cat",
+      "region": "global",
+      "themes": ["pets"],
+      "q": "cat portrait"
+    },
+    {
+      "key": "gl-dog",
+      "region": "global",
+      "themes": ["pets"],
+      "q": "dog lying grass"
+    },
+    {
+      "key": "gl-sunset",
+      "region": "global",
+      "themes": ["weather", "nature"],
+      "q": "sunset clouds sky"
+    },
+    {
+      "key": "gl-rainwindow",
+      "region": "global",
+      "themes": ["weather"],
+      "q": "raindrops window"
+    },
+    {
+      "key": "gl-latte",
+      "region": "global",
+      "themes": ["food"],
+      "q": "latte art"
+    },
+    {
+      "key": "gl-rainbow",
+      "region": "global",
+      "themes": ["weather"],
+      "q": "rainbow landscape"
+    },
+    {
+      "key": "gl-guitar",
+      "region": "global",
+      "themes": ["hobbies"],
+      "q": "acoustic guitar"
+    },
+    {
+      "key": "gl-watercolor",
+      "region": "global",
+      "themes": ["hobbies"],
+      "q": "watercolor painting brushes"
+    },
+    {
+      "key": "gl-garden",
+      "region": "global",
+      "themes": ["hobbies"],
+      "q": "vegetable garden"
+    },
+    {
+      "key": "gl-knitting",
+      "region": "global",
+      "themes": ["hobbies"],
+      "q": "knitting yarn"
+    },
+    {
+      "key": "gl-chess",
+      "region": "global",
+      "themes": ["hobbies"],
+      "q": "chess board pieces"
+    },
+    {
+      "key": "gl-books",
+      "region": "global",
+      "themes": ["hobbies"],
+      "q": "stack of books reading"
+    },
+    {
+      "key": "gl-baking",
+      "region": "global",
+      "themes": ["hobbies", "food"],
+      "q": "baking bread dough"
+    },
+    {
+      "key": "gl-pottery",
+      "region": "global",
+      "themes": ["hobbies"],
+      "q": "pottery wheel clay"
+    },
+    {
+      "key": "gl-camera",
+      "region": "global",
+      "themes": ["hobbies"],
+      "q": "camera photography"
+    },
+    {
+      "key": "gl-cycling",
+      "region": "global",
+      "themes": ["sports"],
+      "q": "road cycling"
+    },
+    {
+      "key": "gl-running",
+      "region": "global",
+      "themes": ["sports"],
+      "q": "marathon runners"
+    },
+    {
+      "key": "gl-yoga",
+      "region": "global",
+      "themes": ["sports"],
+      "q": "yoga mat"
+    },
+    {
+      "key": "gl-football",
+      "region": "global",
+      "themes": ["sports"],
+      "q": "football stadium"
+    },
+    {
+      "key": "gl-hiking",
+      "region": "global",
+      "themes": ["sports", "nature"],
+      "q": "hiking trail mountain"
+    },
+    {
+      "key": "gl-laptop",
+      "region": "global",
+      "themes": ["work"],
+      "q": "laptop desk workspace"
+    },
+    {
+      "key": "gl-library",
+      "region": "global",
+      "themes": ["work"],
+      "q": "library reading room"
+    },
+    {
+      "key": "gl-notebook",
+      "region": "global",
+      "themes": ["work"],
+      "q": "notebook pen desk"
+    },
+    {
+      "key": "gl-cake",
+      "region": "global",
+      "themes": ["festivals", "family"],
+      "q": "birthday cake candles"
+    },
+    {
+      "key": "gl-picnic",
+      "region": "global",
+      "themes": ["family"],
+      "q": "picnic blanket park"
+    },
+    {
+      "key": "gl-dinner",
+      "region": "global",
+      "themes": ["family", "food"],
+      "q": "family dinner table"
+    },
+    {
+      "key": "gl-fireworks",
+      "region": "global",
+      "themes": ["festivals"],
+      "q": "fireworks"
+    },
+    {
+      "key": "gl-goldfish",
+      "region": "global",
+      "themes": ["pets"],
+      "q": "goldfish aquarium"
+    },
+    {
+      "key": "gl-parrot",
+      "region": "global",
+      "themes": ["pets"],
+      "q": "parrot"
+    },
+    {
+      "key": "gl-snowflake",
+      "region": "global",
+      "themes": ["weather"],
+      "q": "snow trees winter"
+    },
+    {
+      "key": "sa-coffee2",
+      "region": "south-asia",
+      "themes": ["food"],
+      "q": "filter coffee"
+    },
+    {
+      "key": "sa-backwaters",
+      "region": "south-asia",
+      "themes": ["nature", "travel"],
+      "q": "Kerala backwaters houseboat"
+    },
+    {
+      "key": "sa-tnvillage",
+      "region": "south-asia",
+      "themes": ["nature"],
+      "q": "Tamil Nadu paddy field"
+    },
+    {
+      "key": "sa-kanyakumari",
+      "region": "south-asia",
+      "themes": ["travel"],
+      "q": "Kanyakumari"
+    },
+    {
+      "key": "sa-jasmine",
+      "region": "south-asia",
+      "themes": ["festivals"],
+      "q": "jasmine flowers garland"
+    },
+    {
+      "key": "sa-rangoli",
+      "region": "south-asia",
+      "themes": ["festivals"],
+      "q": "rangoli"
+    },
+    {
+      "key": "sa-rain2",
+      "region": "south-asia",
+      "themes": ["weather"],
+      "q": "monsoon clouds"
+    },
+    {
+      "key": "sa-chennai2",
+      "region": "south-asia",
+      "themes": ["city"],
+      "q": "Chennai"
+    },
+    {
+      "key": "sa-srilanka2",
+      "region": "south-asia",
+      "themes": ["travel", "nature"],
+      "q": "Sri Lanka tea"
+    },
+    {
+      "key": "sa-cricket2",
+      "region": "south-asia",
+      "themes": ["sports"],
+      "q": "cricket ball bat"
+    },
+    {
+      "key": "se-halong2",
+      "region": "southeast-asia",
+      "themes": ["travel"],
+      "q": "Halong Bay"
+    },
+    {
+      "key": "se-bangkok2",
+      "region": "southeast-asia",
+      "themes": ["city"],
+      "q": "Bangkok"
+    },
+    {
+      "key": "se-fruit2",
+      "region": "southeast-asia",
+      "themes": ["food"],
+      "q": "rambutan"
+    },
+    {
+      "key": "se-kl",
+      "region": "southeast-asia",
+      "themes": ["city"],
+      "q": "Kuala Lumpur skyline"
+    },
+    {
+      "key": "se-thaibeach",
+      "region": "southeast-asia",
+      "themes": ["travel"],
+      "q": "Krabi beach"
+    },
+    {
+      "key": "se-temple",
+      "region": "southeast-asia",
+      "themes": ["travel"],
+      "q": "Wat Arun"
+    },
+    {
+      "key": "se-hoian",
+      "region": "southeast-asia",
+      "themes": ["festivals", "city"],
+      "q": "Hoi An"
+    },
+    {
+      "key": "me-hummus",
+      "region": "middle-east",
+      "themes": ["food"],
+      "q": "hummus"
+    },
+    {
+      "key": "me-falafel",
+      "region": "middle-east",
+      "themes": ["food"],
+      "q": "falafel"
+    },
+    {
+      "key": "me-datepalm",
+      "region": "middle-east",
+      "themes": ["food", "nature"],
+      "q": "dates"
+    },
+    {
+      "key": "me-ramadan",
+      "region": "middle-east",
+      "themes": ["festivals"],
+      "q": "Ramadan decorations"
+    },
+    {
+      "key": "me-cappadocia",
+      "region": "middle-east",
+      "themes": ["travel"],
+      "q": "Cappadocia balloons"
+    },
+    {
+      "key": "me-muscat",
+      "region": "middle-east",
+      "themes": ["city"],
+      "q": "Muscat"
+    },
+    {
+      "key": "me-doha",
+      "region": "middle-east",
+      "themes": ["city"],
+      "q": "Doha skyline"
+    },
+    {
+      "key": "oc-harbour",
+      "region": "oceania",
+      "themes": ["travel", "city"],
+      "q": "Sydney Harbour Bridge"
+    },
+    {
+      "key": "oc-bondi",
+      "region": "oceania",
+      "themes": ["travel"],
+      "q": "Bondi Beach"
+    },
+    {
+      "key": "oc-queenstown",
+      "region": "oceania",
+      "themes": ["nature", "travel"],
+      "q": "Queenstown New Zealand"
+    },
+    {
+      "key": "oc-auckland",
+      "region": "oceania",
+      "themes": ["city"],
+      "q": "Auckland skyline"
+    },
+    {
+      "key": "oc-melb2",
+      "region": "oceania",
+      "themes": ["city"],
+      "q": "Melbourne"
+    },
+    {
+      "key": "af-zanzibar2",
+      "region": "africa",
+      "themes": ["travel"],
+      "q": "Zanzibar"
+    },
+    {
+      "key": "af-baobab2",
+      "region": "africa",
+      "themes": ["nature"],
+      "q": "baobab"
+    },
+    {
+      "key": "af-capetown",
+      "region": "africa",
+      "themes": ["city"],
+      "q": "Cape Town"
+    },
+    {
+      "key": "af-nairobi",
+      "region": "africa",
+      "themes": ["city"],
+      "q": "Nairobi"
+    },
+    {
+      "key": "af-lion",
+      "region": "africa",
+      "themes": ["pets", "nature"],
+      "q": "lion Masai Mara"
+    },
+    {
+      "key": "am-banff2",
+      "region": "americas",
+      "themes": ["nature"],
+      "q": "Banff"
+    },
+    {
+      "key": "am-mexico",
+      "region": "americas",
+      "themes": ["city", "travel"],
+      "q": "Guanajuato"
+    },
+    {
+      "key": "eu-prague",
+      "region": "europe",
+      "themes": ["city"],
+      "q": "Prague old town"
+    },
+    {
+      "key": "gl-familysil",
+      "region": "global",
+      "themes": ["family"],
+      "q": "family silhouette sunset beach"
+    },
+    {
+      "key": "gl-hands",
+      "region": "global",
+      "themes": ["family"],
+      "q": "holding hands"
+    },
+    {
+      "key": "gl-familywalk",
+      "region": "global",
+      "themes": ["family"],
+      "q": "family walking path"
+    },
+    {
+      "key": "gl-tennis",
+      "region": "global",
+      "themes": ["sports"],
+      "q": "tennis court ball"
+    },
+    {
+      "key": "gl-badminton",
+      "region": "global",
+      "themes": ["sports"],
+      "q": "shuttlecock"
+    },
+    {
+      "key": "gl-shoes",
+      "region": "global",
+      "themes": ["sports"],
+      "q": "running shoes"
+    },
+    {
+      "key": "gl-swim",
+      "region": "global",
+      "themes": ["sports"],
+      "q": "swimming pool lanes"
+    },
+    {
+      "key": "gl-kite",
+      "region": "global",
+      "themes": ["hobbies", "family"],
+      "q": "kites flying sky"
+    }
+  ]
+}

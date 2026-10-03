@@ -1,4 +1,5 @@
-import { useNavigate } from 'react-router';
+import { Link as RouterLink, useNavigate } from 'react-router';
+import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -72,6 +73,13 @@ export function AboutPage() {
                 FaceMango is free software under the GNU Affero General Public License v3.0. You
                 must be 13 or older to use it.
               </Typography>
+              <Link
+                component={RouterLink}
+                to="/credits"
+                sx={{ display: 'inline-block', mt: 1.5, fontWeight: 600, color: 'text.primary' }}
+              >
+                Credits for photos, avatars and emoji
+              </Link>
             </CardContent>
           </Card>
         </Stack>

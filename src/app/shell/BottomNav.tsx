@@ -3,13 +3,16 @@ import Paper from '@mui/material/Paper';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import { isActive, navItems } from '@/app/nav';
+import Badge from '@mui/material/Badge';
 import { brand } from '@/app/tokens';
+import { useUnreadCount } from '@/features/activity/useUnreadCount';
 
 const items = navItems.filter((item) => item.bottomNav);
 
 export function BottomNav() {
   const { pathname } = useLocation();
   const current = items.find((item) => isActive(item.path, pathname))?.path ?? false;
+  const unread = useUnreadCount();
   return (
     <Paper
       component="nav"
@@ -35,7 +38,15 @@ export function BottomNav() {
             to={item.path}
             value={item.path}
             label={item.label}
-            icon={item.icon}
+            icon={
+              item.path === '/notifications' ? (
+                <Badge badgeContent={unread} color="error" max={99}>
+                  {item.icon}
+                </Badge>
+              ) : (
+                item.icon
+              )
+            }
             aria-current={current === item.path ? 'page' : undefined}
           />
         ))}

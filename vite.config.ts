@@ -76,7 +76,7 @@ export default defineConfig({
       manifest: {
         name: 'FaceMango',
         short_name: 'FaceMango',
-        description: 'A social network that is entirely yours. Friends simulated by on-device AI.',
+        description: 'The most personal social network ever built. And the most private.',
         lang: 'en',
         start_url: '/',
         scope: '/',
@@ -99,16 +99,47 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
+        // WebLLM (~6 MB) is only needed on the WebGPU tier; it is cached at runtime instead.
+        globIgnores: ['**/assets/webllm*.js'],
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         navigateFallback: 'index.html',
         cleanupOutdatedCaches: true,
+        // Photo pack and emoji load lazily and stay available offline once seen (SPEC §4.5).
+        runtimeCaching: [
+          {
+            urlPattern: ({ url, sameOrigin }) =>
+              sameOrigin && /^\/(photos|emoji)\//.test(url.pathname),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'facemango-media',
+              expiration: { maxEntries: 600, maxAgeSeconds: 60 * 60 * 24 * 365 },
+            },
+          },
+          {
+            urlPattern: ({ url, sameOrigin }) =>
+              sameOrigin && /^\/assets\/webllm.*\.js$/.test(url.pathname),
+            handler: 'CacheFirst',
+            options: { cacheName: 'facemango-webllm', expiration: { maxEntries: 6 } },
+          },
+          {
+            urlPattern: ({ url, sameOrigin }) => sameOrigin && url.pathname.startsWith('/models/'),
+            handler: 'CacheFirst',
+            options: { cacheName: 'facemango-model-libs', expiration: { maxEntries: 8 } },
+          },
+        ],
       },
     }),
   ],
   test: {
-    environment: 'jsdom',
+    // Node by default (fast); component tests opt into jsdom with a docblock.
+    environment: 'node',
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
+    // /mnt/c (WSL) is slow to start many workers; a few threads are faster and reliable.
+    pool: 'threads',
+    maxWorkers: 3,
+    isolate: false,
     css: false,
   },
 });

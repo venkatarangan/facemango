@@ -1,60 +1,71 @@
 import { useState } from 'react';
-import Box from '@mui/material/Box';
+import { useLiveQuery } from 'dexie-react-hooks';
+import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import ButtonBase from '@mui/material/ButtonBase';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
-import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
 import AddPhotoAlternateRounded from '@mui/icons-material/AddPhotoAlternateRounded';
 import EmojiEmotionsRounded from '@mui/icons-material/EmojiEmotionsRounded';
 import AutoAwesomeRounded from '@mui/icons-material/AutoAwesomeRounded';
-import { useProfile } from '@/app/useProfile';
-import { useUiStore } from '@/app/uiStore';
 import { brand } from '@/app/tokens';
-import { UserAvatar } from '@/components/UserAvatar';
+import { AuthorAvatar } from '@/components/AuthorAvatar';
+import { db, ME, type Post } from '@/db';
+import { useEngineStore } from '@/engine/store';
+import { ComposerDialog } from '@/features/compose/ComposerDialog';
+import { SetupCard } from '@/features/ai/SetupCard';
 import { IosDataNotice } from '@/features/onboarding/IosDataNotice';
 import { isIOS, isStandalone } from '@/lib/platform';
 import { firstName } from '@/lib/text';
+import { FeedList } from './FeedList';
+import { useAuthors } from './useAuthors';
 
-function PostSkeleton() {
+function AwayBanner() {
+  const summary = useEngineStore((s) => s.awaySummary);
+  if (!summary) return null;
+  const parts = [
+    summary.reactions && `${summary.reactions} reaction${summary.reactions === 1 ? '' : 's'}`,
+    summary.comments && `${summary.comments} comment${summary.comments === 1 ? '' : 's'}`,
+  ].filter(Boolean);
   return (
-    <Card aria-hidden>
-      <CardContent>
-        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 1.5 }}>
-          <Skeleton variant="circular" width={40} height={40} />
-          <Box sx={{ flex: 1 }}>
-            <Skeleton width="40%" />
-            <Skeleton width="20%" />
-          </Box>
-        </Stack>
-        <Skeleton width="90%" />
-        <Skeleton width="70%" />
-        <Skeleton variant="rounded" height={180} sx={{ mt: 1.5 }} />
-      </CardContent>
-    </Card>
+    <Alert
+      icon={<span aria-hidden>🥭</span>}
+      severity="info"
+      onClose={() => useEngineStore.setState({ awaySummary: null })}
+      sx={{ borderRadius: 3, bgcolor: alpha(brand.mango, 0.18), color: brand.ink, fontWeight: 600 }}
+    >
+      While you were away: {parts.join(', ')}
+    </Alert>
   );
 }
 
 export function HomePage() {
-  const profile = useProfile();
-  const showToast = useUiStore((s) => s.showToast);
+  const authors = useAuthors();
   const [showIosNotice] = useState(() => isIOS() && !isStandalone());
-  if (!profile) return null;
+  const [composerOpen, setComposerOpen] = useState(false);
+  const [editing, setEditing] = useState<Post | null>(null);
+  const setupDone = useEngineStore((s) => s.setup.stage === 'done');
+  const myPosts = useLiveQuery(() => db.posts.where('authorId').equals(ME).count(), []);
+  const me = authors?.get(ME);
+  if (!authors || !me) return null;
 
-  const comingSoon = () => showToast('Posting arrives in milestone M3.');
+  const openComposer = () => {
+    setEditing(null);
+    setComposerOpen(true);
+  };
 
   return (
     <Stack spacing={2}>
       <Card component="section" aria-label="Create a post">
         <CardContent sx={{ pb: '12px !important' }}>
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-            <UserAvatar profile={profile} />
+            <AuthorAvatar author={me} />
             <ButtonBase
-              onClick={comingSoon}
+              onClick={openComposer}
               sx={{
                 flex: 1,
                 justifyContent: 'flex-start',
@@ -70,7 +81,7 @@ export function HomePage() {
                 '&:hover': { bgcolor: '#F2F2F2' },
               }}
             >
-              What&apos;s on your mind, {firstName(profile.name)}?
+              What&apos;s on your mind, {firstName(me.name)}?
             </ButtonBase>
           </Stack>
           <Divider sx={{ my: 1.5 }} />
@@ -83,19 +94,19 @@ export function HomePage() {
           >
             <Button
               startIcon={<AddPhotoAlternateRounded sx={{ color: '#43A047' }} />}
-              onClick={comingSoon}
+              onClick={openComposer}
             >
               Photo
             </Button>
             <Button
               startIcon={<EmojiEmotionsRounded sx={{ color: brand.mangoText }} />}
-              onClick={comingSoon}
+              onClick={openComposer}
             >
               Feeling
             </Button>
             <Button
               startIcon={<AutoAwesomeRounded sx={{ color: brand.mangoText }} />}
-              onClick={comingSoon}
+              onClick={openComposer}
             >
               Mango AI
             </Button>
@@ -103,33 +114,46 @@ export function HomePage() {
         </CardContent>
       </Card>
 
+      <AwayBanner />
+      <SetupCard />
       {showIosNotice && <IosDataNotice />}
 
-      <Card
-        component="section"
-        sx={{
-          background: `linear-gradient(135deg, ${alpha(brand.mango, 0.28)}, ${alpha(brand.mangoLight, 0.08)})`,
-          borderColor: alpha(brand.mango, 0.5),
-        }}
-      >
-        <CardContent sx={{ p: 3 }}>
-          <Typography
-            variant="h5"
-            component="h1"
-            sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
-          >
-            Welcome to FaceMango, {firstName(profile.name)} 🥭
-          </Typography>
-          <Typography color="text.secondary" sx={{ mt: 1 }}>
-            Your profile is saved on this device. Next, FaceMango will set up AI in your browser and
-            find friends from {profile.city} and around the world. They&apos;ll start posting,
-            liking and commenting right here.
-          </Typography>
-        </CardContent>
-      </Card>
+      {setupDone && myPosts === 0 && (
+        <Card
+          sx={{
+            borderColor: alpha(brand.mango, 0.6),
+            background: `linear-gradient(135deg, ${alpha(brand.mango, 0.22)}, #fff 75%)`,
+          }}
+        >
+          <CardContent sx={{ p: 2.5 }}>
+            <Typography variant="h6" component="h2">
+              Your friends are here, {firstName(me.name)} 👋
+            </Typography>
+            <Typography color="text.secondary" sx={{ mt: 0.5, mb: 1.5 }}>
+              Share your first post and see who reacts first.
+            </Typography>
+            <Button variant="contained" onClick={openComposer}>
+              Write your first post
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
-      <PostSkeleton />
-      <PostSkeleton />
+      <FeedList
+        authors={authors}
+        onEdit={(post) => {
+          setEditing(post);
+          setComposerOpen(true);
+        }}
+      />
+
+      <ComposerDialog
+        key={editing?.id ?? 'new'}
+        open={composerOpen}
+        onClose={() => setComposerOpen(false)}
+        me={me}
+        editing={editing}
+      />
     </Stack>
   );
 }

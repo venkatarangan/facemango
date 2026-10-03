@@ -1,0 +1,9 @@
+{
+  "baseUrl": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/main/web-llm-models/v0_2_84/base",
+  "files": [
+    "Qwen3-1.7B-q4f16_1_cs1k-webgpu.wasm",
+    "Qwen3-1.7B-q4f32_1_cs1k-webgpu.wasm",
+    "gemma3-1b-it-q4f16_1_cs1k-webgpu.wasm",
+    "Qwen3-0.6B-q4f32_1_cs1k-webgpu.wasm"
+  ]
+}

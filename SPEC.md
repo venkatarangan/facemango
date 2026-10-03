@@ -1,6 +1,6 @@
 # FaceMango — Top-Level Specification (v1.0, ready for approval)
 
-> **Name:** FaceMango · **Production URL:** https://face.mangoidiots.com
+> **Name:** FaceMango · **Byline:** *The most personal social network ever built. And the most private.* · **Production URL:** https://face.mangoidiots.com
 > **Licence:** AGPL-3.0 (open source) · **Hosting:** GitHub Pages, DNS on Cloudflare
 > Status: **v1.0**, all clarification rounds folded in · Date: 2026-10-03 · Owner: Venkatarangan
 > Changes per round are listed in §12.
@@ -195,7 +195,7 @@ detect() ─▶ Tier 1: Prompt API (window.LanguageModel)
 |---|---|
 | Language / build | **TypeScript** (strict) + **Vite** |
 | Framework | **React 19** |
-| UI kit | **MUI v7** (Material), custom FaceMango theme, CSS variables, Material Symbols icons |
+| UI kit | **MUI v9** (Material; v7 in the original draft), custom FaceMango theme, CSS variables, Material icons |
 | Fonts | **Inter** (UI) + a rounded display face for the wordmark (e.g. Nunito), self-hosted |
 | Animation | **Motion** (Framer Motion) for transitions, shared-layout card → detail, spring like-button, list enter/exit |
 | Reaction emoji | **Noto Animated Emoji** (Lottie, CC BY 4.0) via **dotLottie** player |
@@ -319,3 +319,4 @@ public/
 - **v0.2:** name FaceMango; iOS warnings; privacy wording now permits Hugging Face + GA; no Lite mode; likes = 3–5× comments; public profiles = 2× friends; full backup; friends reset.
 - **v1.0:** faces plan approved; CC0 worldwide family-friendly photo pack; reset keeps old engagement under old names (former friends); "Mango AI" confirmed; Wellbeing usage tracker; GitHub Pages + Cloudflare DNS; AGPL-3.0 and a best-in-class library stack.
 - **v1.0.1:** new FaceMango logo to be designed; repo `facemango` (local first, GitHub after the user okays the local build).
+- **v1.0.2 (during M1–M4):** MUI v9 instead of v7; byline "The most personal social network ever built. And the most private."; yellow text on white uses `#B28900` only for large text/icons and `#8A6A00` for body text (WCAG AA); WebLLM model libraries (.wasm) and the Lottie player are served from our own origin, so the only third parties stay Hugging Face (weights) and Google Analytics; WebLLM models: Qwen3-1.7B (desktop), Gemma-3-1B (phones), Qwen3 q4f32 fallbacks for GPUs without shader-f16; avatars use the DiceBear "Personas" style (CC BY 4.0).
