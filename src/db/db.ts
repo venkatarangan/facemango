@@ -1,6 +1,7 @@
 import Dexie, { type EntityTable } from 'dexie';
 import type {
   AppNotification,
+  ChatMessage,
   Comment,
   Media,
   MetaRow,
@@ -29,6 +30,7 @@ export class FaceMangoDB extends Dexie {
   moods!: EntityTable<MoodCheckIn, 'id'>;
   settings!: EntityTable<SettingRow, 'key'>;
   meta!: EntityTable<MetaRow, 'key'>;
+  chat!: EntityTable<ChatMessage, 'id'>;
 
   constructor(name = DB_NAME) {
     super(name);
@@ -47,6 +49,8 @@ export class FaceMangoDB extends Dexie {
       settings: 'key',
       meta: 'key',
     });
+    // v2 (M5): Mango AI chat history.
+    this.version(2).stores({ chat: 'id, createdAt' });
   }
 }
 

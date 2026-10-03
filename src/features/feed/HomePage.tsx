@@ -18,6 +18,7 @@ import { db, ME, type Post } from '@/db';
 import { useEngineStore } from '@/engine/store';
 import { ComposerDialog } from '@/features/compose/ComposerDialog';
 import { SetupCard } from '@/features/ai/SetupCard';
+import { WeeklySummaryCard } from '@/features/wellbeing/WeeklySummaryCard';
 import { IosDataNotice } from '@/features/onboarding/IosDataNotice';
 import { isIOS, isStandalone } from '@/lib/platform';
 import { firstName } from '@/lib/text';
@@ -116,6 +117,7 @@ export function HomePage() {
 
       <AwayBanner />
       <SetupCard />
+      <WeeklySummaryCard />
       {showIosNotice && <IosDataNotice />}
 
       {setupDone && myPosts === 0 && (

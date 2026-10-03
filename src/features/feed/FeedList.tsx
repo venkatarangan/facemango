@@ -3,6 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { Virtuoso } from 'react-virtuoso';
 import Box from '@mui/material/Box';
 import { db, type Post } from '@/db';
+import { noteFeedDepth } from '@/lib/usage';
 import { rankPosts } from './rankPosts';
 import { PostCard } from './PostCard';
 import type { Author } from './useAuthors';
@@ -34,6 +35,7 @@ export function FeedList({
       data={ranked}
       computeItemKey={(_, post) => post.id}
       increaseViewportBy={{ top: 600, bottom: 1200 }}
+      rangeChanged={({ endIndex }) => noteFeedDepth(endIndex + 1)}
       itemContent={(_, post) => (
         <Box sx={{ pb: 2 }}>
           <PostCard post={post} authors={authors} onEdit={onEdit} />

@@ -15,7 +15,7 @@ export function NavList({ profile, dense = false }: { profile: Profile; dense?: 
   const unread = useUnreadCount();
   return (
     <List component="nav" aria-label="Main" dense={dense} sx={{ display: 'grid', gap: 0.25 }}>
-      <ListItemButton component={RouterLink} to="/settings">
+      <ListItemButton component={RouterLink} to="/profile/me" selected={pathname === '/profile/me'}>
         <ListItemIcon sx={{ minWidth: 44 }}>
           <UserAvatar profile={profile} size={30} />
         </ListItemIcon>

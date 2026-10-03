@@ -131,7 +131,7 @@ export default defineConfig({
     }),
   ],
   test: {
-    // Node by default (fast); component tests opt into jsdom with a docblock.
+    // Node by default (fast); component tests opt into happy-dom with a docblock.
     environment: 'node',
     globals: true,
     setupFiles: ['./src/test/setup.ts'],

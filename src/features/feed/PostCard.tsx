@@ -22,6 +22,7 @@ import { db, deletePost, ME, type Post } from '@/db';
 import { useUiStore } from '@/app/uiStore';
 import { AuthorAvatar } from '@/components/AuthorAvatar';
 import { FEELINGS } from '@/features/compose/feelings';
+import { profilePath } from '@/features/profile/profilePath';
 import { CommentInput, CommentThread } from './Comments';
 import { PostPhoto } from './PostPhoto';
 import { PostText } from './PostText';
@@ -76,10 +77,24 @@ function PostCardImpl({ post, authors, expanded = false, onEdit }: PostCardProps
   return (
     <Card component="article" aria-label={`Post by ${author.name}`} sx={{ overflow: 'visible' }}>
       <Stack direction="row" spacing={1.25} sx={{ p: 2, pb: 1, alignItems: 'center' }}>
-        <AuthorAvatar author={author} size={42} />
+        <Box
+          component={RouterLink}
+          to={profilePath(author.id)}
+          aria-label={`${author.name}'s profile`}
+          sx={{ display: 'flex' }}
+        >
+          <AuthorAvatar author={author} size={42} />
+        </Box>
         <Box sx={{ minWidth: 0, flex: 1 }}>
           <Typography sx={{ fontWeight: 700, lineHeight: 1.25 }}>
-            {author.name}
+            <Link
+              component={RouterLink}
+              to={profilePath(author.id)}
+              color="inherit"
+              underline="hover"
+            >
+              {author.name}
+            </Link>
             {feeling && (
               <Typography component="span" color="text.secondary" sx={{ fontWeight: 400 }}>
                 {' '}

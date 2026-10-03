@@ -1,6 +1,7 @@
 import { db } from './db';
 import { deleteAllData, getProfile, saveProfile } from './profile';
 
+beforeEach(() => deleteAllData());
 afterEach(async () => {
   await deleteAllData();
 });

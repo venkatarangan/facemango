@@ -15,6 +15,7 @@ export interface Profile {
   age: number;
   city: string;
   languages: string[];
+  bio?: string;
   /** media.id of the profile photo, if any. */
   photoId?: Id;
   createdAt: Timestamp;
@@ -161,6 +162,8 @@ export interface UsageSession {
   endedAt: Timestamp;
   /** Foreground milliseconds. */
   activeMs: number;
+  /** Deepest feed position reached (posts scrolled past). */
+  feedDepth?: number;
 }
 
 export type Mood = 'good' | 'okay' | 'low';
@@ -170,6 +173,15 @@ export interface MoodCheckIn {
   at: Timestamp;
   mood: Mood;
   sessionId?: Id;
+}
+
+export interface ChatMessage {
+  id: Id;
+  role: 'user' | 'assistant';
+  text: string;
+  /** The reply is a post draft that can be used as a post. */
+  draft?: boolean;
+  createdAt: Timestamp;
 }
 
 export interface SettingRow {

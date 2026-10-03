@@ -1,4 +1,6 @@
+import { Link as RouterLink } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
+import CardActionArea from '@mui/material/CardActionArea';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
@@ -34,27 +36,33 @@ export function FriendsPage() {
         }}
       >
         {friends.map((f) => (
-          <Card key={f.id} sx={{ p: 2, textAlign: 'center' }}>
-            <AuthorAvatar
-              author={{ id: f.id, kind: f.kind, name: f.name, persona: f }}
-              size={72}
-              sx={{ mx: 'auto' }}
-            />
-            <Typography sx={{ fontWeight: 700, mt: 1, lineHeight: 1.2 }}>{f.name}</Typography>
-            <Typography variant="body2" color="text.secondary" noWrap>
-              {f.occupation}
-            </Typography>
-            <Typography variant="caption" color="text.secondary" noWrap sx={{ display: 'block' }}>
-              {f.city}, {f.country}
-            </Typography>
-            <Stack
-              direction="row"
-              sx={{ flexWrap: 'wrap', gap: 0.5, justifyContent: 'center', mt: 1 }}
+          <Card key={f.id} sx={{ textAlign: 'center' }}>
+            <CardActionArea
+              component={RouterLink}
+              to={`/profile/${f.id}`}
+              sx={{ p: 2, height: '100%' }}
             >
-              {f.interests.slice(0, 2).map((i) => (
-                <Chip key={i} label={i} size="small" />
-              ))}
-            </Stack>
+              <AuthorAvatar
+                author={{ id: f.id, kind: f.kind, name: f.name, persona: f }}
+                size={72}
+                sx={{ mx: 'auto' }}
+              />
+              <Typography sx={{ fontWeight: 700, mt: 1, lineHeight: 1.2 }}>{f.name}</Typography>
+              <Typography variant="body2" color="text.secondary" noWrap>
+                {f.occupation}
+              </Typography>
+              <Typography variant="caption" color="text.secondary" noWrap sx={{ display: 'block' }}>
+                {f.city}, {f.country}
+              </Typography>
+              <Stack
+                direction="row"
+                sx={{ flexWrap: 'wrap', gap: 0.5, justifyContent: 'center', mt: 1 }}
+              >
+                {f.interests.slice(0, 2).map((i) => (
+                  <Chip key={i} label={i} size="small" />
+                ))}
+              </Stack>
+            </CardActionArea>
           </Card>
         ))}
       </Box>

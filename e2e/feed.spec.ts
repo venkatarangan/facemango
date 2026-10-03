@@ -1,15 +1,5 @@
-import { expect, test, type Page } from '@playwright/test';
-
-async function signUp(page: Page, name = 'Kavya Iyer') {
-  await page.goto('/welcome');
-  await page.getByRole('button', { name: 'Get started' }).click();
-  await page.getByRole('textbox', { name: 'Name' }).fill(name);
-  await page.getByRole('spinbutton', { name: 'Age' }).fill('27');
-  await page.getByRole('textbox', { name: 'City' }).fill('Chennai');
-  await page.getByRole('checkbox', { name: /I understand/ }).check();
-  await page.getByRole('button', { name: 'Find my friends' }).click();
-  await expect(page).toHaveURL(/\/$/);
-}
+import { expect, test } from '@playwright/test';
+import { signUp } from './helpers';
 
 test('first run builds friends and a seed feed (mock model)', async ({ page }) => {
   await signUp(page);
