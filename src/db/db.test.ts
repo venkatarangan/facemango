@@ -28,6 +28,7 @@ describe('FaceMangoDB schema', () => {
         'reactions',
         'settings',
         'usageSessions',
+        'chat',
       ].sort(),
     );
   });

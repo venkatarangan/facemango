@@ -6,8 +6,6 @@ import { LandingPage } from '@/features/onboarding/LandingPage';
 import { HomePage } from '@/features/feed/HomePage';
 import { SplashScreen } from '@/components/SplashScreen';
 
-const placeholders = () => import('@/features/placeholder/pages');
-
 export const routes: RouteObject[] = [
   {
     element: <RootLayout />,
@@ -59,16 +57,26 @@ export const routes: RouteObject[] = [
             }),
           },
           {
+            path: 'profile/:id',
+            lazy: async () => ({
+              Component: (await import('@/features/profile/ProfilePage')).ProfilePage,
+            }),
+          },
+          {
             path: 'post/:id',
             lazy: async () => ({ Component: (await import('@/features/feed/PostPage')).PostPage }),
           },
           {
             path: 'assistant',
-            lazy: async () => ({ Component: (await placeholders()).AssistantPage }),
+            lazy: async () => ({
+              Component: (await import('@/features/assistant/AssistantPage')).AssistantPage,
+            }),
           },
           {
             path: 'memories',
-            lazy: async () => ({ Component: (await placeholders()).MemoriesPage }),
+            lazy: async () => ({
+              Component: (await import('@/features/memories/MemoriesPage')).MemoriesPage,
+            }),
           },
           {
             path: 'notifications',
@@ -76,10 +84,17 @@ export const routes: RouteObject[] = [
               Component: (await import('@/features/activity/ActivityPage')).ActivityPage,
             }),
           },
-          { path: 'photos', lazy: async () => ({ Component: (await placeholders()).PhotosPage }) },
+          {
+            path: 'photos',
+            lazy: async () => ({
+              Component: (await import('@/features/photos/PhotosPage')).PhotosPage,
+            }),
+          },
           {
             path: 'wellbeing',
-            lazy: async () => ({ Component: (await placeholders()).WellbeingPage }),
+            lazy: async () => ({
+              Component: (await import('@/features/wellbeing/WellbeingPage')).WellbeingPage,
+            }),
           },
           {
             path: 'settings',

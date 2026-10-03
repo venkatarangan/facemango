@@ -1,3 +1,4 @@
+import { Link as RouterLink } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -69,7 +70,20 @@ export function RightRail() {
           {contacts.length ? (
             <Stack spacing={1.25}>
               {contacts.map((f) => (
-                <Stack key={f.id} direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+                <Stack
+                  key={f.id}
+                  direction="row"
+                  spacing={1.5}
+                  component={RouterLink}
+                  to={`/profile/${f.id}`}
+                  sx={{
+                    alignItems: 'center',
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    borderRadius: 2,
+                    '&:hover': { bgcolor: '#F5F5F5' },
+                  }}
+                >
                   <Box sx={{ position: 'relative' }}>
                     <AuthorAvatar author={asAuthor(f)} size={32} />
                     {f.activity > 0.6 && (

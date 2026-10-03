@@ -2,6 +2,7 @@ import { db } from './db';
 import { addMyComment, createUserPost, deleteComment, deletePost, setMyReaction } from './posts';
 import { deleteAllData } from './profile';
 
+beforeEach(() => deleteAllData());
 afterEach(() => deleteAllData());
 
 describe('post actions', () => {

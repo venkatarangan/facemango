@@ -8,6 +8,8 @@ import { BottomNav } from './BottomNav';
 import { useProfile } from '@/app/useProfile';
 import { startAI } from '@/ai';
 import { startEngine } from '@/engine';
+import { startUsageTracking } from '@/lib/usage';
+import { WellbeingNudges } from '@/features/wellbeing/WellbeingNudges';
 
 const RAIL_TOP = { xs: 56, md: 64 };
 
@@ -19,6 +21,7 @@ export function AppShell() {
     if (!signedUp) return;
     void startAI({ userGesture: false });
     startEngine();
+    startUsageTracking();
   }, [signedUp]);
   if (!profile) return null; // RequireProfile guarantees this after loading.
 
@@ -82,6 +85,7 @@ export function AppShell() {
         </Box>
       </Box>
       <BottomNav />
+      <WellbeingNudges />
     </Box>
   );
 }

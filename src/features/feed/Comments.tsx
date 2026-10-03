@@ -14,6 +14,7 @@ import { AuthorAvatar } from '@/components/AuthorAvatar';
 import { onUserComment } from '@/engine';
 import { useEngineStore } from '@/engine/store';
 import { TimeAgo } from './TimeAgo';
+import { profilePath } from '@/features/profile/profilePath';
 import { unknownAuthor, type Author } from './useAuthors';
 
 export function CommentInput({
@@ -113,7 +114,14 @@ function CommentItem({
           }}
         >
           <Typography variant="body2" sx={{ fontWeight: 700 }}>
-            {author.name}
+            <Link
+              component={RouterLink}
+              to={profilePath(author.id)}
+              color="inherit"
+              underline="hover"
+            >
+              {author.name}
+            </Link>
             {author.kind === 'former' && (
               <Typography
                 component="span"

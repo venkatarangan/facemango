@@ -51,14 +51,16 @@ interface ComposerProps {
   me: Author;
   /** Edit an existing post instead of creating one. */
   editing?: Post | null;
+  /** Prefill (e.g. a draft from Mango AI). */
+  initialText?: string;
 }
 
 /** Create/edit post (SPEC §3.3): text + one photo, feeling, @mentions, ✨ Mango AI rewrite. */
-export function ComposerDialog({ open, onClose, me, editing }: ComposerProps) {
+export function ComposerDialog({ open, onClose, me, editing, initialText }: ComposerProps) {
   const fullScreen = useMediaQuery('(max-width:600px)');
   const showToast = useUiStore((s) => s.showToast);
   const aiReady = useAIStore((s) => s.status === 'ready');
-  const [text, setText] = useState(editing?.text ?? '');
+  const [text, setText] = useState(editing?.text ?? initialText ?? '');
   const [feeling, setFeeling] = useState<string | undefined>(editing?.feeling);
   const [photo, setPhoto] = useState<Blob | null>(null);
   const [mentions, setMentions] = useState<string[]>(editing?.mentions ?? []);

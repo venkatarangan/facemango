@@ -228,3 +228,23 @@ export function commentsPrompt(
 export const COMMENT_SYSTEM = `You write short, realistic social media comments for a private, simulated Facebook-like app. English only. ${SAFETY}`;
 export const PERSONA_SYSTEM = `You create fictional characters for a private, simulated social network. Reply with JSON only. ${SAFETY}`;
 export const POST_SYSTEM = `You write realistic, everyday social media posts for fictional people. English only. ${SAFETY}`;
+
+// ---------- Profile pages ----------
+
+export const profileDetailsSchema = z.object({
+  about: z.string().min(10).max(300),
+  work: z.string().min(3).max(80),
+  education: z.string().min(3).max(80),
+  personality: z.string().min(10).max(200),
+});
+
+export function profileDetailsPrompt(p: Persona): string {
+  return [
+    `Write the profile page details for this fictional person: ${personaLine(p)}`,
+    p.bio ? `Their short bio: ${p.bio}` : '',
+    `Likes: ${p.likes.join(', ') || 'n/a'}. Dislikes: ${p.dislikes.join(', ') || 'n/a'}.`,
+    'about: 2–3 first-person sentences in their voice. work: job title and a fictional workplace. education: a fictional or generic school/college fitting their city. personality: one sentence describing them in the third person.',
+  ]
+    .filter(Boolean)
+    .join('\n');
+}
