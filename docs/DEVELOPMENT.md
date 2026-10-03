@@ -34,5 +34,6 @@ Requires Node 22+. `npm run dev` / `npm run build` first fetch the WebLLM model 
 ## Deploy
 
 Pushing to `main` runs `.github/workflows/deploy.yml`: lint, test, build, then deploy to GitHub
-Pages (`public/CNAME` → face.mangoidiots.com). Set the optional Actions variable `GA_ID` (`G-…`) to
+Pages at https://face.mangoidiots.com (custom domain set in the repo's Pages settings; Cloudflare
+DNS `CNAME face → venkatarangan.github.io`). Set the optional Actions variable `GA_ID` (`G-…`) to
 enable analytics.

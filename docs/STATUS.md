@@ -2,7 +2,8 @@
 
 _Updated 2026-10-03_
 
-Live at **https://face.mangoidiots.com** (GitHub Pages, deployed by Actions on every push to `main`).
+Live at **https://face.mangoidiots.com** (GitHub Pages over HTTPS, deployed by Actions on every push to
+`main`).
 Milestones M1–M7 from `SPEC.md` are built. M8 (realistic on-device faces) is not started.
 
 ## Open items
