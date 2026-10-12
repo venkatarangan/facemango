@@ -25,5 +25,8 @@ public/models
 dist-e2e
 public/emoji/*.wasm
 
-# Personal backup script (copied by itself, not tracked)
-backup.bat
+# Owner-only local setup (not for the public repo)
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/hooks/
+.claude/sync-excludes
