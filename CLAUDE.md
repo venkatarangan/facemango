@@ -17,7 +17,6 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
   - GA id (Actions variable `GA_ID`)
   - photo pack 87/~250
   - parked "setup experience" for the first-run wait (in memory: `setup-experience-idea`)
-  - optional: remove the owner's Gmail address from git history (it was in older versions of this file)
 
 ## Working agreements
 - **Commits:** only when the owner asks. Work on `main` (or a short branch). The old milestone branches (`m1-skeleton`, `m2-m4`, `m5-m7`) are local-only history.
@@ -25,6 +24,7 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - **Answers:** concise, leading with a recommendation. Ask only about real product decisions; after a go-ahead, proceed without process questions.
 - **Docs and UI copy:** short. End users get friendly explanations; developer docs stay brief, since developers use AI agents to read the code.
 - **Libraries:** the best open-source ones, AGPL-3.0-compatible licences only.
+- **Public repo:** no machine-specific paths, user names or local setup in tracked files; put them in `CLAUDE.local.md` or other git-ignored files.
 
 ## Deployment
 - **Pages:** build type "GitHub Actions"; custom domain `face.mangoidiots.com` is set through the Pages API/settings. The `public/CNAME` file is for reference only; Actions-based Pages ignores it.
@@ -57,9 +57,9 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - Lint follows React Compiler rules: no `Date.now()` or ref reads during render (use `useNow()`).
 
 ## Environment
-- Repo: `C:\DevTemp\facemango` = `/mnt/c/devtemp/facemango`. Use WSL (Node 22); the Windows host has no Node.
-- `/mnt/c` is slow: `npm install` takes ~4 min, Vitest ~90 s. Vitest uses 3 reused threads; clear the DB in `beforeEach`.
+- **Machine-specific setup** (folders, sync, sandbox, new-PC checklist) is in `CLAUDE.local.md`, which is git-ignored. Read it first. If it's missing, ask the owner for it.
+- WSL with Node 22; the Windows host has no Node.
+- Vitest uses 3 reused threads; clear the DB in `beforeEach`.
 - Test the real AI in Chrome/Edge on Windows at http://localhost:5173 (`npm run dev` in WSL). This environment has no GPU.
 - Playwright WebKit (iPhone project) passes in CI; running it locally needs `sudo npx playwright install-deps webkit`.
 - `gh` CLI is logged in as `venkatarangan` (repo + workflow scopes).
-- **Local backup:** `backup.bat` (git-ignored, owner-only) wipes `C:\dev\aimade\facemango` and mirrors this folder there with robocopy, including `.git`, docs and `.env*` files. It skips anything you can rebuild: `node_modules`, `dist*`, test output, `public/models`, `*.wasm`. Update its exclude list when new download or build folders appear.
