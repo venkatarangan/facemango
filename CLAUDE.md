@@ -10,7 +10,7 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - **Owner:** Venkatarangan (GitHub `venkatarangan`). Original brief: `input.txt`.
 
 ## Status (2026-10-14)
-- **Built:** M1–M7 from SPEC §10, plus life stories, folder auto-backup, the first-run setup experience and the developer real-model test page (Advanced settings → Developer).
+- **Built:** M1–M7 from SPEC §10, plus life stories, folder auto-backup, photo-aware comments on every tier (Florence-2 captioner via Transformers.js), the first-run setup experience and the developer real-model test page (Advanced settings → Developer).
 - **Parked:** M8 realistic faces (no suitably licensed small image model yet), encrypted backups, Messenger-lite. Details in `docs/STATUS.md`.
 - **Analytics:** on. The repo Actions variable `GA_ID` is set.
 - **Published and live over HTTPS:** pushing to `main` runs CI (lint, unit, e2e on Chrome/Android/iPhone) and deploys to GitHub Pages. See "Deployment" below.
@@ -39,7 +39,7 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 | Topic | Decision |
 |---|---|
 | Stack | Vite 8, React 19, TypeScript 6 (strict), MUI v9, Dexie, Zustand, Motion, Vitest, Playwright |
-| AI tiers | Prompt API (Chrome/Edge) → WebLLM on WebGPU (Qwen3-1.7B desktop, Gemma-3-1B phones, q4f32 fallbacks) → Unsupported screen. **No non-AI mode.** |
+| AI tiers | Prompt API (Chrome/Edge) → WebLLM on WebGPU (Qwen3-1.7B desktop, Gemma-3-1B phones, q4f32 fallbacks) → Unsupported screen. **No non-AI mode.** Photo captions: the Prompt API when it can see images, else Florence-2-base-ft (MIT) via Transformers.js (Apache-2.0), downloaded with the first photo post. |
 | Third parties | Only Hugging Face (model weights) and Google Analytics (page views, route patterns, EU/UK consent). CDN assets are self-hosted via `npm run models`. |
 | Engagement | Comments 0–9 by default (cap 100); likes = comments × 3–5 (cap 1,000,000); mix Good 60 / Appreciative 25 / Nonsense 10 / Critical 5 / Super-critical 0; ≤2 critical per post; Super-critical off for under-18s |
 | Friends | 25 by default + 2× public profiles; reset keeps old likes and comments under "former friends" |
