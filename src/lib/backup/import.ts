@@ -14,6 +14,7 @@ import {
   type Profile,
   type Reaction,
   type SettingRow,
+  type Story,
   type UsageSession,
 } from '@/db';
 import { fromMarkdown, type BackupRecord } from './format';
@@ -94,6 +95,8 @@ export async function restoreBackup(backup: ParsedBackup, mode: RestoreMode): Pr
   let events = of<PlannedEvent>('event');
   let notifications = of<AppNotification>('notification');
   let meta = of<MetaRow>('meta');
+  // Backups made before life stories existed simply have none.
+  let stories = of<Story>('story');
   const now = Date.now();
 
   let keptPosts = posts;
@@ -114,6 +117,14 @@ export async function restoreBackup(backup: ParsedBackup, mode: RestoreMode): Pr
     meta = meta.filter(
       (m) => !['setupComplete', 'seedTarget', 'nextFriendPostAt', 'usedPhotos'].includes(m.key),
     );
+    // Old friends' stories end; their posts weren't restored, so drop the links to them.
+    stories = stories.map((s) => ({
+      ...s,
+      status: s.status === 'active' ? ('abandoned' as const) : s.status,
+      endedAt: s.endedAt ?? now,
+      postIds: [],
+      stages: s.stages.map((b) => ({ ...b, postId: undefined })),
+    }));
   }
 
   await db.transaction('rw', db.tables, async () => {
@@ -132,5 +143,6 @@ export async function restoreBackup(backup: ParsedBackup, mode: RestoreMode): Pr
     await db.settings.bulkPut(of<SettingRow>('setting'));
     await db.meta.bulkPut(meta);
     await db.chat.bulkPut(of<ChatMessage>('chat'));
+    await db.stories.bulkPut(stories);
   });
 }

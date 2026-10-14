@@ -51,7 +51,7 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - Hard caps: likes ≤ 1,000,000 and comments ≤ 100 per post (`src/engine/limits.ts`, tested).
 - User content and wellbeing data never go over the network.
 - All AI calls go through `src/ai` (priority queue; Zod-validated JSON with retries).
-- Never edit a shipped Dexie version; add a new one (currently v2).
+- Never edit a shipped Dexie version; add a new one (currently v3: `stories`).
 - The mock model exists only in the e2e build (`VITE_MOCK_AI=1`, `dist-e2e/`).
 - Keep `SPEC.md`, `CLAUDE.md` and `input.txt` out of Prettier.
 - **How-it-works PDF:** `public/FaceMango-How-It-Works.pdf` is served at `/FaceMango-How-It-Works.pdf` and linked from the README. When a publish includes a major change to the architecture, framework or libraries (only then), update the PDF before pushing. It was printed from HTML with Chromium; the source is not in the repo, so rebuild it to match the existing layout.

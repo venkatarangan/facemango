@@ -5,14 +5,15 @@ Requires Node 22+. `npm run dev` / `npm run build` first fetch the WebLLM model 
 
 ## Code map
 
-| Path            | What                                                                                         |
-| --------------- | -------------------------------------------------------------------------------------------- |
-| `src/ai/`       | AI tiers: Prompt API → WebLLM (Web Worker) → unsupported. Priority queue, Zod-validated JSON |
-| `src/engine/`   | The simulation: personas, engagement planner, scheduler, living feed, first-run setup        |
-| `src/db/`       | Dexie schema and data actions (everything lives in IndexedDB)                                |
-| `src/features/` | Screens, one folder each                                                                     |
-| `src/lib/`      | Helpers: backup, usage tracking, analytics, time ago, …                                      |
-| `scripts/`      | Asset scripts (model libraries, sounds, photo pack)                                          |
+| Path                    | What                                                                                         |
+| ----------------------- | -------------------------------------------------------------------------------------------- |
+| `src/ai/`               | AI tiers: Prompt API → WebLLM (Web Worker) → unsupported. Priority queue, Zod-validated JSON |
+| `src/engine/`           | The simulation: personas, engagement planner, scheduler, living feed, first-run setup        |
+| `src/engine/stories.ts` | Friends' life stories: beat logic; the curated arcs are in `storyTemplates.ts`               |
+| `src/db/`               | Dexie schema and data actions (everything lives in IndexedDB)                                |
+| `src/features/`         | Screens, one folder each                                                                     |
+| `src/lib/`              | Helpers: backup, usage tracking, analytics, time ago, …                                      |
+| `scripts/`              | Asset scripts (model libraries, sounds, photo pack)                                          |
 
 ## Rules
 

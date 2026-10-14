@@ -49,7 +49,28 @@ describe('resetFriends', () => {
       },
     ]);
     await db.meta.put({ key: 'setupComplete', value: true });
-    await resetFriends();
+    const story = {
+      personaId: 'f1',
+      kind: 'garden',
+      title: 'Growing a tomato garden',
+      slots: { plant: 'tomato' },
+      stages: [{ title: 'Seeds', brief: 'Planted seeds.', postId: 'x', postedAt: 1 }],
+      startedAt: 1,
+      nextBeatAt: Date.now() + 1000,
+      postIds: ['x'],
+    };
+    await db.stories.bulkAdd([
+      { ...story, id: 's-active', status: 'active', currentStage: 1 },
+      { ...story, id: 's-done', status: 'completed', currentStage: 1, endedAt: 5 },
+    ]);
+    await resetFriends(1234);
+    // Unfinished stories end cleanly; finished ones and their posts stay as they were.
+    expect(await db.stories.get('s-active')).toMatchObject({
+      status: 'abandoned',
+      endedAt: 1234,
+      postIds: ['x'],
+    });
+    expect(await db.stories.get('s-done')).toMatchObject({ status: 'completed', endedAt: 5 });
     expect((await db.personas.toArray()).map((p) => p.kind)).toEqual(['former', 'former']);
     expect((await db.events.get('e1'))?.status).toBe('cancelled');
     expect((await db.events.get('e2'))?.status).toBe('planned');

@@ -18,6 +18,7 @@ const NAMES = [
   'Sam Carter',
 ];
 const CITIES = ['Chennai', 'Bengaluru', 'Berlin', 'Accra', 'Osaka', 'Lima', 'Madurai', 'Austin'];
+const STORY_WORDS = ['Sunrise', 'Lakeside', 'Mango Grove', 'Biscuit', 'Blue Harbour'];
 const SENTENCES = [
   'This made my day, thank you for sharing!',
   'Looks wonderful. Where was this taken?',
@@ -55,7 +56,9 @@ function fake(schema: JsonSchema, key = ''): unknown {
   switch (type) {
     case 'object': {
       const out: Record<string, unknown> = {};
-      for (const [k, v] of Object.entries(schema.properties ?? {})) out[k] = fake(v, k);
+      // Life-story specifics ({ slots: { destination, petName, … } }) get short, plausible values.
+      for (const [k, v] of Object.entries(schema.properties ?? {}))
+        out[k] = fake(v, key === 'slots' ? `slot:${k}` : k);
       return out;
     }
     case 'array': {
@@ -74,13 +77,17 @@ function fake(schema: JsonSchema, key = ''): unknown {
       return counter++ % 2 === 0;
     default: {
       const k = key.toLowerCase();
-      let value = /name/.test(k)
-        ? pick(NAMES)
-        : /city/.test(k)
+      let value = k.startsWith('slot:')
+        ? /city|destination|place|neighbo/.test(k)
           ? pick(CITIES)
-          : /country/.test(k)
-            ? 'India'
-            : pick(SENTENCES);
+          : pick(STORY_WORDS)
+        : /name/.test(k)
+          ? pick(NAMES)
+          : /city/.test(k)
+            ? pick(CITIES)
+            : /country/.test(k)
+              ? 'India'
+              : pick(SENTENCES);
       if (/birthday/.test(k)) value = `0${(counter % 9) + 1}-1${counter % 9}`;
       if (schema.maxLength && value.length > schema.maxLength)
         value = value.slice(0, schema.maxLength);

@@ -12,6 +12,7 @@ import type {
   Profile,
   Reaction,
   SettingRow,
+  Story,
   UsageSession,
 } from './types';
 
@@ -31,6 +32,7 @@ export class FaceMangoDB extends Dexie {
   settings!: EntityTable<SettingRow, 'key'>;
   meta!: EntityTable<MetaRow, 'key'>;
   chat!: EntityTable<ChatMessage, 'id'>;
+  stories!: EntityTable<Story, 'id'>;
 
   constructor(name = DB_NAME) {
     super(name);
@@ -51,6 +53,8 @@ export class FaceMangoDB extends Dexie {
     });
     // v2 (M5): Mango AI chat history.
     this.version(2).stores({ chat: 'id, createdAt' });
+    // v3: friends' life stories (SPEC §4.3.1). New table only; existing data is untouched.
+    this.version(3).stores({ stories: 'id, personaId, status, [status+nextBeatAt]' });
   }
 }
 
