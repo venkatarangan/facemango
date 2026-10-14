@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Friends now comment on what's in your photos on every browser, not just Chrome/Edge with a
+  built-in AI that can see images. Elsewhere, a small on-device photo model (Florence-2 via
+  Transformers.js, about 245 MB) downloads with your first photo post. Toggle it in Settings →
+  On-device AI. Photos never leave the device. The How-It-Works PDF needs updating for this new
+  library before the next publish.
 - Mango AI (chat and composer) falls back to a single reply if streaming fails, and shows the reason.
   Settings → On-device AI shows the last AI error.
 - Shorter, friendlier README, About page and welcome screen.
