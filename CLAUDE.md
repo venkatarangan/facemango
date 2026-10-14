@@ -15,7 +15,7 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - **Real-model test (owner, Qwen3 on WebGPU):** friends, posts with photos, likes, comments and Activity worked. Mango AI (chat + composer) failed. It now falls back from streaming to a single reply and shows the error. **Re-test pending**; ask the owner for the error from Settings → On-device AI if it still fails.
 - **Open items:**
   - GA id (Actions variable `GA_ID`)
-  - photo pack 87/~250
+  - photo pack 252/~250 (target reached)
   - parked "setup experience" for the first-run wait (in memory: `setup-experience-idea`)
 
 ## Working agreements
