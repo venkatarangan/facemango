@@ -30,6 +30,13 @@ unless you export it.
 - The friends are simulated, not real people. For ages 13+.
 - Google Analytics counts page views only. It never sees your posts, profile or stats.
 
+## How it works
+
+Curious what happens under the hood? Read the
+[illustrated guide (PDF)](https://face.mangoidiots.com/FaceMango-How-It-Works.pdf): a 13-page,
+plain-English tour of the architecture, libraries, on-device AI, simulation engine, data and backups,
+and how the app is built and shipped.
+
 ## For developers
 
 ```bash

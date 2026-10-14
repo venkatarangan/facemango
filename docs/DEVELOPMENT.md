@@ -25,6 +25,15 @@ Requires Node 22+. `npm run dev` / `npm run build` first fetch the WebLLM model 
 - **Mock model:** exists only in the e2e build (`npm run build:e2e`, `VITE_MOCK_AI=1`). The app has
   no non-AI mode.
 
+## How-it-works guide (PDF)
+
+`public/FaceMango-How-It-Works.pdf` is the illustrated architecture guide. Vite copies it to
+`dist/`, so it is live at https://face.mangoidiots.com/FaceMango-How-It-Works.pdf (the service
+worker skips `.pdf` navigations). It is the only copy, and the README links to it. When a publish
+includes a major change to the architecture, framework or libraries (not ordinary changes), update
+the PDF before pushing. It was printed from HTML with Chromium and the source is not tracked, so
+recreate it to match the current layout and replace the file.
+
 ## Testing
 
 - `npm test`: Vitest in Node with `fake-indexeddb`. Clear the DB in `beforeEach`.
