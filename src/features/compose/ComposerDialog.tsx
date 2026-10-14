@@ -184,6 +184,11 @@ export function ComposerDialog({ open, onClose, me, editing, initialText }: Comp
       }
       reset();
       onClose();
+    } catch (error) {
+      console.error('Could not save the post', error);
+      showToast(
+        `Couldn't save your post: ${error instanceof Error ? error.message : String(error)}`,
+      );
     } finally {
       setBusy(false);
     }
