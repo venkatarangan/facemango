@@ -1,4 +1,3 @@
-import { createUserPost, db, deleteAllData } from '@/db';
 import type { AI } from '@/ai';
 
 const ai = vi.hoisted(() => ({
@@ -12,6 +11,10 @@ vi.mock('@/ai/captioner', () => ({
   getPhotoDescriptionSettings: async () => ai.settings,
 }));
 
+// Test files share modules (isolate: false), so another file may already have loaded describe.ts
+// with the real '@/ai'. Start from a fresh module graph so the mocks above apply.
+vi.resetModules();
+const { createUserPost, db, deleteAllData } = await import('@/db');
 const { describeUserPhoto } = await import('./describe');
 const { captionPhoto } = await import('@/ai/captioner');
 
