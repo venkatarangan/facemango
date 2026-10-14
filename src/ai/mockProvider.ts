@@ -117,9 +117,15 @@ export class MockProvider implements AIProvider {
     return pick(SENTENCES);
   }
 
-  async generateJSON<T>(_prompt: string, schema: z.ZodType<T>): Promise<T> {
+  async generateJSON<T>(
+    _prompt: string,
+    schema: z.ZodType<T>,
+    options?: GenerateOptions,
+  ): Promise<T> {
     await delay(40);
-    return schema.parse(fake(toJsonSchema(schema) as JsonSchema));
+    const value = fake(toJsonSchema(schema) as JsonSchema);
+    options?.trace?.({ kind: 'attempt', attempt: 0, raw: JSON.stringify(value), ms: 40 });
+    return schema.parse(value);
   }
 
   async *stream(prompt: string, options?: GenerateOptions): AsyncIterable<string> {

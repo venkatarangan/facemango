@@ -2,14 +2,21 @@ import JSZip from 'jszip';
 import { format } from 'date-fns';
 import { db, ME, type Persona, type Story } from '@/db';
 import { avatarSvg } from '@/engine/avatar';
+import { DEVICE_ONLY_META, DEVICE_ONLY_SETTINGS } from './deviceOnly';
 import { BACKUP_VERSION, toMarkdown, type BackupRecord } from './format';
 
 const iso = (t?: number) => (t ? new Date(t).toISOString() : undefined);
 const ext = (mime: string) =>
   mime.includes('png') ? 'png' : mime.includes('jpeg') ? 'jpg' : 'webp';
 
-/** Builds the full backup zip (SPEC §3.11): me.md, friends.md, feed.md, wellbeing.md, images/, avatars/. */
-export async function buildBackup(now = Date.now()): Promise<{ blob: Blob; filename: string }> {
+/**
+ * Builds the full backup zip (SPEC §3.11): me.md, friends.md, feed.md, wellbeing.md, images/,
+ * avatars/. `record: false` leaves "last backup" for the caller to set once the zip is saved.
+ */
+export async function buildBackup(
+  now = Date.now(),
+  { record = true }: { record?: boolean } = {},
+): Promise<{ blob: Blob; filename: string }> {
   const [
     profile,
     personas,
@@ -36,8 +43,8 @@ export async function buildBackup(now = Date.now()): Promise<{ blob: Blob; filen
     db.media.toArray(),
     db.usageSessions.toArray(),
     db.moods.toArray(),
-    db.settings.toArray(),
-    db.meta.toArray(),
+    db.settings.filter((s) => !DEVICE_ONLY_SETTINGS.includes(s.key)).toArray(),
+    db.meta.filter((m) => !DEVICE_ONLY_META.includes(m.key)).toArray(),
     db.chat.toArray(),
     db.stories.toArray(),
   ]);
@@ -200,7 +207,7 @@ export async function buildBackup(now = Date.now()): Promise<{ blob: Blob; filen
     compression: 'DEFLATE',
     compressionOptions: { level: 6 },
   });
-  await db.meta.put({ key: 'lastBackupAt', value: now });
+  if (record) await db.meta.put({ key: 'lastBackupAt', value: now });
   return { blob, filename: `facemango-backup-${format(now, 'yyyy-MM-dd')}.zip` };
 }
 

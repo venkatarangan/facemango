@@ -16,6 +16,12 @@
   that stay still with reduced motion. Posts written while waiting are kept until the friends
   arrive. When it's ready: confetti and a chime, or a local notification if the tab is hidden and
   notifications are on.
+- Automatic weekly backup to a folder you choose (Advanced settings; Chrome and Edge on computers).
+  Keeps the latest 5 and counts as your weekly backup.
+- Real-model test page for developers (Advanced settings → Developer): runs the real prompts
+  through the loaded model and reports validity, retries, speed, repetition and tone mix, with the
+  full error when Mango AI streaming fails. Stores nothing.
+- The photo viewer is now announced by name to screen readers.
 
 ## 0.1.0 (2026-10-03): first public build
 

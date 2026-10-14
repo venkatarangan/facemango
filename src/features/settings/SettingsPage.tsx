@@ -8,6 +8,7 @@ import { RestoreDialog } from '@/features/backup/RestoreDialog';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { backupRemindersEnabled } from '@/lib/backup/reminders';
+import { folderBackupSupported } from '@/lib/backup/autoBackup';
 import { promptInstall, useInstallStore } from '@/lib/install';
 import { setSoundsEnabled, soundsEnabled } from '@/lib/sound';
 import {
@@ -69,6 +70,7 @@ export function SettingsPage() {
   const [restoreOpen, setRestoreOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [sounds, setSounds] = useState(soundsEnabled());
+  const [folderBackups] = useState(() => folderBackupSupported());
   const prefs = useLiveQuery(
     async () => ({
       notify: await systemNotificationsEnabled(),
@@ -256,6 +258,7 @@ export function SettingsPage() {
           {lastBackupAt
             ? ` Last backup: ${format(lastBackupAt, 'd MMMM yyyy, h:mm a')}.`
             : ' No backup yet.'}
+          {folderBackups && ' To save one to a folder every week, see Advanced settings.'}
         </Typography>
         <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
           <Button

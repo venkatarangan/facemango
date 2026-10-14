@@ -117,6 +117,7 @@ facemango-backup-2026-10-03.zip
 ```
 - Each record has a YAML front-matter header (id, author, timestamp, type, image ref): readable by people and reliable to parse. Photo-pack images are referenced by id, not copied.
 - **Restore** happens on the first-run screen or in Settings: **Restore everything**, or **Restore my content + new friends**.
+- **Automatic backup to a folder** (opt-in, Advanced settings; Chrome/Edge on computers): the same zip, weekly, to a folder the user picks, keeping the latest 5 (`facemango-auto-backup-YYYY-MM-DD-HHmm.zip`). It counts as the weekly backup. When the browser needs permission again, the backup card asks for a click; it never prompts on its own.
 
 ---
 

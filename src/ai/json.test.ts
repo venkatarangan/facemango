@@ -25,6 +25,16 @@ describe('generateValidated', () => {
     expect(hints[2]).toBeTruthy();
   });
 
+  it('traces every attempt with its raw output and validation error', async () => {
+    const outputs = ['oops', '{"name":"Asha"}'];
+    const trace = vi.fn();
+    await generateValidated(async (attempt) => outputs[attempt]!, schema, 3, trace);
+    expect(trace).toHaveBeenCalledTimes(2);
+    expect(trace.mock.calls[0]![0]).toMatchObject({ kind: 'attempt', attempt: 0, raw: 'oops' });
+    expect(trace.mock.calls[0]![0].error).toBeTruthy();
+    expect(trace.mock.calls[1]![0].error).toBeUndefined();
+  });
+
   it('gives up after the attempts with AIOutputError', async () => {
     await expect(generateValidated(async () => '{}', schema, 2)).rejects.toBeInstanceOf(
       AIOutputError,

@@ -110,6 +110,12 @@ export const routes: RouteObject[] = [
             }),
           },
           {
+            path: 'settings/developer',
+            lazy: async () => ({
+              Component: (await import('@/features/developer/ModelTestPage')).ModelTestPage,
+            }),
+          },
+          {
             path: 'menu',
             lazy: async () => ({
               Component: (await import('@/features/settings/MenuPage')).MenuPage,

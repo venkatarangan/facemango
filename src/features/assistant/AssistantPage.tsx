@@ -21,7 +21,7 @@ import { db, ME, type ChatMessage } from '@/db';
 import {
   addChatMessage,
   buildAssistantRequest,
-  MANGO_SYSTEM,
+  MANGO_CHAT_OPTIONS,
   QUICK_ACTIONS,
   type QuickAction,
 } from '@/engine/assistant';
@@ -100,11 +100,8 @@ export function AssistantPage() {
     let out = '';
     try {
       for await (const delta of model.stream(request.prompt, {
-        system: MANGO_SYSTEM,
-        priority: 'interactive',
+        ...MANGO_CHAT_OPTIONS,
         signal: abort.current.signal,
-        maxTokens: 320,
-        temperature: 0.8,
       })) {
         out += delta;
         setStreaming({ text: out, draft: request.draft });

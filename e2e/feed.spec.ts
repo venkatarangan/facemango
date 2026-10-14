@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { signUp } from './helpers';
+import { signUp, signUpAndWaitForSetup } from './helpers';
 
 test('first run builds friends and a seed feed (mock model)', async ({ page }) => {
   await signUp(page);
@@ -38,10 +38,7 @@ test('a post written during setup waits for the friends, then gets reactions', a
 
 test('posting, reactions, comments and notifications', async ({ page }) => {
   test.setTimeout(150_000);
-  await signUp(page, 'Ravi Kumar');
-  await expect(page.getByRole('region', { name: 'Setting up FaceMango' })).toBeHidden({
-    timeout: 60_000,
-  });
+  await signUpAndWaitForSetup(page, 'Ravi Kumar');
 
   await page.getByRole('button', { name: "What's on your mind, Ravi?" }).click();
   const dialog = page.getByRole('dialog', { name: 'Create post' });

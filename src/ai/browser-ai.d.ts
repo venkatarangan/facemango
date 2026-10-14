@@ -62,6 +62,7 @@ declare var LanguageModel: LanguageModelStatic | undefined;
 interface GPUAdapterLike {
   features: { has(feature: string): boolean };
   limits: { maxBufferSize: number; maxStorageBufferBindingSize: number };
+  info?: { vendor?: string; architecture?: string; device?: string; description?: string };
 }
 
 interface Navigator {

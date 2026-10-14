@@ -1,3 +1,4 @@
+import type { GenerateOptions } from '@/ai';
 import { db, ME, type ChatMessage } from '@/db';
 import { totalReactions } from '@/lib/reactions';
 import { SAFETY } from './prompts';
@@ -28,6 +29,14 @@ export const MANGO_SYSTEM =
   'You are Mango AI, the friendly assistant inside FaceMango, a private social app where all of the ' +
   "user's friends are simulated by AI on their device. Be warm, playful and concise (under 120 words). " +
   `English only. ${SAFETY}`;
+
+/** Generation options for a Mango AI chat reply (also used by the developer test page). */
+export const MANGO_CHAT_OPTIONS = {
+  system: MANGO_SYSTEM,
+  priority: 'interactive',
+  maxTokens: 320,
+  temperature: 0.8,
+} as const satisfies GenerateOptions;
 
 const DRAFT_RULE = 'Reply with only the post text: no quotes, no preamble, at most 2 emoji.';
 
