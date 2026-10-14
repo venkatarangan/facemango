@@ -10,7 +10,7 @@ import { AuthorAvatar } from '@/components/AuthorAvatar';
 import { db } from '@/db';
 import { FriendRequests } from './FriendRequests';
 
-/** Friends list. Profile pages arrive in M5. */
+/** Friends list. */
 export function FriendsPage() {
   const friends = useLiveQuery(() => db.personas.where('kind').equals('friend').sortBy('name'), []);
   const publics = useLiveQuery(() => db.personas.where('kind').equals('public').count(), []);
