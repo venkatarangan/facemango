@@ -1,3 +1,4 @@
+import type { z } from 'zod';
 import { getAI, type AI } from '@/ai';
 import {
   db,
@@ -24,6 +25,12 @@ const MAX_TEXT_ATTEMPTS = 3;
 const COMMENT_BATCH = 4;
 
 let running = false;
+let paused = false;
+
+/** Pauses the loop (the developer test page uses this so its timings are clean). */
+export function setSchedulerPaused(value: boolean): void {
+  paused = value;
+}
 
 /** Starts the engagement loop (SPEC §4.2): applies due events, writes comments just in time. */
 export function startScheduler(): void {
@@ -34,7 +41,7 @@ export function startScheduler(): void {
     while (running) {
       let worked = false;
       try {
-        worked = await step(Date.now());
+        if (!paused) worked = await step(Date.now());
       } catch (error) {
         console.warn('Scheduler step failed', error);
       }
@@ -176,6 +183,21 @@ function cleanText(text: string, name: string): string {
     .trim();
 }
 
+/** Asks the model for one batch of comments (up to 4). Stores nothing. */
+export function generateCommentBatch(
+  ai: AI,
+  post: Pick<Post, 'text' | 'feeling' | 'photoDescription'>,
+  authorName: string,
+  requests: CommentRequest[],
+  context: Parameters<typeof commentsPrompt>[3],
+): Promise<z.infer<typeof commentBatchSchema>> {
+  return ai.generateJSON(commentsPrompt(post, authorName, requests, context), commentBatchSchema, {
+    system: COMMENT_SYSTEM,
+    maxTokens: 70 * requests.length + 40,
+    temperature: 0.9,
+  });
+}
+
 async function writeComments(ai: AI, events: PlannedEvent[]): Promise<void> {
   const postId = events[0]!.postId!;
   const post = await db.posts.get(postId);
@@ -234,16 +256,12 @@ async function writeComments(ai: AI, events: PlannedEvent[]): Promise<void> {
     );
   let result;
   try {
-    result = await ai.generateJSON(
-      commentsPrompt(post, authorName, requests, {
-        photoAlt,
-        recent: existing.slice(-6).map((c) => c.text),
-        earlierPosts:
-          isUserPost && chance(defaultRng, 0.35) ? await earlierUserPosts(post) : undefined,
-      }),
-      commentBatchSchema,
-      { system: COMMENT_SYSTEM, maxTokens: 70 * requests.length + 40, temperature: 0.9 },
-    );
+    result = await generateCommentBatch(ai, post, authorName, requests, {
+      photoAlt,
+      recent: existing.slice(-6).map((c) => c.text),
+      earlierPosts:
+        isUserPost && chance(defaultRng, 0.35) ? await earlierUserPosts(post) : undefined,
+    });
   } catch (error) {
     console.warn('Comment generation failed', error);
     await db.events.bulkUpdate(

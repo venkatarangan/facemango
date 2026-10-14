@@ -1,3 +1,4 @@
+import type { z } from 'zod';
 import type { AI } from '@/ai';
 import { db, type Persona, type Post } from '@/db';
 import { loadPhotoManifest, PACK_PREFIX } from '@/lib/photos';
@@ -6,6 +7,20 @@ import { pickPhoto } from './photoPicker';
 import { planEngagement } from './planner';
 import { friendPostPrompt, friendPostSchema, POST_SYSTEM } from './prompts';
 import { chance, type Rng } from './random';
+
+/** Asks the model for one post's text and feeling. Stores nothing. */
+export function generateFriendPost(
+  ai: AI,
+  author: Persona,
+  photo: { alt: string; tags: string[] } | undefined,
+  recent: string[],
+): Promise<z.infer<typeof friendPostSchema>> {
+  return ai.generateJSON(friendPostPrompt(author, photo, recent), friendPostSchema, {
+    system: POST_SYSTEM,
+    maxTokens: 220,
+    temperature: 0.95,
+  });
+}
 
 /** Writes and stores one post by a friend or public profile, with its engagement plan (SPEC §4.3). */
 export async function createPersonaPost(
@@ -24,10 +39,11 @@ export async function createPersonaPost(
 
   let generated;
   try {
-    generated = await ai.generateJSON(
-      friendPostPrompt(author, photo ? { alt: photo.alt, tags: photo.tags } : undefined, recent),
-      friendPostSchema,
-      { system: POST_SYSTEM, maxTokens: 220, temperature: 0.95 },
+    generated = await generateFriendPost(
+      ai,
+      author,
+      photo ? { alt: photo.alt, tags: photo.tags } : undefined,
+      recent,
     );
   } catch (error) {
     console.warn('Friend post generation failed', error);
