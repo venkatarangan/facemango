@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import ArrowBackRounded from '@mui/icons-material/ArrowBackRounded';
 import { Logo } from '@/components/brand/Logo';
 import { brand } from '@/app/tokens';
-import { BYLINE, IOS_DATA_NOTICE, SOURCE_URL, UNIQUENESS } from '@/lib/copy';
+import { BYLINE, HOW_IT_WORKS_PDF, IOS_DATA_NOTICE, SOURCE_URL, UNIQUENESS } from '@/lib/copy';
 
 const steps = [
   'Tell FaceMango a little about yourself: your name, age, city and languages.',
@@ -91,6 +91,32 @@ export function AboutPage() {
             <Typography color="text.secondary" sx={{ mt: 1 }}>
               {IOS_DATA_NOTICE}
             </Typography>
+          </Section>
+          <Section title="For developers">
+            <Typography>
+              Curious how it's built? <i>How FaceMango works</i> is an illustrated, plain-English
+              guide (PDF): the architecture, the libraries, the on-device AI tiers and photo
+              captioner, the simulation engine and friends' life stories, where data lives and how
+              backups work, and how the app is tested and shipped.
+            </Typography>
+            <Stack direction="row" spacing={2} sx={{ mt: 1.5, flexWrap: 'wrap' }}>
+              <Link
+                href={HOW_IT_WORKS_PDF}
+                target="_blank"
+                rel="noreferrer"
+                sx={{ fontWeight: 600, color: 'text.primary' }}
+              >
+                Read the guide (PDF)
+              </Link>
+              <Link
+                href={SOURCE_URL}
+                target="_blank"
+                rel="noreferrer"
+                sx={{ fontWeight: 600, color: 'text.primary' }}
+              >
+                Code on GitHub
+              </Link>
+            </Stack>
           </Section>
           <Section title="The fine print">
             <Typography color="text.secondary">

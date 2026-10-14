@@ -60,8 +60,14 @@ function spaFallback(): Plugin {
   };
 }
 
+/** major.minor from package.json; the patch is CI's run number, so it grows with every publish. */
+const [major, minor] = pkg.version.split('.');
+const APP_VERSION = process.env.BUILD_NUMBER
+  ? `${major}.${minor}.${process.env.BUILD_NUMBER}`
+  : `${pkg.version}-dev`;
+
 export default defineConfig({
-  define: { __APP_VERSION__: JSON.stringify(pkg.version) },
+  define: { __APP_VERSION__: JSON.stringify(APP_VERSION) },
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },

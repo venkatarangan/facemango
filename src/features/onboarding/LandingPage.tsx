@@ -14,7 +14,8 @@ import SaveAltRounded from '@mui/icons-material/SaveAltRounded';
 import ArrowForwardRounded from '@mui/icons-material/ArrowForwardRounded';
 import { LogoMark, Wordmark } from '@/components/brand/Logo';
 import { brand } from '@/app/tokens';
-import { BYLINE, SOURCE_URL, UNIQUENESS } from '@/lib/copy';
+import { BYLINE, UNIQUENESS } from '@/lib/copy';
+import { SiteFooter } from '@/components/SiteFooter';
 import { isIOS } from '@/lib/platform';
 import { requestPersistentStorage } from '@/lib/storage';
 import { startAI } from '@/ai';
@@ -209,21 +210,7 @@ export function LandingPage() {
           ))}
         </Box>
 
-        <Typography
-          component="footer"
-          variant="body2"
-          color="text.secondary"
-          sx={{ mt: 6, textAlign: 'center' }}
-        >
-          Friends on FaceMango are simulated, not real people. ·{' '}
-          <Link component={RouterLink} to="/about" color="inherit">
-            Privacy & about
-          </Link>{' '}
-          ·{' '}
-          <Link href={SOURCE_URL} target="_blank" rel="noreferrer" color="inherit">
-            Open source
-          </Link>
-        </Typography>
+        <SiteFooter sx={{ display: 'block', mt: 6, textAlign: 'center' }} />
       </Container>
       <RestoreDialog open={restoreOpen} onClose={() => setRestoreOpen(false)} />
     </Box>

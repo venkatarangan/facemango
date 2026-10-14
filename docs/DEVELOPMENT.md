@@ -95,3 +95,6 @@ Pushing to `main` runs `.github/workflows/deploy.yml`: lint, test, build, then d
 Pages at https://face.mangoidiots.com (custom domain set in the repo's Pages settings; Cloudflare
 DNS `CNAME face → venkatarangan.github.io`). Set the optional Actions variable `GA_ID` (`G-…`) to
 enable analytics.
+
+**Version:** the footer shows `major.minor` from `package.json` plus the CI run number (e.g.
+`v0.1.58`), so it grows with every publish; local builds show `0.1.0-dev`.
