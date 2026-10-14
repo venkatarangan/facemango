@@ -1,3 +1,4 @@
+import JSZip from 'jszip';
 import { db, deleteAllData, ME, saveProfile, createUserPost, addMyComment } from '@/db';
 import { buildBackup } from './export';
 import { fromMarkdown, toMarkdown } from './format';
@@ -96,6 +97,60 @@ describe('backup export and restore', () => {
       (await db.comments.where('postId').equals(post.id).toArray()).map((c) => c.text).sort(),
     ).toEqual(['Lovely!', 'my comment']);
     expect(await db.meta.get('setupComplete')).toBeUndefined();
+  });
+
+  const lifeStory = (status: 'active' | 'completed') => ({
+    id: `story-${status}`,
+    personaId: 'f1',
+    kind: 'garden',
+    title: 'Growing a tomato garden',
+    slots: { plant: 'tomato' },
+    stages: [
+      { title: 'Seeds', brief: 'Planted seeds.', postId: 'friend-post', postedAt: 10 },
+      { title: 'Sprouts', brief: 'Sprouts are up.' },
+    ],
+    currentStage: 1,
+    status,
+    startedAt: 10,
+    nextBeatAt: 20,
+    postIds: ['friend-post'],
+  });
+
+  it('round-trips life stories in friends.md', async () => {
+    await seed();
+    await db.stories.bulkAdd([lifeStory('active'), lifeStory('completed')]);
+    const { blob } = await buildBackup();
+    const friendsMd = await (await JSZip.loadAsync(blob)).file('friends.md')!.async('string');
+    expect(friendsMd).toContain('type: story');
+    expect(friendsMd).toContain('Growing a tomato garden (active)');
+    const parsed = await parseBackup(blob);
+    await deleteAllData();
+    await restoreBackup(parsed, 'everything');
+    expect(await db.stories.get('story-active')).toEqual(lifeStory('active'));
+    expect(await db.stories.get('story-completed')).toEqual(lifeStory('completed'));
+  });
+
+  it('ends old friends’ stories when restoring my content with new friends', async () => {
+    await seed();
+    await db.stories.add(lifeStory('active'));
+    await restoreBackup(await parseBackup((await buildBackup()).blob), 'content-new-friends');
+    const s = await db.stories.get('story-active');
+    expect(s).toMatchObject({ status: 'abandoned', postIds: [] });
+    expect(s!.stages[0]!.postId).toBeUndefined();
+    expect(s!.stages[0]!.postedAt).toBe(10);
+  });
+
+  it('restores an older backup that has no stories', async () => {
+    await seed();
+    const { blob } = await buildBackup();
+    // Simulate a backup from before life stories: no story records at all.
+    const zip = await JSZip.loadAsync(blob);
+    const friendsMd = await zip.file('friends.md')!.async('string');
+    expect(friendsMd).not.toContain('type: story');
+    await db.stories.add(lifeStory('active'));
+    await restoreBackup(await parseBackup(blob), 'everything');
+    expect(await db.stories.count()).toBe(0);
+    expect(await db.personas.count()).toBe(2);
   });
 
   it('rejects files that are not backups', async () => {

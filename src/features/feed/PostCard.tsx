@@ -14,6 +14,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import AutoStoriesRounded from '@mui/icons-material/AutoStoriesRounded';
 import ChatBubbleOutlineRounded from '@mui/icons-material/ChatBubbleOutlineRounded';
 import ReplyRounded from '@mui/icons-material/ReplyRounded';
 import MoreHorizRounded from '@mui/icons-material/MoreHorizRounded';
@@ -114,6 +115,24 @@ function PostCardImpl({ post, authors, expanded = false, onEdit }: PostCardProps
             <span aria-hidden>·</span>
             <PublicRounded sx={{ fontSize: 13 }} titleAccess="Visible to your simulated friends" />
           </Stack>
+          {post.story && (
+            <Link
+              component={RouterLink}
+              to={profilePath(post.authorId)}
+              variant="caption"
+              color="text.secondary"
+              underline="hover"
+              sx={{ display: 'flex', alignItems: 'center', gap: 0.5, minWidth: 0 }}
+            >
+              <AutoStoriesRounded sx={{ fontSize: 14 }} aria-hidden />
+              <Box
+                component="span"
+                sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+              >
+                {post.story.title} · update {post.story.beat} of {post.story.total}
+              </Box>
+            </Link>
+          )}
         </Box>
         {post.authorId === ME && (
           <IconButton aria-label="Post options" onClick={(e) => setMenu(e.currentTarget)}>

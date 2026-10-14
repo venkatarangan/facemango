@@ -141,6 +141,15 @@ When a post is created, its whole engagement timeline is **pre-planned** as futu
 - Friends post life updates, opinions, questions and **photos from the bundled photo pack** (§4.5), with captions written by the AI.
 - Friends interact with each other, remember earlier posts, and have birthdays. Public profiles send friend requests.
 
+#### 4.3.1 Life stories
+- Friends have storylines that unfold over days and weeks: a new job, race training, a trip, learning to cook, moving city, a new pet, a garden, an instrument, a room makeover, a course, a neighbourhood event, a craft project.
+- **Arcs are curated in code** (`src/engine/storyTemplates.ts`): each has 4–6 beats in a fixed order and a beat spacing in days. The AI only fills in specifics (a place, a pet's name, a dish), as Zod-validated JSON. Family-friendly and wellbeing-minded: no tragedy, illness or breakups; mild setbacks only (rain on the trip, a burnt first attempt).
+- **State is structured data** in the `stories` table (title, beats, current beat, next beat time, status *active / completed / abandoned*, post links), so small models stay consistent.
+- About 30 % of friend posts tell a story (`storyConfig` in `src/engine/config.ts`): the most overdue beat goes first; otherwise a new story starts if there is room. At most one active story per friend, at most a third of friends at once, new stories at least 16 h apart, and a 7-day rest after a story ends. Beat spacing follows the engagement speed. A few seed posts already start stories.
+- The post prompt gets the story title, the earlier beats and the current one, so posts refer back ("Week 3 of training…"). Comment prompts get a one-line summary, so friends can ask how it's going.
+- Post cards show "{story} · update 3 of 6"; profile pages list ongoing, completed and ended stories, with each update linking to its post.
+- Backup: stories are `type: story` records in `friends.md`; older backups without them still restore. A friends reset (or "my content + new friends" restore) ends the old friends' unfinished stories.
+
 ### 4.4 Comment categories
 | Type | Default | Example tone |
 |---|---|---|
@@ -233,7 +242,7 @@ public/
 ```
 
 ### 6.3 Data model (IndexedDB)
-`profile` · `personas` (kind: friend | public | former) · `posts` · `comments` · `reactions` (rows or aggregates) · `events` · `notifications` · `media` · `usageSessions` · `moods` · `settings` · `meta`.
+`profile` · `personas` (kind: friend | public | former) · `posts` · `comments` · `reactions` (rows or aggregates) · `events` · `notifications` · `media` · `usageSessions` · `moods` · `settings` · `meta` · `chat` (v2) · `stories` (v3, §4.3.1).
 
 ### 6.4 Design
 - White background `#FFFFFF`, surfaces `#FAFAFA`. **Mango-yellow accent** `#FFC400`, with `#B28900` for yellow text on white (WCAG AA). Near-black text `#111111`.
@@ -320,3 +329,4 @@ public/
 - **v1.0:** faces plan approved; CC0 worldwide family-friendly photo pack; reset keeps old engagement under old names (former friends); "Mango AI" confirmed; Wellbeing usage tracker; GitHub Pages + Cloudflare DNS; AGPL-3.0 and a best-in-class library stack.
 - **v1.0.1:** new FaceMango logo to be designed; repo `facemango` (local first, GitHub after the user okays the local build).
 - **v1.0.2 (during M1–M4):** MUI v9 instead of v7; byline "The most personal social network ever built. And the most private."; yellow text on white uses `#B28900` only for large text/icons and `#8A6A00` for body text (WCAG AA); WebLLM model libraries (.wasm) and the Lottie player are served from our own origin, so the only third parties stay Hugging Face (weights) and Google Analytics; WebLLM models: Qwen3-1.7B (desktop), Gemma-3-1B (phones), Qwen3 q4f32 fallbacks for GPUs without shader-f16; avatars use the DiceBear "Personas" style (CC BY 4.0).
+- **v1.0.3:** friends' life stories (§4.3.1), stored in a new Dexie v3 `stories` table.

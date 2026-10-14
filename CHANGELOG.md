@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- **Friends' life stories:** friends now have storylines that unfold over days and weeks (a new
+  job, race training, a trip, a new pet and more), told one post at a time. Posts show which
+  update they are; profiles list each friend's stories. Stored in a new `stories` table (Dexie
+  v3) and included in backups.
+
 - Mango AI (chat and composer) falls back to a single reply if streaming fails, and shows the reason.
   Settings → On-device AI shows the last AI error.
 - Shorter, friendlier README, About page and welcome screen.

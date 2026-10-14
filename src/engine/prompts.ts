@@ -4,6 +4,8 @@
  */
 import { z } from 'zod';
 import type { CommentCategory, Persona, Post, Profile } from '@/db';
+import type { StoryPromptContext } from './stories';
+import type { StoryTemplate } from './storyTemplates';
 
 export const SAFETY =
   'Content rules: family-friendly; never abusive, hateful, sexual, violent or about protected traits ' +
@@ -155,16 +157,41 @@ export function personaLine(p: Persona): string {
   return `${p.name}, ${p.age}, ${p.occupation} in ${p.city}, ${p.country}. Interests: ${p.interests.join(', ')}. Writes: ${p.writingStyle}`;
 }
 
+/** The beat of a life story this post tells (SPEC §4.3.1). */
+function storyLines(s: StoryPromptContext): string[] {
+  const earlier = s.earlier.map((e, i) =>
+    // Quote only the last two posts; older ones by title, to keep the prompt short.
+    e.text && i >= s.earlier.length - 2
+      ? `${i + 1}. "${e.text.slice(0, 90)}"`
+      : `${i + 1}. ${e.title}`,
+  );
+  return [
+    `This post is update ${s.beat} of ${s.total} in their ongoing story "${s.title}"` +
+      (s.beat > 1 ? `, which started ${s.daysIn} day${s.daysIn === 1 ? '' : 's'} ago.` : '.'),
+    earlier.length
+      ? `Their earlier updates: ${earlier.join(' ')}`
+      : 'This is the first update; introduce it.',
+    `This update: ${s.brief}`,
+    s.beat > 1
+      ? 'Write it as the next chapter: refer back to earlier updates naturally (e.g. "Week 3 of…", "After last week\'s…") without repeating them.'
+      : '',
+  ];
+}
+
 export function friendPostPrompt(
   p: Persona,
   photo?: { alt: string; tags: string[] },
   avoid: string[] = [],
+  story?: StoryPromptContext,
 ): string {
   return [
     `Write one Facebook-style post by ${personaLine(p)}.`,
+    ...(story ? storyLines(story) : []),
     photo
-      ? `The post shares this photo: ${photo.alt} (tags: ${photo.tags.join(', ')}). Write a caption in their voice; refer to what is in the photo.`
-      : 'A life update, opinion, question or small moment from their day, related to their interests or city.',
+      ? `The post shares this photo: ${photo.alt} (tags: ${photo.tags.join(', ')}). Write a caption in their voice; refer to what is in the photo${story ? ' and connect it to the update' : ''}.`
+      : story
+        ? ''
+        : 'A life update, opinion, question or small moment from their day, related to their interests or city.',
     'Keep it natural and personal, 1–3 sentences, at most 2 emoji. feeling: one of the allowed values, or "" for none (most posts have none).',
     avoid.length
       ? `Do not repeat these recent posts: ${avoid.map((a) => `"${a.slice(0, 60)}"`).join('; ')}`
@@ -172,6 +199,26 @@ export function friendPostPrompt(
   ]
     .filter(Boolean)
     .join('\n');
+}
+
+// ---------- Life stories (SPEC §4.3.1) ----------
+
+/** The model fills only the template's specifics; the arc itself is fixed in code. */
+export function storySlotsSchema(template: StoryTemplate) {
+  return z.object({
+    slots: z.object(
+      Object.fromEntries(template.slots.map((s) => [s.key, z.string().min(2).max(40)])),
+    ),
+  });
+}
+
+export function storySlotsPrompt(p: Persona, template: StoryTemplate): string {
+  return [
+    personaLine(p),
+    `They are starting a new chapter that will unfold over the coming weeks: "${template.title}".`,
+    "Fill in the specifics so they fit this person, their city and culture. Each value 1–4 words, realistic, fictional where it's a business or event.",
+    ...template.slots.map((s) => `- ${s.key}: ${s.hint}`),
+  ].join('\n');
 }
 
 // ---------- Comments ----------
@@ -205,12 +252,24 @@ export function commentsPrompt(
   post: Pick<Post, 'text' | 'feeling' | 'photoDescription'>,
   postAuthor: string,
   requests: CommentRequest[],
-  context: { photoAlt?: string; recent: string[]; earlierPosts?: string[] },
+  context: {
+    photoAlt?: string;
+    recent: string[];
+    earlierPosts?: string[];
+    /** The life story this post belongs to, with the titles of earlier updates. */
+    story?: { title: string; beat: number; total: number; earlier: string[] };
+  },
 ): string {
   const photo = post.photoDescription ?? context.photoAlt;
+  const story = context.story;
   return [
     `A Facebook post by ${postAuthor}: "${post.text || '(photo only)'}"${post.feeling ? ` (feeling ${post.feeling})` : ''}`,
     photo ? `The post has a photo: ${photo}` : '',
+    story
+      ? `It is update ${story.beat} of ${story.total} in ${postAuthor}'s ongoing story "${story.title}"` +
+        (story.earlier.length ? ` (earlier: ${story.earlier.join(', ')})` : '') +
+        '. Someone may ask how it is going or mention an earlier update.'
+      : '',
     'Write one comment from each person below, in their own voice. 3–25 words each, at most 1–2 emoji, no hashtags.',
     ...requests.map(
       (r) =>

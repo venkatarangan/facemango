@@ -9,7 +9,8 @@ import {
   type Post,
 } from '@/db';
 import { loadPhotoManifest, isPackPhoto, packPhotoId } from '@/lib/photos';
-import { createPersonaPost } from './friendPosts';
+import { storyConfig } from './config';
+import { createPersonaPost, createStoryPost } from './friendPosts';
 import { notify, snippet } from './notifications';
 import { COMMENT_SYSTEM, commentBatchSchema, commentsPrompt, type CommentRequest } from './prompts';
 import { chance, defaultRng, pick, uniform, weightedSample } from './random';
@@ -226,6 +227,15 @@ async function writeComments(ai: AI, events: PlannedEvent[]): Promise<void> {
     photoAlt = (await loadPhotoManifest()).find((p) => p.id === packPhotoId(post.photo!))?.alt;
   }
 
+  // A life-story update: commenters may ask how it is going (SPEC §4.3.1).
+  const story = post.story && {
+    ...post.story,
+    earlier:
+      (await db.stories.get(post.story.id))?.stages
+        .slice(0, post.story.beat - 1)
+        .map((s) => s.title) ?? [],
+  };
+
   const isUserPost = post.authorId === ME;
   if (isUserPost)
     setTyping(
@@ -237,6 +247,7 @@ async function writeComments(ai: AI, events: PlannedEvent[]): Promise<void> {
     result = await ai.generateJSON(
       commentsPrompt(post, authorName, requests, {
         photoAlt,
+        story,
         recent: existing.slice(-6).map((c) => c.text),
         earlierPosts:
           isUserPost && chance(defaultRng, 0.35) ? await earlierUserPosts(post) : undefined,
@@ -331,11 +342,16 @@ async function maybePostFromFriend(ai: AI, now: number): Promise<boolean> {
   const [author] = weightedSample(defaultRng, pool, (p) => p.activity, 1);
   if (!author) return false;
   // When catching up after an absence, back-date the post into the gap (at most ~3 posts).
-  const createdAt =
+  const createdAt = Math.round(
     now - nextAt > interval()
       ? uniform(defaultRng, Math.max(nextAt, now - 12 * 3_600_000), now)
-      : now;
-  const post: Post | null = await createPersonaPost(ai, author, Math.round(createdAt), defaultRng);
+      : now,
+  );
+  // Some friend posts continue (or start) a life story (SPEC §4.3.1); otherwise a one-off post.
+  const post: Post | null =
+    (chance(defaultRng, storyConfig.share)
+      ? await createStoryPost(ai, createdAt, defaultRng)
+      : null) ?? (await createPersonaPost(ai, author, createdAt, defaultRng));
   const backlogCap = now - 3 * interval();
   await setMeta('nextFriendPostAt', Math.max(createdAt + interval(), backlogCap));
   return !!post;
