@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Footer on the landing page and in the menus: a shorter simulated-friends line, a
+  face.mangoidiots.com link and the running version (grows with every publish). About page has a
+  "For developers" section linking the How-It-Works guide and the code.
 - **Friends' life stories:** friends now have storylines that unfold over days and weeks (a new
   job, race training, a trip, a new pet and more), told one post at a time. Posts show which
   update they are; profiles list each friend's stories. Stored in a new `stories` table (Dexie

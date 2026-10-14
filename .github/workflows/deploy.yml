@@ -31,6 +31,8 @@ jobs:
         env:
           # Optional: Settings → Secrets and variables → Actions → Variables → GA_ID (G-…)
           VITE_GA_ID: ${{ vars.GA_ID }}
+          # Shown as the version's last number in the footer (vite.config.ts).
+          BUILD_NUMBER: ${{ github.run_number }}
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v5

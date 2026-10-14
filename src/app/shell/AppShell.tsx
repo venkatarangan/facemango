@@ -5,6 +5,7 @@ import { TopBar } from './TopBar';
 import { NavList } from './NavList';
 import { RightRail } from './RightRail';
 import { BottomNav } from './BottomNav';
+import { SiteFooter } from '@/components/SiteFooter';
 import { useProfile } from '@/app/useProfile';
 import { startAI } from '@/ai';
 import { startEngine } from '@/engine';
@@ -77,6 +78,7 @@ export function AppShell() {
           }}
         >
           <NavList profile={profile} />
+          <SiteFooter sx={{ display: 'block', px: 2, pt: 2 }} />
         </Box>
         <Box
           component="main"

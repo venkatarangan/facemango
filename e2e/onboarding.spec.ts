@@ -9,6 +9,11 @@ test('landing → signup → home feed, and the profile survives a reload', asyn
   // The iOS 7-day data-loss notice appears on the landing page for iOS visitors only.
   await expect(page.getByTestId('ios-data-notice')).toHaveCount(isIPhone ? 1 : 0);
 
+  // Footer: site link and the running version.
+  const footer = page.getByRole('contentinfo');
+  await expect(footer.getByRole('link', { name: 'face.mangoidiots.com' })).toBeVisible();
+  await expect(footer).toContainText(/v\d+\.\d+\.\S+/);
+
   await page.getByRole('button', { name: 'Get started' }).click();
   await expect(page).toHaveURL(/\/signup$/);
   await expect(page.getByTestId(isIPhone ? 'ios-data-notice' : 'local-data-notice')).toBeVisible();
@@ -55,6 +60,21 @@ test('responsive shell: bottom nav on phones, side nav on desktop', async ({ pag
     const viewport = page.viewportSize()!;
     expect(box!.y + box!.height).toBeGreaterThan(viewport.height - 2);
   }
+});
+
+test('about page links developers to the guide and the code', async ({ page }) => {
+  await page.goto('/about');
+  const dev = page.getByRole('region', { name: 'For developers' });
+  await expect(dev.getByRole('link', { name: 'Read the guide (PDF)' })).toHaveAttribute(
+    'href',
+    '/FaceMango-How-It-Works.pdf',
+  );
+  await expect(dev.getByRole('link', { name: 'Code on GitHub' })).toHaveAttribute(
+    'href',
+    'https://github.com/venkatarangan/facemango',
+  );
+  const pdf = await page.request.get('/FaceMango-How-It-Works.pdf');
+  expect(pdf.headers()['content-type']).toContain('application/pdf');
 });
 
 test('unknown deep links render the app (SPA fallback)', async ({ page }) => {

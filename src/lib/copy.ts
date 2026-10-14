@@ -26,4 +26,11 @@ export const LOCAL_DATA_NOTICE =
 export const SIMULATED_FRIENDS_NOTE =
   'Every friend, like and comment on FaceMango is simulated by AI running on your device. None of them are real people.';
 
+/** Short footer line. */
+export const SIMULATED_SHORT = 'Every friend and reaction here is AI-simulated.';
+
 export const SOURCE_URL = 'https://github.com/venkatarangan/facemango';
+export const SITE_URL = 'https://face.mangoidiots.com';
+export const SITE_LABEL = 'face.mangoidiots.com';
+/** The illustrated architecture guide in public/ (docs/how-it-works/). */
+export const HOW_IT_WORKS_PDF = '/FaceMango-How-It-Works.pdf';
