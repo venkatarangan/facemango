@@ -41,6 +41,37 @@ recreate it to match the current layout and replace the file.
 - `npm run test:e2e`: Playwright against the mock-model build.
 - The mock can't judge real output quality, so try prompt changes in a real browser.
 
+## Real-model test page (developers)
+
+Settings → Advanced settings → Developer → **Real-model test** (`/settings/developer`,
+`src/features/developer/`). It runs fixed prompts through whatever model is loaded, using the real
+engine functions (personas, friend posts, comment batches with the tone mix, Mango AI chat,
+composer rewrite, photo description), and writes nothing to the database. The background engine
+pauses while it runs.
+
+1. `npm run dev` in WSL, open http://localhost:5173 in Chrome or Edge on Windows, sign up and wait
+   for the model to load.
+2. Open the page, press **Run all** (about 20 requests, a minute or two of GPU).
+3. Each test shows pass/fail, Zod validity per attempt, retries, time, tokens/s (WebLLM reports
+   it; `≈` means estimated), repetition across outputs, and the raw output. The comment test
+   compares requested and detected tones (a keyword heuristic) with the 60/25/10/5 target.
+4. **Mango AI chat: streaming** calls the provider without the app's fallback, so a streaming
+   failure shows its full error and stack. **Copy results** puts a Markdown report on the
+   clipboard.
+
+Tracing uses `setAITrace()` in `src/ai/service.ts`; providers report attempts and token usage
+through `GenerateOptions.trace`.
+
+## Automatic backup to a folder
+
+`src/lib/backup/autoBackup.ts` and `folder.ts`: opt-in under Advanced settings, Chrome/Edge on
+computers only (`showDirectoryPicker`). The folder handle lives in `settings.autoBackup` (no new
+Dexie version); it and `meta.autoBackupStatus` are device-only, so they are left out of backups and
+kept on restore. Weekly, never prompts in the background; when the browser wants permission again,
+the feed's backup card asks for a click. Keeps the newest 5 `facemango-auto-backup-*.zip` files
+and never touches other files. Headless Chromium crashes when it reads a stored folder handle, so
+this flow is covered by unit tests with a fake folder, not e2e.
+
 ## Deploy
 
 Pushing to `main` runs `.github/workflows/deploy.yml`: lint, test, build, then deploy to GitHub

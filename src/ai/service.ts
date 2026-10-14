@@ -2,10 +2,11 @@ import { create } from 'zustand';
 import type { z } from 'zod';
 import { db } from '@/db';
 import { detectTier } from './detect';
+import { errorSummary } from './errorDetails';
 import { MODEL_LABELS, type WebLLMModelId } from './models';
 import { EtaEstimator, webllmPhase, type LoadPhase } from './progress';
 import { PromptApiProvider } from './promptApi';
-import type { AIPriority, AIProvider, AITier, GenerateOptions } from './provider';
+import type { AIPriority, AIProvider, AITier, AITraceEvent, GenerateOptions } from './provider';
 import { AIQueue } from './queue';
 
 export type AIStatus =
@@ -63,58 +64,137 @@ export interface AI {
 
 export const queue = new AIQueue();
 
+type TraceMethod = Extract<AITraceEvent, { kind: 'call' }>['method'];
+let traceHook: ((event: AITraceEvent) => void) | null = null;
+
+/**
+ * Developer test page only: while set, every AI call reports attempts, timings and errors here.
+ * The page pauses the background engine first, so the events are its own.
+ */
+export function setAITrace(hook: ((event: AITraceEvent) => void) | null): void {
+  traceHook = hook;
+}
+
 /** Wraps a provider so calls are queued, and streaming falls back to a single reply. */
 export function wrapProvider(provider: AIProvider): AI {
   const prio = (o?: GenerateOptions): AIPriority => o?.priority ?? 'background';
+  const traced = (o?: GenerateOptions): GenerateOptions | undefined =>
+    traceHook && !o?.trace ? { ...o, trace: traceHook } : o;
+  /** Runs one provider call, reporting its time and outcome when tracing. */
+  const timed = async <T>(
+    method: TraceMethod,
+    o: GenerateOptions | undefined,
+    task: (o?: GenerateOptions) => Promise<T>,
+  ): Promise<T> => {
+    const options = traced(o);
+    const trace = options?.trace;
+    if (!trace) return task(options);
+    const started = performance.now();
+    try {
+      const out = await task(options);
+      trace({
+        kind: 'call',
+        method,
+        ms: performance.now() - started,
+        output: typeof out === 'string' ? out : undefined,
+      });
+      return out;
+    } catch (error) {
+      trace({ kind: 'call', method, ms: performance.now() - started, error });
+      throw error;
+    }
+  };
   return {
     tier: provider.tier,
     modelId: provider.modelId,
     multimodal: !!provider.describeImage,
-    generate: (prompt, o) => queue.run(() => provider.generate(prompt, o), prio(o), o?.signal),
+    generate: (prompt, o) =>
+      queue.run(
+        () => timed('generate', o, (opts) => provider.generate(prompt, opts)),
+        prio(o),
+        o?.signal,
+      ),
     generateJSON: (prompt, schema, o) =>
-      queue.run(() => provider.generateJSON(prompt, schema, o), prio(o), o?.signal),
+      queue.run(
+        () => timed('generateJSON', o, (opts) => provider.generateJSON(prompt, schema, opts)),
+        prio(o),
+        o?.signal,
+      ),
     async *stream(prompt, o) {
       const release = await queue.acquire(prio(o), o?.signal);
+      const options = traced(o);
+      const started = performance.now();
+      let output = '';
       try {
         let yielded = false;
         try {
-          for await (const delta of provider.stream(prompt, o)) {
+          for await (const delta of provider.stream(prompt, options)) {
             if (!delta) continue;
             yielded = true;
+            output += delta;
             yield delta;
           }
         } catch (error) {
           if (yielded || o?.signal?.aborted) throw error;
           reportAIError('Streaming failed; retrying without streaming', error);
+          options?.trace?.({ kind: 'fallback', error });
         }
         // Streaming produced nothing (error or empty output): ask once for the whole reply.
         if (!yielded && !o?.signal?.aborted) {
           try {
-            const text = await provider.generate(prompt, o);
+            const text = await provider.generate(prompt, options);
+            output = text;
             if (text) yield text;
           } catch (error) {
             reportAIError('Generation failed', error);
             throw error;
           }
         }
+        options?.trace?.({
+          kind: 'call',
+          method: 'stream',
+          ms: performance.now() - started,
+          output,
+        });
+      } catch (error) {
+        options?.trace?.({
+          kind: 'call',
+          method: 'stream',
+          ms: performance.now() - started,
+          output,
+          error,
+        });
+        throw error;
       } finally {
         release();
       }
     },
     describeImage: async (image, prompt, o) =>
       provider.describeImage
-        ? queue.run(() => provider.describeImage!(image, prompt, o), prio(o), o?.signal)
+        ? queue.run(
+            () => timed('describeImage', o, (opts) => provider.describeImage!(image, prompt, opts)),
+            prio(o),
+            o?.signal,
+          )
         : null,
   };
 }
 
 let ai: AI | null = null;
+let rawProvider: AIProvider | null = null;
+
+/**
+ * The unwrapped provider, for the developer test page: it bypasses the streaming fallback so a
+ * streaming failure shows its real error. Use it inside `queue.acquire()`.
+ */
+export function getAIProvider(): AIProvider | null {
+  return rawProvider;
+}
 
 /** Logs an AI error to the console and keeps a short copy for Settings. */
 export function reportAIError(context: string, error: unknown): void {
   console.error(`[FaceMango AI] ${context}`, error);
-  const message = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
-  set({ lastError: `${context}: ${message}`.slice(0, 300) });
+  set({ lastError: `${context}: ${errorSummary(error)}`.slice(0, 300) });
 }
 
 /** A short, user-facing description of an AI error. */
@@ -136,6 +216,7 @@ export function whenAIReady(): Promise<AI> {
 }
 
 function becomeReady(provider: AIProvider, label: string) {
+  rawProvider = provider;
   ai = wrapProvider(provider);
   set({
     status: 'ready',

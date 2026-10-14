@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { AITraceEvent } from './provider';
 
 /** JSON Schema for a Zod schema, in the subset the Prompt API and WebLLM (XGrammar) accept. */
 export function toJsonSchema(schema: z.ZodType): Record<string, unknown> {
@@ -47,18 +48,25 @@ export async function generateValidated<T>(
   generate: (attempt: number, previousError?: string) => Promise<string>,
   schema: z.ZodType<T>,
   attempts = 3,
+  trace?: (event: AITraceEvent) => void,
 ): Promise<T> {
   let lastOutput = '';
   let lastError: string | undefined;
   for (let attempt = 0; attempt < attempts; attempt++) {
+    const started = performance.now();
     lastOutput = await generate(attempt, lastError);
+    const ms = performance.now() - started;
     try {
       const parsed = schema.safeParse(extractJson(lastOutput));
-      if (parsed.success) return parsed.data;
+      if (parsed.success) {
+        trace?.({ kind: 'attempt', attempt, raw: lastOutput, ms });
+        return parsed.data;
+      }
       lastError = z.prettifyError(parsed.error).slice(0, 400);
     } catch (error) {
       lastError = error instanceof Error ? error.message : String(error);
     }
+    trace?.({ kind: 'attempt', attempt, raw: lastOutput, ms, error: lastError });
   }
   throw new AIOutputError(`Model output failed validation: ${lastError}`, lastOutput);
 }

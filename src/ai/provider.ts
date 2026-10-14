@@ -9,12 +9,31 @@ export type AITier = 'prompt-api' | 'webgpu' | 'unsupported';
 
 export type AIPriority = 'interactive' | 'background';
 
+/** Diagnostics from a model call, used only by the developer test page (Settings → Advanced). */
+export type AITraceEvent =
+  /** One model call inside generateJSON; `error` is the parse/Zod error, absent when valid. */
+  | { kind: 'attempt'; attempt: number; raw: string; ms: number; error?: string }
+  /** Token counts reported by the backend (WebLLM). */
+  | { kind: 'usage'; promptTokens: number; completionTokens: number; tokensPerSecond?: number }
+  /** A whole queued call, timed from when the model was free (excludes queue wait). */
+  | {
+      kind: 'call';
+      method: 'generate' | 'generateJSON' | 'stream' | 'describeImage';
+      ms: number;
+      output?: string;
+      error?: unknown;
+    }
+  /** Streaming failed before any text and the wrapper retried without streaming. */
+  | { kind: 'fallback'; error: unknown };
+
 export interface GenerateOptions {
   system?: string;
   temperature?: number;
   maxTokens?: number;
   priority?: AIPriority;
   signal?: AbortSignal;
+  /** Diagnostics hook (developer test page only). */
+  trace?: (event: AITraceEvent) => void;
 }
 
 export interface AIProvider {

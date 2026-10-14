@@ -1,5 +1,5 @@
 import { useEffect, useState, type ComponentProps, type ReactNode } from 'react';
-import { useNavigate } from 'react-router';
+import { Link as RouterLink, useNavigate } from 'react-router';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -22,6 +22,7 @@ import {
 import { ADULT_AGE, MAX_COMMENTS_PER_POST, MAX_LIKES_PER_POST } from '@/engine/limits';
 import { setMixValue } from '@/engine/mix';
 import { getEngagementConfig, saveEngagementConfig } from '@/engine/settings';
+import { AutoBackupSection } from '@/features/backup/AutoBackupSection';
 
 const SPEEDS = [
   { value: 0.5, label: 'Relaxed (half speed)' },
@@ -286,6 +287,24 @@ export function AdvancedSettingsPage() {
           Reset to defaults
         </Button>
       </Stack>
+
+      <Section title="Automatic backup to a folder">
+        <AutoBackupSection />
+      </Section>
+
+      <Section
+        title="Developer"
+        hint="For people testing FaceMango with real on-device AI models. Not needed for everyday use."
+      >
+        <Button
+          variant="outlined"
+          component={RouterLink}
+          to="/settings/developer"
+          sx={{ alignSelf: 'flex-start' }}
+        >
+          Real-model test (for developers)
+        </Button>
+      </Section>
     </Stack>
   );
 }
