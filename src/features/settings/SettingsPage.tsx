@@ -331,8 +331,8 @@ export function SettingsPage() {
 
       <Section title="Danger zone">
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-          Permanently deletes your profile, posts, friends and stats from this browser. Backup and
-          restore arrive in M6.
+          Permanently deletes your profile, posts, friends and stats from this browser. Make a
+          backup first if you might want them back.
         </Typography>
         <Button variant="outlined" color="error" onClick={() => setConfirmOpen(true)}>
           Delete all FaceMango data
