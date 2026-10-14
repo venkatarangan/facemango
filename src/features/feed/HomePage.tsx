@@ -138,7 +138,7 @@ export function HomePage() {
       </Card>
 
       <AwayBanner />
-      <SetupCard />
+      <SetupCard onWritePost={() => openComposer()} />
       <IosBanner />
       <BackupReminderCard />
       <WeeklySummaryCard />

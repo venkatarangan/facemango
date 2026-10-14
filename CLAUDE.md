@@ -16,7 +16,7 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - **Open items:**
   - GA id (Actions variable `GA_ID`)
   - photo pack 87/~250
-  - parked "setup experience" for the first-run wait (in memory: `setup-experience-idea`)
+  - try the new first-run setup experience on a real model download
 
 ## Working agreements
 - **Commits:** only when the owner asks. Work on `main` (or a short branch). The old milestone branches (`m1-skeleton`, `m2-m4`, `m5-m7`) are local-only history.
