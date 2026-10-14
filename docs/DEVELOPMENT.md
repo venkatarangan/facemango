@@ -43,10 +43,14 @@ GPU step runs through the shared AI queue, and the worker is shut down after use
 
 `public/FaceMango-How-It-Works.pdf` is the illustrated architecture guide. Vite copies it to
 `dist/`, so it is live at https://face.mangoidiots.com/FaceMango-How-It-Works.pdf (the service
-worker skips `.pdf` navigations). It is the only copy, and the README links to it. When a publish
-includes a major change to the architecture, framework or libraries (not ordinary changes), update
-the PDF before pushing. It was printed from HTML with Chromium and the source is not tracked, so
-recreate it to match the current layout and replace the file.
+worker skips `.pdf` navigations), and the README links to it. When a publish includes a major
+change to the architecture, framework or libraries (not ordinary changes), update it before
+pushing:
+
+1. Edit the source, `docs/how-it-works/how-it-works.html` (one `<section class="page">` per A4
+   page, inline CSS and SVG). Update the cover stamp ("Code at commit …").
+2. Run `npm run docs:pdf` (Playwright's Chromium). It fails if a page overflows or the page count
+   changes unexpectedly; check the PDF by eye before committing.
 
 ## Testing
 

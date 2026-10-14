@@ -1,0 +1,2246 @@
+<!doctype html>
+<!--
+  Source of public/FaceMango-How-It-Works.pdf. Edit here, then run `npm run docs:pdf`.
+  Each <section class="page"> is one A4 page; the render script warns if a page overflows.
+  Keep the cover stamp ("Code at commit …") in sync with the code it describes.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>How FaceMango works</title>
+    <style>
+      @font-face {
+        font-family: 'Inter';
+        src: url('../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2')
+          format('woff2');
+        font-weight: 100 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Inter';
+        src: url('../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-italic.woff2')
+          format('woff2');
+        font-weight: 100 900;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: 'Nunito';
+        src: url('../../node_modules/@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2')
+          format('woff2');
+        font-weight: 200 1000;
+        font-style: normal;
+      }
+
+      :root {
+        --mango: #ffc400;
+        --mango-light: #ffd54f;
+        --ink: #111111;
+        --gold: #8a6a00;
+        --cream: #fff9e6;
+        --butter: #fff3c4;
+        --grey: #f0f0f0;
+        --grey-line: #bdbdbd;
+        --rule: #e4e4e4;
+        --muted: #555555;
+        --blue: #e3eaf6;
+        --blue-line: #5f7fb0;
+        --green: #e4f1e4;
+        --green-line: #5e9a5e;
+        --red: #c62828;
+        --mono: ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace;
+      }
+
+      @page {
+        size: A4;
+        margin: 0;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+      }
+      body {
+        font-family: 'Inter', Arial, sans-serif;
+        color: var(--ink);
+        font-size: 14.2px;
+        line-height: 1.5;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        counter-reset: page;
+      }
+
+      /* ---------- Pages ---------- */
+      .page {
+        width: 210mm;
+        height: 297mm;
+        box-sizing: border-box;
+        padding: 15mm 17mm 24mm;
+        position: relative;
+        overflow: hidden;
+        break-after: page;
+        counter-increment: page;
+      }
+      .page:last-child {
+        break-after: auto;
+      }
+      .foot {
+        position: absolute;
+        left: 17mm;
+        right: 17mm;
+        bottom: 10mm;
+        border-top: 1px solid var(--rule);
+        padding-top: 9px;
+        font-size: 10px;
+        color: var(--muted);
+        display: flex;
+        justify-content: space-between;
+      }
+      .foot b {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 800;
+        color: var(--ink);
+      }
+      .foot .pn::after {
+        content: counter(page);
+      }
+
+      /* ---------- Type ---------- */
+      h1 {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 800;
+        font-size: 29px;
+        line-height: 1.15;
+        margin: 0 0 10px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      h1 .n {
+        background: var(--mango);
+        border-radius: 7px;
+        min-width: 34px;
+        height: 33px;
+        padding: 0 5px;
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+      }
+      h2 {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 800;
+        font-size: 16.5px;
+        margin: 16px 0 7px;
+      }
+      h3 {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 800;
+        font-size: 15px;
+        margin: 0 0 5px;
+      }
+      p {
+        margin: 0 0 8px;
+      }
+      .lead {
+        font-size: 15px;
+        margin: 0 0 16px;
+      }
+      code,
+      .mono {
+        font-family: var(--mono);
+        font-size: 0.84em;
+      }
+      code {
+        background: var(--grey);
+        border-radius: 4px;
+        padding: 1px 4px;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .small {
+        font-size: 12.5px;
+      }
+      ul.bul {
+        margin: 0;
+        padding-left: 18px;
+      }
+      ul.bul li {
+        margin: 0 0 5px;
+      }
+      .cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+      }
+      .cols > div > h2:first-child {
+        margin-top: 0;
+      }
+
+      /* ---------- Figures ---------- */
+      figure {
+        margin: 0 0 12px;
+      }
+      figure svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      figcaption {
+        font-size: 11px;
+        color: var(--muted);
+        text-align: center;
+        margin-top: 6px;
+      }
+      svg text {
+        font-family: 'Inter', Arial, sans-serif;
+        fill: var(--ink);
+        font-size: 10.5px;
+      }
+      svg .c {
+        text-anchor: middle;
+      }
+      svg .e {
+        text-anchor: end;
+      }
+      svg .t {
+        font-weight: 700;
+        font-size: 12px;
+      }
+      svg .tb {
+        font-weight: 700;
+      }
+      svg .x {
+        font-size: 9.5px;
+        fill: #666666;
+      }
+      svg .m {
+        font-family: var(--mono);
+        font-size: 9.5px;
+        fill: #444444;
+      }
+      svg .lbl {
+        font-size: 9.5px;
+        font-weight: 700;
+        fill: var(--gold);
+        letter-spacing: 0.08em;
+      }
+      svg .red {
+        fill: var(--red);
+      }
+      svg .b {
+        fill: #ffffff;
+        stroke: var(--ink);
+        stroke-width: 1.3;
+      }
+      svg .by {
+        fill: var(--mango);
+        stroke: var(--ink);
+        stroke-width: 1.3;
+      }
+      svg .bl {
+        fill: var(--butter);
+        stroke: var(--ink);
+        stroke-width: 1.3;
+      }
+      svg .bg {
+        fill: var(--grey);
+        stroke: var(--grey-line);
+        stroke-width: 1.3;
+      }
+      svg .bb {
+        fill: var(--blue);
+        stroke: var(--blue-line);
+        stroke-width: 1.3;
+      }
+      svg .bgr {
+        fill: var(--green);
+        stroke: var(--green-line);
+        stroke-width: 1.3;
+      }
+      svg .dash {
+        stroke-dasharray: 4 3;
+      }
+      svg .a {
+        fill: none;
+        stroke: var(--ink);
+        stroke-width: 1.3;
+        marker-end: url(#ah);
+      }
+      svg .a2 {
+        marker-start: url(#ah);
+      }
+      svg .ad {
+        fill: none;
+        stroke: var(--ink);
+        stroke-width: 1.2;
+        stroke-dasharray: 4 3;
+        marker-end: url(#ah);
+      }
+      svg .life {
+        stroke: #aaaaaa;
+        stroke-width: 1;
+        stroke-dasharray: 3 3;
+      }
+
+      /* ---------- Cards and callouts ---------- */
+      .grid2,
+      .grid3 {
+        display: grid;
+        gap: 13px;
+        margin: 0 0 12px;
+      }
+      .grid2 {
+        grid-template-columns: 1fr 1fr;
+      }
+      .grid3 {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      .card {
+        border: 1.3px solid var(--ink);
+        border-radius: 10px;
+        padding: 11px 13px;
+        font-size: 12.8px;
+        line-height: 1.45;
+      }
+      .card p:last-child {
+        margin: 0;
+      }
+      .status .card {
+        font-size: 12px;
+        padding: 9px 12px;
+      }
+      .card.y {
+        background: var(--butter);
+      }
+      .card.g {
+        background: var(--grey);
+        border-color: var(--grey-line);
+      }
+      .card.gr {
+        background: var(--green);
+      }
+      .callout {
+        background: var(--cream);
+        border-left: 5px solid var(--mango);
+        border-radius: 0 10px 10px 0;
+        padding: 11px 16px;
+        font-size: 13.2px;
+        margin: 0 0 12px;
+      }
+      .pill {
+        display: inline-block;
+        background: var(--butter);
+        border: 1px solid #e0b400;
+        border-radius: 999px;
+        padding: 0 9px;
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 19px;
+        white-space: nowrap;
+      }
+      .pill.g {
+        background: var(--grey);
+        border-color: var(--grey-line);
+      }
+
+      /* Numbered steps with yellow discs */
+      ol.steps {
+        list-style: none;
+        counter-reset: step;
+        margin: 0;
+        padding: 0;
+      }
+      ol.steps li {
+        counter-increment: step;
+        position: relative;
+        padding-left: 33px;
+        margin: 0 0 9px;
+      }
+      ol.steps li::before {
+        content: counter(step);
+        position: absolute;
+        left: 0;
+        top: 1px;
+        width: 21px;
+        height: 21px;
+        border-radius: 50%;
+        background: var(--mango);
+        font-weight: 700;
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* ---------- Tables ---------- */
+      table.tbl {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+        line-height: 1.38;
+      }
+      table.tbl th {
+        text-align: left;
+        color: var(--gold);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        padding: 5px 8px 7px;
+        border-bottom: 1.5px solid var(--ink);
+      }
+      table.tbl td {
+        padding: 4px 8px;
+        border-bottom: 1px solid var(--rule);
+        vertical-align: top;
+      }
+      table.tbl td:first-child {
+        font-weight: 600;
+        width: 27%;
+      }
+      table.tbl.tight {
+        font-size: 11.6px;
+        line-height: 1.32;
+      }
+      table.tbl.tight td {
+        padding: 3px 7px;
+      }
+      table.tbl.tight td:first-child {
+        width: 30%;
+      }
+      table.tbl.tight.narrow td:first-child {
+        width: 24%;
+      }
+      table.tbl tr.grp td {
+        background: var(--butter);
+        font-weight: 500;
+      }
+      table.tbl.code td:first-child {
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 700;
+      }
+      table.tbl.cmd td:first-child {
+        width: 24%;
+      }
+      pre.box {
+        background: var(--grey);
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin: 0;
+        font-family: var(--mono);
+        font-size: 10.6px;
+        line-height: 1.55;
+        white-space: pre;
+      }
+
+      /* ---------- Cover ---------- */
+      .cover {
+        padding: 0;
+      }
+      .band {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        height: 126mm;
+        background: var(--mango);
+        overflow: hidden;
+      }
+      .band svg.rings {
+        position: absolute;
+        right: -95px;
+        top: -70px;
+      }
+      .brand {
+        position: absolute;
+        left: 20mm;
+        top: 21mm;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 800;
+        font-size: 25px;
+      }
+      .cover h1.title {
+        position: absolute;
+        left: 20mm;
+        top: 63mm;
+        margin: 0;
+        display: block;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 900;
+        font-size: 60px;
+        line-height: 1.02;
+        letter-spacing: -0.01em;
+      }
+      .cover .sub {
+        position: absolute;
+        left: 20mm;
+        top: 103mm;
+        width: 118mm;
+        font-size: 18.5px;
+        line-height: 1.45;
+        margin: 0;
+      }
+      .cover .below {
+        position: absolute;
+        left: 20mm;
+        right: 20mm;
+        top: 137mm;
+      }
+      .cover .callout {
+        font-size: 15px;
+        line-height: 1.6;
+        padding: 12px 18px;
+      }
+      table.toc {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12.8px;
+        line-height: 1.35;
+      }
+      table.toc td {
+        padding: 5px 6px;
+        border-bottom: 1px solid var(--rule);
+        vertical-align: top;
+      }
+      table.toc td:nth-child(1) {
+        font-weight: 700;
+        width: 8%;
+      }
+      table.toc td:nth-child(2) {
+        font-weight: 600;
+        width: 33%;
+      }
+      table.toc td:nth-child(3) {
+        color: var(--muted);
+      }
+      .cover .foot {
+        left: 20mm;
+        right: 20mm;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Shared arrow head for every diagram -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <marker
+          id="ah"
+          viewBox="0 0 10 10"
+          refX="9"
+          refY="5"
+          markerWidth="6.5"
+          markerHeight="6.5"
+          orient="auto-start-reverse"
+        >
+          <path d="M0,0 L10,5 L0,10 z" fill="#111111" />
+        </marker>
+      </defs>
+    </svg>
+
+    <!-- ===================== Cover ===================== -->
+    <section class="page cover">
+      <div class="band">
+        <svg class="rings" width="480" height="480" viewBox="0 0 480 480" aria-hidden="true">
+          <circle cx="240" cy="240" r="236" fill="#FFD54F" />
+          <circle cx="240" cy="240" r="180" fill="#FFC400" />
+          <circle cx="240" cy="240" r="98" fill="#FFD54F" />
+        </svg>
+        <div class="brand">
+          <svg width="46" height="46" viewBox="0 0 512 512" aria-hidden="true">
+            <defs>
+              <linearGradient id="fm-body" x1="0.2" y1="0.05" x2="0.8" y2="1">
+                <stop offset="0" stop-color="#FFD84D" />
+                <stop offset="0.55" stop-color="#FFC400" />
+                <stop offset="1" stop-color="#FFA600" />
+              </linearGradient>
+            </defs>
+            <path
+              fill="url(#fm-body)"
+              d="M318 132C404 124 456 196 446 282C436 368 366 428 282 438C226 444 176 436 136 418C116 428 92 440 70 446C82 426 94 406 100 388C78 340 90 272 136 216C182 160 246 138 318 132Z"
+            />
+            <path
+              fill="none"
+              stroke="#111111"
+              stroke-width="14"
+              stroke-linecap="round"
+              d="M318 136C320 120 326 104 336 92"
+            />
+            <path fill="#111111" d="M334 96C350 52 400 32 456 40C446 90 396 116 334 96Z" />
+            <path
+              fill="none"
+              stroke="#FFC400"
+              stroke-width="6"
+              stroke-linecap="round"
+              d="M350 88C384 70 414 58 440 50"
+            />
+            <path
+              fill="none"
+              stroke="#FFFFFF"
+              stroke-opacity="0.65"
+              stroke-width="20"
+              stroke-linecap="round"
+              d="M150 270C160 226 194 192 244 176"
+            />
+          </svg>
+          FaceMango
+        </div>
+        <h1 class="title">How FaceMango<br />works</h1>
+        <p class="sub">
+          The architecture, tools and workflows behind the most personal social network ever
+          built. In plain English, with pictures.
+        </p>
+      </div>
+      <div class="below">
+        <div class="callout">
+          <b>In one sentence:</b> FaceMango is a website that runs entirely inside your browser. A
+          small AI model on your own device plays your friends, a database on your own device
+          remembers everything, and no server ever sees what you post.
+        </div>
+        <h2 style="margin-top: 22px">What is inside</h2>
+        <table class="toc">
+          <tr>
+            <td>1</td>
+            <td>The big picture</td>
+            <td>What lives on your device and what comes from outside</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>How the code is organised</td>
+            <td>Four layers and who talks to whom</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Frameworks and libraries</td>
+            <td>The toolbox, and what each tool does for the app</td>
+          </tr>
+          <tr>
+            <td>4–6</td>
+            <td>The AI layer</td>
+            <td>Three tiers, a waiting line, checking answers, and seeing photos</td>
+          </tr>
+          <tr>
+            <td>7–8</td>
+            <td>The simulation engine</td>
+            <td>Planning likes and comments, and friends' life stories</td>
+          </tr>
+          <tr>
+            <td>9–10</td>
+            <td>Workflows</td>
+            <td>First run, posting, and coming back after a break</td>
+          </tr>
+          <tr>
+            <td>11</td>
+            <td>Your data</td>
+            <td>The database, backups and the friends reset</td>
+          </tr>
+          <tr>
+            <td>12</td>
+            <td>Screens, offline use and privacy</td>
+            <td>Routes, the app shell, PWA and the network rules</td>
+          </tr>
+          <tr>
+            <td>13</td>
+            <td>Building, testing and shipping</td>
+            <td>From a code change to face.mangoidiots.com</td>
+          </tr>
+          <tr>
+            <td>14</td>
+            <td>Where to find things</td>
+            <td>Code map, glossary and current status</td>
+          </tr>
+        </table>
+      </div>
+      <div class="foot">
+        <span><b>FaceMango</b> · How it works</span>
+        <span>Code at commit 4837d22 · v0.1.0 · 14 Oct 2026</span>
+      </div>
+    </section>
+
+    <!-- ===================== 1 The big picture ===================== -->
+    <section class="page">
+      <h1><span class="n">1</span> The big picture</h1>
+      <p class="lead">
+        FaceMango has no back end. Almost everything happens inside one browser tab on your own
+        phone or computer. A few outside services only hand over files, once.
+      </p>
+      <figure>
+        <svg viewBox="0 0 660 478">
+          <rect x="8" y="4" width="432" height="440" rx="14" fill="#FFF9E6" stroke="#111" stroke-width="2" />
+          <text x="26" y="28" class="lbl">YOUR DEVICE · ONE BROWSER TAB</text>
+
+          <rect x="26" y="46" width="180" height="80" rx="9" class="b" />
+          <text x="116" y="72" class="c t">The app</text>
+          <text x="116" y="92" class="c">React screens: feed,</text>
+          <text x="116" y="106" class="c">friends, profile, settings</text>
+
+          <rect x="240" y="46" width="182" height="80" rx="9" class="b" />
+          <text x="331" y="72" class="c t">Simulation engine</text>
+          <text x="331" y="92" class="c">plans likes, comments and</text>
+          <text x="331" y="106" class="c">life stories; runs the clock</text>
+
+          <line x1="207" y1="86" x2="238" y2="86" class="a a2" />
+
+          <rect x="26" y="174" width="180" height="80" rx="9" class="b" />
+          <text x="116" y="200" class="c t">Database (IndexedDB)</text>
+          <text x="116" y="220" class="c">every friend, post, like,</text>
+          <text x="116" y="234" class="c">comment, story and setting</text>
+
+          <rect x="240" y="174" width="182" height="80" rx="9" class="by" />
+          <text x="331" y="200" class="c t">AI model</text>
+          <text x="331" y="220" class="c">the browser's built-in AI, or</text>
+          <text x="331" y="234" class="c">WebLLM in a Web Worker</text>
+
+          <line x1="290" y1="127" x2="160" y2="172" class="a" />
+          <text x="234" y="162" class="x">saves</text>
+          <line x1="116" y1="173" x2="116" y2="128" class="a" />
+          <text x="124" y="154" class="x">live updates</text>
+          <line x1="331" y1="127" x2="331" y2="172" class="a" />
+          <text x="339" y="154" class="x">asks for text</text>
+
+          <rect x="240" y="290" width="182" height="66" rx="9" class="bl" />
+          <text x="331" y="312" class="c t">Photo captioner</text>
+          <text x="331" y="330" class="c">Florence-2 in its own Web Worker,</text>
+          <text x="331" y="344" class="c">loaded only when a photo needs it</text>
+          <line x1="331" y1="255" x2="331" y2="288" class="a" />
+          <text x="339" y="270" class="x">if the AI can't</text>
+          <text x="339" y="281" class="x">see photos</text>
+
+          <rect x="26" y="290" width="180" height="66" rx="9" class="b dash" />
+          <text x="116" y="312" class="c t">Your backup folder</text>
+          <text x="116" y="330" class="c">optional: a weekly zip on your</text>
+          <text x="116" y="344" class="c">own disk (Chrome, Edge)</text>
+          <line x1="116" y1="255" x2="116" y2="288" class="a" />
+          <text x="124" y="276" class="x">weekly zip</text>
+
+          <rect x="26" y="372" width="396" height="58" rx="9" class="bg" />
+          <text x="224" y="393" class="c t">Browser file storage + Service Worker</text>
+          <text x="224" y="410" class="c">keeps the app files, photo pack and AI model weights,</text>
+          <text x="224" y="423" class="c">so the app starts fast and can run offline</text>
+
+          <rect x="472" y="40" width="180" height="88" rx="9" class="bl" />
+          <text x="562" y="62" class="c t">GitHub Pages</text>
+          <text x="562" y="81" class="c">hands out the app files,</text>
+          <text x="562" y="95" class="c">photos and sounds</text>
+          <text x="562" y="114" class="c x">on visit, then cached</text>
+          <line x1="470" y1="84" x2="442" y2="84" class="a" />
+
+          <rect x="472" y="160" width="180" height="110" rx="9" class="bl" />
+          <text x="562" y="182" class="c t">Hugging Face</text>
+          <text x="562" y="201" class="c">hands out the AI model</text>
+          <text x="562" y="215" class="c">weights (WebGPU path)</text>
+          <text x="562" y="229" class="c">and the photo model</text>
+          <text x="562" y="251" class="c x">one-time downloads</text>
+          <line x1="470" y1="215" x2="442" y2="215" class="a" />
+
+          <rect x="472" y="304" width="180" height="88" rx="9" class="bl" />
+          <text x="562" y="326" class="c t">Google Analytics</text>
+          <text x="562" y="345" class="c">page views only</text>
+          <text x="562" y="364" class="c x">asks consent in EU / UK</text>
+          <text x="562" y="378" class="c x">on for the live site</text>
+          <line x1="442" y1="348" x2="470" y2="348" class="ad" />
+
+          <text x="330" y="470" class="c"><tspan class="red">✗</tspan> Your posts, photos, friends and wellbeing data never leave the device.</text>
+        </svg>
+        <figcaption>
+          Figure 1 · Everything inside the big box runs locally. The three boxes outside only send
+          things <i>in</i>.
+        </figcaption>
+      </figure>
+      <div class="grid2">
+        <div class="card y">
+          <h3>No back end</h3>
+          <p>
+            There is no FaceMango server, account or cloud storage. GitHub Pages is just a file
+            shelf: it serves the same static files to everyone.
+          </p>
+        </div>
+        <div class="card y">
+          <h3>The friends are AI</h3>
+          <p>
+            A language model running on your device writes every comment, friend post and life
+            story. The like counts come from simple rules, not from the model.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Your data stays in the browser</h3>
+          <p>
+            IndexedDB holds it all. You can export a zip (or have one saved weekly to a folder)
+            and restore it on another device, but nothing syncs by itself.
+          </p>
+        </div>
+        <div class="card">
+          <h3>It installs like an app</h3>
+          <p>
+            A Progressive Web App (PWA): add it to your home screen, and after the first visit it
+            can start offline.
+          </p>
+        </div>
+      </div>
+      <div class="foot"><span><b>FaceMango</b> · How it works</span><span class="pn"></span></div>
+    </section>
+
+    <!-- ===================== 2 How the code is organised ===================== -->
+    <section class="page">
+      <h1><span class="n">2</span> How the code is organised</h1>
+      <p class="lead">
+        The code is written in TypeScript and sorted into four layers. Each layer only talks to
+        the one below it.
+      </p>
+      <figure>
+        <svg viewBox="0 0 660 362">
+          <rect x="70" y="6" width="460" height="74" rx="10" class="b" />
+          <text x="88" y="30" class="t">1 · Screens</text>
+          <text x="200" y="30" class="m">src/features · src/app · src/components</text>
+          <text x="88" y="50">What you see and tap. They read from the database and ask the</text>
+          <text x="88" y="65">engine to do things, for example “a new post was written”.</text>
+
+          <rect x="70" y="98" width="460" height="74" rx="10" class="bl" />
+          <text x="88" y="122" class="t">2 · Engine</text>
+          <text x="200" y="122" class="m">src/engine</text>
+          <text x="88" y="142">The brain of the simulation: makes friends, plans likes and comments,</text>
+          <text x="88" y="157">moves life stories along, runs the scheduler and enforces the limits.</text>
+
+          <rect x="70" y="190" width="460" height="74" rx="10" class="by" />
+          <text x="88" y="214" class="t">3 · AI layer</text>
+          <text x="200" y="214" class="m">src/ai</text>
+          <text x="88" y="234">One interface over two real models, plus a photo captioner, a waiting</text>
+          <text x="88" y="249">line and output checking. Nothing else in the app talks to a model.</text>
+
+          <rect x="70" y="282" width="460" height="74" rx="10" class="bg" />
+          <text x="88" y="306" class="t">4 · Data</text>
+          <text x="200" y="306" class="m">src/db · src/lib/backup</text>
+          <text x="88" y="326">Dexie on top of IndexedDB: 14 tables. The single source of truth,</text>
+          <text x="88" y="341">and the only thing that survives closing the tab.</text>
+
+          <line x1="300" y1="80" x2="300" y2="96" class="a" />
+          <text x="307" y="92" class="x">calls</text>
+          <line x1="300" y1="172" x2="300" y2="188" class="a" />
+          <text x="307" y="184" class="x">asks</text>
+          <line x1="300" y1="264" x2="300" y2="280" class="a" />
+
+          <path d="M70 135 H42 V319 H68" class="a" />
+          <text x="34" y="227" class="x c" transform="rotate(-90 34 227)">engine saves results</text>
+          <path d="M530 319 H568 V43 H532" class="a" />
+          <text x="580" y="181" class="x c" transform="rotate(90 580 181)">
+            live updates: screens redraw when data changes
+          </text>
+        </svg>
+        <figcaption>
+          Figure 2 · Calls go down; results come back up through the database, not through function
+          return values.
+        </figcaption>
+      </figure>
+      <h2>Three design choices worth knowing</h2>
+      <ul class="bul">
+        <li>
+          <b>Screens never wait for the AI.</b> The engine writes a comment into the database and
+          the screens, which are watching the database with Dexie <i>live queries</i> (used across
+          dozens of screens), redraw by themselves. A slow model never freezes the UI.
+        </li>
+        <li>
+          <b>One door to the model.</b> Everything goes through <code>src/ai</code>, so the rest of
+          the app does not know or care whether Chrome's built-in AI, WebLLM or the photo
+          captioner is answering. Swapping or adding a model touches one folder.
+        </li>
+        <li>
+          <b>Rules live in one place.</b> Hard limits (at most 1,000,000 likes and 100 comments per
+          post) sit in <code>src/engine/limits.ts</code> and are unit-tested, so no setting or bug
+          can break them.
+        </li>
+      </ul>
+      <div class="callout" style="margin-top: 14px">
+        <b>Threads, in short.</b> The screens and the engine's scheduler loop run on the browser's
+        main thread. The WebLLM model and the photo captioner each run in their own
+        <b>Web Worker</b>, so heavy GPU work never blocks scrolling.
+      </div>
+      <div class="foot"><span><b>FaceMango</b> · How it works</span><span class="pn"></span></div>
+    </section>
+
+    <!-- ===================== 3 Frameworks and libraries ===================== -->
+    <section class="page">
+      <h1><span class="n">3</span> Frameworks and libraries</h1>
+      <p class="lead" style="margin-bottom: 10px">
+        All open source, all compatible with the app's AGPL-3.0 licence. Here is the toolbox and
+        what each tool does for FaceMango.
+      </p>
+      <table class="tbl tight">
+        <tr>
+          <th>Tool</th>
+          <th>What it does here</th>
+        </tr>
+        <tr class="grp">
+          <td colspan="2">Language, build and screens</td>
+        </tr>
+        <tr>
+          <td>TypeScript 6</td>
+          <td>JavaScript with types, in strict mode, so many mistakes are caught early.</td>
+        </tr>
+        <tr>
+          <td>Vite 8</td>
+          <td>Dev server with instant reload, and the bundler that makes the production files.</td>
+        </tr>
+        <tr>
+          <td>React 19</td>
+          <td>Builds every screen from small reusable components.</td>
+        </tr>
+        <tr>
+          <td>React Router 8</td>
+          <td>Page addresses (<code>/friends</code>, <code>/post/:id</code>) and lazy loading of screens.</td>
+        </tr>
+        <tr class="grp">
+          <td colspan="2">Look and feel</td>
+        </tr>
+        <tr>
+          <td>MUI 9 + Emotion</td>
+          <td>
+            Material UI: ready-made buttons, dialogs, navigation and the FaceMango theme (white,
+            mango yellow <code>#FFC400</code>).
+          </td>
+        </tr>
+        <tr>
+          <td>Motion</td>
+          <td>Smooth animations: page transitions, the like button, lists appearing.</td>
+        </tr>
+        <tr>
+          <td>react-virtuoso</td>
+          <td>Draws only the posts on screen, so a very long feed stays fast.</td>
+        </tr>
+        <tr>
+          <td>dotLottie, confetti, Howler</td>
+          <td>Animated reaction emoji, celebration confetti and short UI sounds.</td>
+        </tr>
+        <tr>
+          <td>MUI X Charts, @use-gesture</td>
+          <td>Wellbeing charts; swipe, long-press and pinch. Fonts are served by the app itself.</td>
+        </tr>
+        <tr class="grp">
+          <td colspan="2">Data and state</td>
+        </tr>
+        <tr>
+          <td>Dexie 4 + dexie-react-hooks</td>
+          <td>Friendly layer over IndexedDB; live queries redraw screens when data changes.</td>
+        </tr>
+        <tr>
+          <td>Zustand 5</td>
+          <td>Small in-memory stores: AI status, setup progress, “Priya is typing…”, UI state.</td>
+        </tr>
+        <tr>
+          <td>Zod 4</td>
+          <td>Describes the shape of data, and checks the model's JSON answers against it.</td>
+        </tr>
+        <tr>
+          <td>React Hook Form, date-fns</td>
+          <td>The signup form; “5m”, “Yesterday at 4:12 PM” and the dates behind Memories.</td>
+        </tr>
+        <tr class="grp">
+          <td colspan="2">AI</td>
+        </tr>
+        <tr>
+          <td>Prompt API</td>
+          <td>The browser's own model (Chrome: Gemini Nano, Edge: Phi-4-mini). No library.</td>
+        </tr>
+        <tr>
+          <td>@mlc-ai/web-llm</td>
+          <td>Runs open models (Qwen3, Gemma 3) on the GPU via WebGPU, in a Web Worker.</td>
+        </tr>
+        <tr>
+          <td>Transformers.js + ONNX Runtime</td>
+          <td>
+            Runs the small Florence-2 photo model in its own Web Worker, so friends can comment on
+            what is in a photo even when the main AI can't see images.
+          </td>
+        </tr>
+        <tr class="grp">
+          <td colspan="2">Media, backup and offline</td>
+        </tr>
+        <tr>
+          <td>DiceBear Personas</td>
+          <td>Draws each person's illustrated avatar from traits the AI picks.</td>
+        </tr>
+        <tr>
+          <td>browser-image-compression</td>
+          <td>Shrinks your photo to WebP on the device before saving it.</td>
+        </tr>
+        <tr>
+          <td>JSZip + yaml</td>
+          <td>Builds and reads the backup zip with readable Markdown files.</td>
+        </tr>
+        <tr>
+          <td>File System Access API</td>
+          <td>Chrome and Edge feature: the automatic backup writes its zip to your folder.</td>
+        </tr>
+        <tr>
+          <td>vite-plugin-pwa + Workbox</td>
+          <td>Installable site, offline caching, and the “update available” prompt.</td>
+        </tr>
+        <tr class="grp">
+          <td colspan="2">Quality and delivery</td>
+        </tr>
+        <tr>
+          <td>Vitest, Testing Library</td>
+          <td>Fast unit and component tests (<code>fake-indexeddb</code> stands in for the database).</td>
+        </tr>
+        <tr>
+          <td>Playwright</td>
+          <td>
+            Drives real browsers end to end: desktop Chrome, a Pixel 7 and an iPhone 15 (WebKit).
+            It also prints this guide. ESLint and Prettier keep the code tidy.
+          </td>
+        </tr>
+        <tr>
+          <td>GitHub Actions + Pages</td>
+          <td>
+            Test, build and publish automatically; Cloudflare provides the DNS for
+            <code>face.mangoidiots.com</code>.
+          </td>
+        </tr>
+      </table>
+      <div class="foot"><span><b>FaceMango</b> · How it works</span><span class="pn"></span></div>
+    </section>
+
+    <!-- ===================== 4 The AI layer: three tiers ===================== -->
+    <section class="page">
+      <h1><span class="n">4</span> The AI layer: three tiers</h1>
+      <p class="lead">
+        Devices differ a lot, so FaceMango looks for the best AI available and falls back step by
+        step. There is deliberately no “fake AI” mode: with no model, the app explains why and
+        stops.
+      </p>
+      <figure>
+        <svg viewBox="0 0 660 496">
+          <rect x="238" y="4" width="164" height="36" rx="18" class="by" />
+          <text x="320" y="27" class="c tb">Tap “Get started”</text>
+          <line x1="320" y1="40" x2="320" y2="62" class="a" />
+
+          <rect x="200" y="64" width="240" height="50" rx="8" class="bb" />
+          <text x="320" y="85" class="c tb">Desktop browser that offers</text>
+          <text x="320" y="100" class="c tb">the built-in Prompt API?</text>
+          <path d="M200 89 H102 V150" class="a" />
+          <text x="150" y="83" class="c x">yes</text>
+
+          <rect x="10" y="152" width="184" height="120" rx="9" class="bgr" />
+          <text x="102" y="174" class="c t">Tier 1</text>
+          <text x="102" y="191" class="c t">Built-in browser AI</text>
+          <text x="102" y="210" class="c">Chrome: Gemini Nano</text>
+          <text x="102" y="225" class="c">Edge: Phi-4-mini</text>
+          <text x="102" y="246" class="c x">The browser downloads it once;</text>
+          <text x="102" y="259" class="c x">the download needs a user tap.</text>
+
+          <line x1="320" y1="114" x2="320" y2="150" class="a" />
+          <text x="328" y="135" class="x">no, a phone, or it failed</text>
+
+          <rect x="200" y="152" width="240" height="50" rx="8" class="bb" />
+          <text x="320" y="173" class="c tb">WebGPU available, with a</text>
+          <text x="320" y="188" class="c tb">usable graphics adapter?</text>
+
+          <line x1="440" y1="177" x2="470" y2="177" class="a" />
+          <text x="446" y="170" class="x">no</text>
+          <rect x="472" y="152" width="178" height="120" rx="9" class="bg" />
+          <text x="561" y="174" class="c t">Tier 3</text>
+          <text x="561" y="191" class="c t">Unsupported</text>
+          <text x="561" y="212" class="c">A friendly screen says</text>
+          <text x="561" y="226" class="c">why. The app stops;</text>
+          <text x="561" y="240" class="c">only “About” still opens.</text>
+
+          <line x1="320" y1="202" x2="320" y2="296" class="a" />
+          <text x="328" y="252" class="x">yes</text>
+
+          <rect x="168" y="298" width="304" height="128" rx="9" class="bl" />
+          <text x="320" y="322" class="c t">Tier 2 · WebLLM on WebGPU</text>
+          <text x="320" y="342" class="c">Runs in a Web Worker. Weights come from Hugging Face</text>
+          <text x="320" y="356" class="c">once, then live in the browser cache.</text>
+          <text x="320" y="378" class="c tb">Computer: Qwen3 1.7B (fast f16 build, else f32)</text>
+          <text x="320" y="393" class="c tb">Phone: Gemma 3 1B, else Qwen3 0.6B</text>
+          <text x="320" y="414" class="c x">Tries each model in order until one loads.</text>
+
+          <line x1="320" y1="426" x2="320" y2="452" class="a" />
+          <path d="M102 272 V472 H216" class="a" />
+          <rect x="218" y="454" width="204" height="36" rx="18" class="by" />
+          <text x="320" y="477" class="c tb">Model ready · the app comes alive</text>
+        </svg>
+        <figcaption>
+          Figure 3 · Choosing the AI tier (<code>src/ai/detect.ts</code>,
+          <code>src/ai/service.ts</code>)
+        </figcaption>
+      </figure>
+      <div class="grid3" style="margin-top: 16px">
+        <div class="card">
+          <h3>Why start on a tap?</h3>
+          <p>
+            Browsers only allow the big model download after a user gesture, so “Get started”
+            kicks it off. Later visits start silently.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Phones skip Tier 1</h3>
+          <p>
+            Mobile browsers go straight to WebGPU. If Tier 1 fails on a computer, it falls through
+            to WebGPU too.
+          </p>
+        </div>
+        <div class="card">
+          <h3>One shared interface</h3>
+          <p>
+            Both tiers implement <code>AIProvider</code>: <code>generate</code>,
+            <code>generateJSON</code>, <code>stream</code> and optionally
+            <code>describeImage</code>. Without it, the photo captioner steps in (section 6).
+          </p>
+        </div>
+      </div>
+      <div class="foot"><span><b>FaceMango</b> · How it works</span><span class="pn"></span></div>
+    </section>
+
+    <!-- ===================== 5 Keeping the model polite ===================== -->
+    <section class="page">
+      <h1><span class="n">5</span> Keeping the model polite</h1>
+      <p class="lead">
+        A small on-device model can do one job at a time, and small models sometimes get the
+        format wrong. Two safeguards handle that.
+      </p>
+      <h2>A waiting line with a fast lane</h2>
+      <figure>
+        <svg viewBox="0 0 660 200">
+          <rect x="10" y="6" width="184" height="86" rx="9" class="bl" />
+          <text x="102" y="28" class="c t">Interactive</text>
+          <text x="102" y="47" class="c">Mango AI chat</text>
+          <text x="102" y="61" class="c">Post composer rewrite</text>
+          <text x="102" y="75" class="c">Describing your photo</text>
+
+          <rect x="10" y="108" width="184" height="86" rx="9" class="bg" />
+          <text x="102" y="130" class="c t">Background</text>
+          <text x="102" y="149" class="c">Comments and replies</text>
+          <text x="102" y="163" class="c">Friends, posts and life stories</text>
+          <text x="102" y="177" class="c">The living feed</text>
+
+          <line x1="194" y1="50" x2="246" y2="84" class="a" />
+          <line x1="194" y1="152" x2="246" y2="120" class="a" />
+
+          <rect x="248" y="30" width="184" height="136" rx="10" class="b" />
+          <text x="340" y="54" class="c t">AIQueue</text>
+          <text x="340" y="72" class="c">one job at a time</text>
+          <rect x="264" y="84" width="152" height="26" rx="7" class="by" />
+          <text x="340" y="101" class="c tb">interactive jumps ahead</text>
+          <rect x="264" y="120" width="152" height="26" rx="7" class="bg" />
+          <text x="340" y="137" class="c">background: first in, first out</text>
+
+          <line x1="432" y1="98" x2="484" y2="98" class="a" />
+          <rect x="486" y="54" width="164" height="88" rx="10" class="by" />
+          <text x="568" y="88" class="c t">The model</text>
+          <text x="568" y="106" class="c">one request</text>
+          <text x="568" y="120" class="c">at a time</text>
+        </svg>
+        <figcaption>
+          Figure 4 · If you ask Mango AI something while comments are being written, your request
+          goes next.
+        </figcaption>
+      </figure>
+      <h2>Checking the model's homework</h2>
+      <p>
+        For friends, posts, stories and comments the app needs structured answers (JSON), not free
+        text. Every such call is wrapped in the same loop:
+      </p>
+      <figure>
+        <svg viewBox="0 0 660 182">
+          <rect x="6" y="6" width="112" height="72" rx="9" class="b" />
+          <text x="62" y="30" class="c t">Prompt</text>
+          <text x="62" y="48" class="c">+ Zod schema</text>
+          <text x="62" y="62" class="c x">as JSON Schema</text>
+
+          <rect x="140" y="6" width="112" height="72" rx="9" class="by" />
+          <text x="196" y="30" class="c t">Model</text>
+          <text x="196" y="48" class="c">asked to follow</text>
+          <text x="196" y="62" class="c">the schema</text>
+
+          <rect x="274" y="6" width="112" height="72" rx="9" class="b" />
+          <text x="330" y="30" class="c t">Clean up</text>
+          <text x="330" y="48" class="c">drop &lt;think&gt; and</text>
+          <text x="330" y="62" class="c">code fences</text>
+
+          <rect x="408" y="6" width="112" height="72" rx="9" class="bb" />
+          <text x="464" y="30" class="c t">Zod check</text>
+          <text x="464" y="48" class="c">right shape,</text>
+          <text x="464" y="62" class="c">right types?</text>
+
+          <rect x="542" y="6" width="112" height="72" rx="9" class="bgr" />
+          <text x="598" y="30" class="c t">Typed data</text>
+          <text x="598" y="48" class="c">safe for the</text>
+          <text x="598" y="62" class="c">rest of the app</text>
+
+          <line x1="118" y1="42" x2="138" y2="42" class="a" />
+          <line x1="252" y1="42" x2="272" y2="42" class="a" />
+          <line x1="386" y1="42" x2="406" y2="42" class="a" />
+          <line x1="520" y1="42" x2="540" y2="42" class="a" />
+          <text x="531" y="35" class="c tb">✓</text>
+
+          <path d="M464 78 V104 H62 V80" class="ad" />
+          <text x="263" y="99" class="c tb"><tspan class="red">✗</tspan> invalid: retry with the error as a hint (up to 3 tries)</text>
+
+          <rect x="150" y="120" width="504" height="50" rx="8" class="bg" />
+          <text x="402" y="140" class="c">Still failing after 3 tries? An <tspan class="m">AIOutputError</tspan> is raised. For a planned comment, the scheduler</text>
+          <text x="402" y="156" class="c">pushes it back 30 seconds and tries again, up to 3 times, then cancels that one comment.</text>
+        </svg>
+        <figcaption>
+          Figure 5 · <code>generateValidated</code> in <code>src/ai/json.ts</code>. No unchecked
+          model output ever reaches the database.
+        </figcaption>
+      </figure>
+      <div class="callout" style="margin-top: 14px">
+        <b>Streaming with a safety net.</b> Mango AI chat shows words as they arrive. If streaming
+        fails or returns nothing, the app asks once for the whole reply and shows the error in
+        <span style="white-space: nowrap">Settings → On-device AI</span>, instead of leaving a
+        blank bubble.
+      </div>
+      <div class="foot"><span><b>FaceMango</b> · How it works</span><span class="pn"></span></div>
+    </section>
+
+    <!-- ===================== 6 Seeing your photos ===================== -->
+    <section class="page">
+      <h1><span class="n">6</span> Seeing your photos</h1>
+      <p class="lead">
+        Friends comment on what is <i>in</i> your photo, not just on your words. Many text models
+        can't see pictures, so when needed a second, much smaller model first describes the photo
+        in one sentence.
+      </p>
+      <figure>
+        <svg viewBox="0 0 660 352">
+          <rect x="10" y="10" width="150" height="40" rx="20" class="by" />
+          <text x="85" y="34" class="c tb">You post a photo</text>
+          <line x1="160" y1="30" x2="188" y2="30" class="a" />
+
+          <rect x="190" y="6" width="210" height="48" rx="8" class="bb" />
+          <text x="295" y="26" class="c tb">Can the AI model</text>
+          <text x="295" y="41" class="c tb">see images itself?</text>
+
+          <line x1="400" y1="30" x2="438" y2="30" class="a" />
+          <text x="419" y="23" class="c x">yes</text>
+          <rect x="440" y="6" width="210" height="48" rx="8" class="bgr" />
+          <text x="545" y="26" class="c tb">The built-in AI describes it</text>
+          <text x="545" y="42" class="c">(Prompt API with image input)</text>
+
+          <line x1="295" y1="54" x2="295" y2="96" class="a" />
+          <text x="303" y="74" class="x">no: WebLLM, or a built-in AI</text>
+          <text x="303" y="86" class="x">that only reads text</text>
+
+          <rect x="150" y="98" width="290" height="106" rx="9" class="bl" />
+          <text x="295" y="120" class="c t">Photo captioner</text>
+          <text x="295" y="140" class="c">Florence-2-base-ft (0.23B, MIT) through</text>
+          <text x="295" y="154" class="c">Transformers.js, in its own Web Worker.</text>
+          <text x="295" y="174" class="c">GPU (WebGPU) first; computers can fall back</text>
+          <text x="295" y="188" class="c">to the CPU (WASM). Freed again after use.</text>
+
+          <rect x="10" y="98" width="122" height="106" rx="9" class="b dash" />
+          <text x="71" y="118" class="c tb">First photo only</text>
+          <text x="71" y="136" class="c">~245 MB, once:</text>
+          <text x="71" y="150" class="c">weights from</text>
+          <text x="71" y="164" class="c">Hugging Face, the</text>
+          <text x="71" y="178" class="c">.wasm runtime from</text>
+          <text x="71" y="192" class="c">FaceMango itself</text>
+          <line x1="132" y1="151" x2="148" y2="151" class="ad" />
+
+          <line x1="295" y1="204" x2="295" y2="236" class="a" />
+          <path d="M545 54 V260 H442" class="a" />
+
+          <rect x="150" y="238" width="290" height="46" rx="9" class="by" />
+          <text x="295" y="257" class="c t">One sentence, saved on the post</text>
+          <text x="295" y="274" class="c"><tspan font-style="italic">“A dog looking out of a window.”</tspan></text>
+
+          <line x1="295" y1="284" x2="295" y2="304" class="a" />
+          <rect x="150" y="306" width="290" height="42" rx="9" class="b" />
+          <text x="295" y="323" class="c">Comment prompts include it, so friends talk</text>
+          <text x="295" y="338" class="c">about the dog, not just your caption</text>
+        </svg>
+        <figcaption>
+          Figure 6 · Describing a photo (<code>src/engine/describe.ts</code>,
+          <code>src/ai/captioner.ts</code>). The photo never leaves the device; only model files
+          come in.
+        </figcaption>
+      </figure>
+      <div class="grid3" style="margin-top: 14px">
+        <div class="card">
+          <h3>Only when needed</h3>
+          <p>
+            Nothing downloads until your first photo post, and only where the AI can't see images.
+            Each photo is described once, even if you post it again.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Polite with the GPU</h3>
+          <p>
+            The caption waits its turn in the same AI queue (fast lane), so it never runs at the
+            same time as the text model. Then the worker shuts down to free memory.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Careful on phones</h3>
+          <p>
+            Phones that report under 4 GB of memory skip it, and so does a phone where it was cut
+            off twice. Comments then use your words only.
+          </p>
+        </div>
+      </div>
+      <h2>Your switch, and the outside world</h2>
+      <ul class="bul">
+        <li>
+          <b>Settings → On-device AI:</b> “Describe my photos so friends can comment on them” is on
+          by default. The same panel shows progress and has a <b>Delete photo model</b> button.
+        </li>
+        <li>
+          <b>No new third party.</b> Transformers.js would normally fetch ONNX Runtime from a CDN.
+          FaceMango ships its own copy as a hashed <code>.wasm</code> file, so the only outside
+          servers stay Hugging Face and Google Analytics.
+        </li>
+        <li>
+          <b>Licences:</b> Transformers.js (Apache-2.0), ONNX Runtime Web (MIT) and Florence-2
+          (MIT), all compatible with AGPL-3.0.
+        </li>
+      </ul>
+      <div class="foot"><span><b>FaceMango</b> · How it works</span><span class="pn"></span></div>
+    </section>
+
+    <!-- ===================== 7 The simulation engine ===================== -->
+    <section class="page">
+      <h1><span class="n">7</span> The simulation engine</h1>
+      <p class="lead">
+        The core trick: <b>plan first, write later.</b> The moment you post, the engine decides
+        the whole story of that post. Only the words are produced when each moment arrives.
+      </p>
+      <figure>
+        <svg viewBox="0 0 660 246">
+          <rect x="262" y="2" width="396" height="168" rx="10" fill="#FFF9E6" />
+          <line x1="262" y1="2" x2="262" y2="182" stroke="#111" stroke-width="1.2" stroke-dasharray="4 3" />
+          <text x="46" y="20" class="lbl">ALREADY DELIVERED</text>
+          <text x="274" y="20" class="lbl">STILL PLANNED (IN THE DATABASE)</text>
+
+          <text x="46" y="58" class="tb" style="font-size: 11.5px">Reactions</text>
+          <text x="46" y="71" class="x">no AI needed</text>
+          <g fill="#FFC400" stroke="#111" stroke-width="1.1">
+            <circle cx="160" cy="62" r="5.5" /><circle cx="167" cy="62" r="5.5" /><circle cx="174" cy="62" r="5.5" />
+            <circle cx="181" cy="62" r="5.5" /><circle cx="189" cy="62" r="5.5" /><circle cx="198" cy="62" r="5.5" />
+            <circle cx="209" cy="62" r="5.5" /><circle cx="222" cy="62" r="5.5" /><circle cx="236" cy="62" r="5.5" />
+            <circle cx="252" cy="62" r="5.5" />
+          </g>
+          <g fill="#fff" stroke="#111" stroke-width="1.1">
+            <circle cx="276" cy="62" r="5.5" /><circle cx="298" cy="62" r="5.5" /><circle cx="322" cy="62" r="5.5" />
+            <circle cx="350" cy="62" r="5.5" /><circle cx="386" cy="62" r="5.5" /><circle cx="430" cy="62" r="5.5" />
+            <circle cx="480" cy="62" r="5.5" /><circle cx="540" cy="62" r="5.5" /><circle cx="604" cy="62" r="5.5" />
+          </g>
+
+          <text x="46" y="113" class="tb" style="font-size: 11.5px">Comments</text>
+          <text x="46" y="126" class="x">text written when due</text>
+          <rect x="170" y="108" width="24" height="16" rx="6" class="by" />
+          <rect x="214" y="108" width="24" height="16" rx="6" class="by" />
+          <rect x="292" y="108" width="24" height="16" rx="6" class="b" />
+          <rect x="378" y="108" width="24" height="16" rx="6" class="b" />
+          <rect x="490" y="108" width="24" height="16" rx="6" class="b" />
+
+          <line x1="46" y1="158" x2="650" y2="158" class="a" />
+          <line x1="150" y1="153" x2="150" y2="163" stroke="#111" />
+          <text x="150" y="176" class="c x">posted</text>
+          <text x="410" y="176" class="c x">a few hours later</text>
+          <text x="640" y="176" class="e x">up to ~12 h</text>
+          <text x="262" y="196" class="c x">now</text>
+
+          <text x="46" y="222">Reactions bunch up early with random bursts and lulls, like real attention.</text>
+          <text x="46" y="238">Close the tab and the plan keeps its place; see “Coming back after a break”.</text>
+        </svg>
+        <figcaption>
+          Figure 7 · One post's engagement plan. Each dot or bubble is a row in the
+          <code>events</code> table.
+        </figcaption>
+      </figure>
+      <div class="cols" style="margin-top: 6px">
+        <div>
+          <h2>How a plan is made (the defaults)</h2>
+          <ul class="bul small">
+            <li><b>Comments:</b> 0 to 9, skewed towards the low end. Never above 100.</li>
+            <li><b>Likes:</b> comments × 3 to 5, at least 3. Never above 1,000,000.</li>
+            <li>
+              <b>Who:</b> friends are picked by closeness and activity; public profiles fill in the
+              rest, shown as “and 1,234 others”.
+            </li>
+            <li>
+              <b>Mood:</b> 60% good, 25% appreciative, 10% nonsense, 5% critical, at most 2
+              critical per post. Fans, neutrals and critics tilt the mix.
+            </li>
+            <li><b>@mentioned</b> friends always respond.</li>
+            <li><b>Your first post</b> gets a warm early burst.</li>
+            <li><b>Friends' own posts</b> get lighter engagement (about 45%).</li>
+            <li>A <b>speed</b> setting squeezes the timeline (0.25× to 60×).</li>
+          </ul>
+        </div>
+        <div>
+          <h2>The scheduler: a clock that never stops</h2>
+          <p class="small muted">Starts with the app shell; wakes every 2.5 s (0.2 s while busy).</p>
+          <ol class="steps small">
+            <li><b>Apply due reactions.</b> Plain database updates, no AI.</li>
+            <li><b>Show “is writing a comment…”</b> for comments due in the next 20 s.</li>
+            <li>
+              <b>Write due comments</b> in batches of 4 for the same post, your own posts first.
+            </li>
+            <li>
+              <b>Friends post</b> on their own every 40 to 150 minutes; about 3 in 10 of these
+              posts move a <b>life story</b> along (next page).
+            </li>
+            <li><b>Friend requests</b> arrive from public profiles now and then.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="callout" style="margin-top: 8px">
+        <b>Event life cycle.</b> Every planned item is <span class="pill">planned</span> →
+        <span class="pill">applied</span> when delivered, or
+        <span class="pill g">cancelled</span> if the post is gone, the person became a former
+        friend, or the AI failed three times.
+      </div>
+      <div class="foot"><span><b>FaceMango</b> · How it works</span><span class="pn"></span></div>
+    </section>
+
+    <!-- ===================== 8 Friends' life stories ===================== -->
+    <section class="page">
+      <h1><span class="n">8</span> Friends' life stories</h1>
+      <p class="lead">
+        Friends don't only post one-offs. Some live through small storylines that unfold over days
+        and weeks (a new job, race training, a new pet) told one post at a time.
+      </p>
+      <figure>
+        <svg viewBox="0 0 660 214">
+          <rect x="356" y="2" width="302" height="152" rx="10" fill="#FFF9E6" />
+          <line x1="356" y1="2" x2="356" y2="166" stroke="#111" stroke-width="1.2" stroke-dasharray="4 3" />
+          <text x="14" y="20" class="lbl">ALREADY POSTED</text>
+          <text x="368" y="20" class="lbl">STILL TO COME (IN THE STORIES TABLE)</text>
+          <text x="14" y="42" class="tb" style="font-size: 11.5px">“Training for the Lakeside 10K”, one friend's story</text>
+
+          <line x1="40" y1="92" x2="636" y2="92" stroke="#111" stroke-width="2" />
+          <g class="c tb">
+            <text x="60" y="70">Signed up</text>
+            <text x="170" y="70">Week 2</text>
+            <text x="280" y="70">Rainy run</text>
+            <text x="410" y="70">Longest run yet</text>
+            <text x="515" y="70">Taper week</text>
+            <text x="612" y="70">Race day</text>
+          </g>
+          <circle cx="60" cy="92" r="11" class="by" />
+          <circle cx="170" cy="92" r="11" class="by" />
+          <circle cx="280" cy="92" r="11" class="by" />
+          <circle cx="410" cy="92" r="15" fill="none" stroke="#FFC400" stroke-width="3" />
+          <circle cx="410" cy="92" r="11" class="b" />
+          <circle cx="515" cy="92" r="11" class="b" />
+          <circle cx="612" cy="92" r="11" class="b" />
+          <g class="c tb" style="font-size: 10px">
+            <text x="60" y="96">1</text><text x="170" y="96">2</text><text x="280" y="96">3</text>
+            <text x="410" y="96">4</text><text x="515" y="96">5</text><text x="612" y="96">6</text>
+          </g>
+          <g class="c x">
+            <text x="60" y="122">post: update 1 of 6</text>
+            <text x="170" y="122">update 2 of 6</text>
+            <text x="280" y="122">update 3 of 6</text>
+            <text x="410" y="122">next beat due</text>
+            <text x="410" y="135" class="m">nextBeatAt</text>
+          </g>
+          <path d="M66 130 V134 H164 V130" fill="none" stroke="#999" stroke-width="1" />
+          <text x="115" y="147" class="c x">5 to 9 days apart</text>
+          <text x="356" y="180" class="c x">now</text>
+
+          <text x="14" y="200">Each beat is one friend post. The earlier beats go into the prompt, so posts refer back (“Week 3 of training…”).</text>
+        </svg>
+        <figcaption>
+          Figure 8 · A story arc. The plan is data, so even a small model stays consistent from one
+          post to the next.
+        </figcaption>
+      </figure>
+      <div class="cols" style="margin-top: 4px">
+        <div>
+          <h2>How a story post happens</h2>
+          <ol class="steps small">
+            <li>A friend post is due, and about 3 in 10 are story posts.</li>
+            <li>
+              If a story's next beat is due, the <b>most overdue beat</b> is posted by its owner.
+            </li>
+            <li>
+              Otherwise a <b>new story starts</b>, if there is room: the AI fills the arc's blanks
+              as Zod-checked JSON, and beat 1 is posted.
+            </li>
+            <li>No room? It is an ordinary one-off post.</li>
+          </ol>
+        </div>
+        <div>
+          <h2>The house rules</h2>
+          <ul class="bul small">
+            <li>At most one active story per friend, and a third of friends at once.</li>
+            <li>New stories start at least 16 hours apart.</li>
+            <li>A friend rests 7 days after a story ends.</li>
+            <li>The speed setting squeezes the gaps, like everything else.</li>
+            <li>A few posts in the first-run feed already begin stories.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="grid3" style="margin-top: 10px">
+        <div class="card y">
+          <h3>Curated in code</h3>
+          <p>
+            12 arcs in <code>storyTemplates.ts</code>, each with 4 to 6 beats in a fixed order.
+            Family-friendly: no tragedy, illness or breakups; mild setbacks only.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Filled in by the AI</h3>
+          <p>
+            Only the specifics: a race, a pet's name, a dish, a city. Then the words of each
+            post, written when its beat comes up.
+          </p>
+        </div>
+        <div class="card g">
+          <h3>Kept as data</h3>
+          <p>
+            The <code>stories</code> table: title, beats, current beat, next beat time, status
+            (active, completed, abandoned) and links to the posts.
+          </p>
+        </div>
+      </div>
+      <div class="callout">
+        <b>Where you see them.</b> Post cards say “Training for the Lakeside 10K · update 3 of 6”,
+        commenters may ask how it is going, and profiles list ongoing, completed and ended stories.
+        Stories are in backups; a friends reset ends the old friends' unfinished ones.
+      </div>
+      <div class="foot"><span><b>FaceMango</b> · How it works</span><span class="pn"></span></div>
+    </section>
+
+    <!-- ===================== 9 Workflow: first run ===================== -->
+    <section class="page">
+      <h1><span class="n">9</span> Workflow: first run</h1>
+      <p class="lead">
+        The first visit is the heaviest moment: a model has to arrive, and a whole social circle
+        has to be invented. The app overlaps the two, and tells you plainly what is happening.
+      </p>
+      <figure>
+        <svg viewBox="0 0 660 412">
+          <rect x="1" y="1" width="658" height="158" rx="12" fill="#FFF9E6" stroke="#EADFB8" />
+          <text x="14" y="21" class="lbl">WHAT YOU SEE</text>
+
+          <rect x="8" y="38" width="116" height="106" rx="9" class="b" />
+          <text x="66" y="60" class="c t">1 Landing</text>
+          <text x="66" y="80" class="c">privacy promise,</text>
+          <text x="66" y="94" class="c">iPhone data-loss</text>
+          <text x="66" y="108" class="c">notice</text>
+
+          <rect x="139" y="38" width="116" height="106" rx="9" class="by" />
+          <text x="197" y="60" class="c t">2 Get started</text>
+          <text x="197" y="80" class="c">your tap counts</text>
+          <text x="197" y="94" class="c">as the gesture</text>
+          <text x="197" y="108" class="c">browsers require</text>
+
+          <rect x="270" y="38" width="116" height="106" rx="9" class="b" />
+          <text x="328" y="60" class="c t">3 Sign up</text>
+          <text x="328" y="80" class="c">name, age 13+,</text>
+          <text x="328" y="94" class="c">city, languages,</text>
+          <text x="328" y="108" class="c">optional photo</text>
+
+          <rect x="401" y="38" width="116" height="106" rx="9" class="b" />
+          <text x="459" y="60" class="c t">4 Setup card</text>
+          <text x="459" y="80" class="c">three plain stages,</text>
+          <text x="459" y="94" class="c">real progress,</text>
+          <text x="459" y="108" class="c">time left and tips</text>
+
+          <rect x="532" y="38" width="116" height="106" rx="9" class="by" />
+          <text x="590" y="60" class="c t">5 Feed is alive</text>
+          <text x="590" y="80" class="c">confetti and a</text>
+          <text x="590" y="94" class="c">chime; 15 to 25</text>
+          <text x="590" y="108" class="c">posts waiting</text>
+
+          <line x1="124" y1="91" x2="137" y2="91" class="a" />
+          <line x1="255" y1="91" x2="268" y2="91" class="a" />
+          <line x1="386" y1="91" x2="399" y2="91" class="a" />
+          <line x1="517" y1="91" x2="530" y2="91" class="a" />
+
+          <rect x="1" y="196" width="658" height="212" rx="12" fill="#F6F6F6" stroke="#DDDDDD" />
+          <text x="14" y="216" class="lbl">BEHIND THE SCENES</text>
+
+          <rect x="139" y="236" width="247" height="154" rx="9" class="bl" />
+          <text x="262" y="258" class="c t">A Pick and load the AI</text>
+          <text x="262" y="279" class="c">detect the tier (Figure 3)</text>
+          <text x="262" y="294" class="c">“Downloading your AI”: size, progress,</text>
+          <text x="262" y="308" class="c">time left; a calm note if it is slow</text>
+          <text x="262" y="322" class="c">“Waking it up”: load it into memory</text>
+          <text x="262" y="352" class="c x">runs while you fill in the signup form,</text>
+          <text x="262" y="365" class="c x">so the wait is hidden</text>
+
+          <rect x="401" y="236" width="116" height="154" rx="9" class="b" />
+          <text x="459" y="258" class="c t">B Build the</text>
+          <text x="459" y="273" class="c t">circle</text>
+          <text x="459" y="294" class="c">25 friends, then</text>
+          <text x="459" y="308" class="c">50 public profiles,</text>
+          <text x="459" y="322" class="c">4 per AI request,</text>
+          <text x="459" y="336" class="c">saved as they go</text>
+
+          <rect x="532" y="236" width="116" height="154" rx="9" class="b" />
+          <text x="590" y="258" class="c t">C Seed the feed</text>
+          <text x="590" y="279" class="c">15 to 25 friend</text>
+          <text x="590" y="293" class="c">posts, back-dated</text>
+          <text x="590" y="307" class="c">over ~3 days; a</text>
+          <text x="590" y="321" class="c">few begin life</text>
+          <text x="590" y="335" class="c">stories</text>
+
+          <line x1="386" y1="313" x2="399" y2="313" class="a" />
+          <line x1="517" y1="313" x2="530" y2="313" class="a" />
+
+          <line x1="197" y1="144" x2="197" y2="234" class="a" />
+          <path d="M328 144 V176 H300 V234" class="ad" />
+          <text x="336" y="170" class="x">your profile</text>
+          <line x1="459" y1="236" x2="459" y2="146" class="ad" />
+          <text x="452" y="184" class="e x">“Meeting your friends”</text>
+          <line x1="590" y1="236" x2="590" y2="146" class="ad" />
+          <text x="583" y="184" class="e x">posts appear</text>
+        </svg>
+        <figcaption>
+          Figure 9 · Solid arrows: order of work. Dashed arrows: progress shown on screen, or data
+          feeding the screen.
+        </figcaption>
+      </figure>
+      <div class="grid3" style="margin-top: 12px">
+        <div class="card">
+          <h3>Resumable by design</h3>
+          <p>
+            Each stage tops up what is stored. Close the tab at friend 14 and it carries on from
+            friend 14. <code>setupComplete</code> is set only at the end.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Post while you wait</h3>
+          <p>
+            A post written before the friends arrive is kept in a waiting list and gets its likes
+            and comments as soon as setup finishes.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Where it lives in code</h3>
+          <p>
+            <code>features/onboarding</code>, the setup card in <code>features/ai</code>, progress
+            in <code>ai/progress.ts</code>, world-building in <code>engine/onboarding.ts</code>.
+          </p>
+        </div>
+      </div>
+      <h2>When something goes wrong</h2>
+      <div class="grid3">
+        <div class="card">
+          <h3>No usable AI</h3>
+          <p>
+            Neither the built-in AI nor WebGPU works: the Unsupported screen explains why, and the
+            app stops there.
+          </p>
+        </div>
+        <div class="card">
+          <h3>A model will not load</h3>
+          <p>
+            The next model in the list is tried. If all fail, the setup card shows the reason and a
+            clear Retry button.
+          </p>
+        </div>
+        <div class="card">
+          <h3>The AI errs mid-setup</h3>
+          <p>
+            Setup pauses with a short message and resumes the next time you open FaceMango, from
+            where it stopped.
+          </p>
+        </div>
+      </div>
+      <div class="foot"><span><b>FaceMango</b> · How it works</span><span class="pn"></span></div>
+    </section>
+
+    <!-- ===================== 10 Workflow: you post something ===================== -->
+    <section class="page">
+      <h1><span class="n">10</span> Workflow: you post something</h1>
+      <p class="lead">From the tap on “Post” to the first heart arriving, here is who does what.</p>
+      <figure>
+        <svg viewBox="0 0 660 452">
+          <rect x="14" y="6" width="112" height="30" rx="8" class="bl" />
+          <text x="70" y="26" class="c tb" style="font-size: 11.5px">You · screen</text>
+          <rect x="144" y="6" width="112" height="30" rx="8" class="bg" />
+          <text x="200" y="26" class="c tb" style="font-size: 11.5px">Database</text>
+          <rect x="274" y="6" width="112" height="30" rx="8" class="b" />
+          <text x="330" y="26" class="c tb" style="font-size: 11.5px">Engine</text>
+          <rect x="404" y="6" width="112" height="30" rx="8" class="b" />
+          <text x="460" y="26" class="c tb" style="font-size: 11.5px">Scheduler</text>
+          <rect x="534" y="6" width="112" height="30" rx="8" class="by" />
+          <text x="590" y="26" class="c tb" style="font-size: 11.5px">AI model</text>
+          <line x1="70" y1="36" x2="70" y2="448" class="life" />
+          <line x1="200" y1="36" x2="200" y2="448" class="life" />
+          <line x1="330" y1="36" x2="330" y2="448" class="life" />
+          <line x1="460" y1="36" x2="460" y2="448" class="life" />
+          <line x1="590" y1="36" x2="590" y2="448" class="life" />
+
+          <line x1="70" y1="66" x2="198" y2="66" class="a" />
+          <text x="135" y="60" class="c"><tspan class="tb">1</tspan> save post</text>
+          <line x1="70" y1="100" x2="328" y2="100" class="a" />
+          <text x="200" y="94" class="c"><tspan class="tb">2</tspan> “a new post” → onUserPost</text>
+          <line x1="330" y1="136" x2="202" y2="136" class="a" />
+          <text x="265" y="130" class="c"><tspan class="tb">3</tspan> save the whole plan</text>
+          <text x="265" y="150" class="c x">likes + comments with due times</text>
+          <line x1="460" y1="190" x2="202" y2="190" class="a" />
+          <text x="330" y="184" class="c"><tspan class="tb">4</tspan> every ~2.5 s: what is due?</text>
+          <line x1="200" y1="222" x2="458" y2="222" class="ad" />
+          <text x="330" y="216" class="c x">due events</text>
+          <line x1="460" y1="256" x2="202" y2="256" class="a" />
+          <text x="330" y="250" class="c"><tspan class="tb">5</tspan> apply due reactions (no AI)</text>
+          <line x1="460" y1="292" x2="588" y2="292" class="a" />
+          <text x="525" y="286" class="c"><tspan class="tb">6</tspan> write 1 to 4</text>
+          <text x="525" y="314" class="c">comments as JSON</text>
+          <line x1="590" y1="334" x2="462" y2="334" class="ad" />
+          <text x="525" y="348" class="c x">checked comments</text>
+          <line x1="460" y1="376" x2="202" y2="376" class="a" />
+          <text x="330" y="370" class="c"><tspan class="tb">7</tspan> save comments + notification</text>
+          <line x1="200" y1="420" x2="72" y2="420" class="ad" />
+          <text x="135" y="413" class="c"><tspan class="tb">8</tspan> live query fires</text>
+          <text x="135" y="436" class="c x">screen redraws</text>
+        </svg>
+        <figcaption>
+          Figure 10 · Dashed arrows are replies. Steps 4 to 7 repeat for as long as events are due.
+        </figcaption>
+      </figure>
+      <div class="grid2" style="margin-top: 12px">
+        <div class="card">
+          <h3>While comments are being written</h3>
+          <p>
+            Because comments on your own posts are planned ahead, the app knows who is about to
+            comment and shows “Priya is writing a comment…” for events due in the next 20 seconds.
+          </p>
+        </div>
+        <div class="card">
+          <h3>With a photo</h3>
+          <p>
+            Alongside step 2, the photo is described once (section 6) and the sentence is saved on
+            the post, so the comments in step 6 can mention what is in it.
+          </p>
+        </div>
+      </div>
+      <p class="small" style="margin: 0 0 4px">
+        <b>When you comment or reply,</b> the engine plans one friend reply: about 65% likely to
+        answer a reply to them, 75% likely to answer you on their own post, usually within 1 to 8
+        minutes.
+      </p>
+      <h2>Coming back after a break</h2>
+      <p class="small">
+        There is no server to keep the story going while the tab is closed, so the app catches up
+        instead:
+      </p>
+      <ol class="steps small">
+        <li>Planned items whose time passed stay <span class="pill">planned</span> in the database.</li>
+        <li>
+          When you return, the scheduler finds them all due. Reactions are applied with their
+          <b>original timestamps</b>, so the feed looks as if it had been live all along.
+        </li>
+        <li>
+          If a lot happened, a “While you were away” card sums it up: for example
+          <i>14 reactions, 3 comments</i>.
+        </li>
+      </ol>
+      <div class="foot"><span><b>FaceMango</b> · How it works</span><span class="pn"></span></div>
+    </section>
+
+    <!-- ===================== 11 Your data ===================== -->
+    <section class="page">
+      <h1><span class="n">11</span> Your data</h1>
+      <p class="lead">
+        Everything is stored in a single IndexedDB database named <code>facemango</code>, managed
+        with Dexie. These are its 14 tables, in plain terms.
+      </p>
+      <div class="grid3">
+        <div class="card y small">
+          <h3>People</h3>
+          <p><span class="pill">profile</span> you</p>
+          <p>
+            <span class="pill">personas</span> every friend, public profile and former friend:
+            personality, interests, avatar traits
+          </p>
+        </div>
+        <div class="card y small">
+          <h3>Content</h3>
+          <p><span class="pill">posts</span> yours and your friends'</p>
+          <p><span class="pill">comments</span> <span class="pill">reactions</span></p>
+          <p><span class="pill">media</span> photos and avatars, stored as blobs</p>
+          <p><span class="pill">stories</span> friends' life stories and their beats</p>
+        </div>
+        <div class="card y small">
+          <h3>The clock</h3>
+          <p>
+            <span class="pill">events</span> the planned future: reactions, comments, replies,
+            friend requests
+          </p>
+          <p><span class="pill">notifications</span> the bell and Activity</p>
+        </div>
+        <div class="card small">
+          <h3>You, privately</h3>
+          <p><span class="pill g">usageSessions</span> <span class="pill g">moods</span></p>
+          <p>Wellbeing data, never sent anywhere</p>
+          <p><span class="pill g">chat</span> Mango AI history</p>
+        </div>
+        <div class="card small">
+          <h3>Settings</h3>
+          <p><span class="pill g">settings</span> your choices</p>
+          <p>
+            <span class="pill g">meta</span> internal flags: setup done, last backup, next friend
+            post
+          </p>
+        </div>
+        <div class="card g small">
+          <h3>Rules for changing it</h3>
+          <p>
+            Never edit a shipped schema version. Add a new Dexie version (now at v3, which added
+            <code>stories</code>). That keeps every existing user's data safe.
+          </p>
+        </div>
+      </div>
+      <h2>Backup and restore</h2>
+      <div class="cols" style="gap: 16px">
+        <pre class="box">
+facemango-backup-2026-10-14.zip
+├─ me.md         your profile, posts, comments
+├─ friends.md    friends, public, former,
+│                and their life stories
+├─ feed.md       friends' posts + comments
+├─ wellbeing.md  usage and mood check-ins
+├─ images/       your photos
+└─ avatars/      generated avatars (SVG)</pre
+        >
+        <div class="small">
+          <p>
+            Each record is a block of YAML front-matter (id, author, time, type) followed by
+            readable text, so a person can read it and the app can parse it reliably. Photo-pack
+            pictures are referenced by id, not copied.
+          </p>
+          <p><b>Restore</b> either <i>everything</i>, or <i>my content + new friends</i>.</p>
+        </div>
+      </div>
+      <div class="callout small" style="margin-top: 12px">
+        <b>Automatic backup to a folder</b> (opt-in, Advanced settings; Chrome and Edge on
+        computers). Every week the same zip is written straight to a folder you pick, through the
+        browser's File System Access API, and the newest 5 are kept. Nothing is uploaded. If the
+        browser wants your permission again, the backup card in the feed asks for one click.
+      </div>
+      <h2>Resetting your friends</h2>
+      <figure>
+        <svg viewBox="0 0 660 134">
+          <rect x="6" y="20" width="150" height="86" rx="9" class="bl" />
+          <text x="81" y="46" class="c t">Current friends</text>
+          <text x="81" y="64" class="c">and public profiles</text>
+          <text x="81" y="83" class="c x">with their old likes</text>
+          <text x="81" y="95" class="c x">and comments</text>
+          <line x1="156" y1="38" x2="250" y2="38" class="a" />
+          <line x1="156" y1="96" x2="250" y2="96" class="a" />
+          <text x="203" y="126" class="c tb" style="font-size: 10px">Reset friends</text>
+
+          <rect x="252" y="6" width="400" height="62" rx="9" class="bg" />
+          <text x="452" y="27" class="c t">Become “former friends”</text>
+          <text x="452" y="44" class="c">read-only; old likes and comments stay under their names;</text>
+          <text x="452" y="58" class="c">planned events are cancelled and unfinished stories end</text>
+
+          <rect x="252" y="76" width="400" height="50" rx="9" class="by" />
+          <text x="452" y="97" class="c t">A brand new circle is generated</text>
+          <text x="452" y="114" class="c">your own posts, photos and comments are untouched</text>
+        </svg>
+      </figure>
+      <div class="foot"><span><b>FaceMango</b> · How it works</span><span class="pn"></span></div>
+    </section>
+
+    <!-- ===================== 12 Screens, offline use and privacy ===================== -->
+    <section class="page">
+      <h1><span class="n">12</span> Screens, offline use and privacy</h1>
+      <div class="cols">
+        <div>
+          <h2>How the app is wired</h2>
+          <p class="small">
+            <code>main.tsx</code> mounts <code>App</code>, which sets up the theme, animations and
+            the router. <code>RootLayout</code> wraps every page: it blocks the app with the
+            Unsupported screen if no AI exists, sends analytics page views, and hosts toasts and
+            the update prompt.
+          </p>
+          <pre class="box" style="font-size: 10.2px">
+Open to visitors
+  /welcome          landing page
+  /signup           signup form
+  /about /credits   info pages
+
+Needs a profile (inside AppShell)
+  /                 home feed
+  /friends          friends + requests
+  /profile/:id      profile, life stories
+  /post/:id         one post
+  /assistant        Mango AI
+  /memories         on this day
+  /notifications    Activity
+  /photos           photo grid
+  /wellbeing        usage dashboard
+  /settings         + /settings/advanced
+  /settings/developer  real-model test
+  /menu             mobile menu</pre
+          >
+          <p class="small muted" style="margin-top: 6px">
+            Most screens are loaded on demand (<code>lazy</code>), so the first page opens quickly.
+            Guards send visitors without a profile to <code>/welcome</code>, and returning users
+            straight to the feed.
+          </p>
+        </div>
+        <div>
+          <h2>One app, two layouts</h2>
+          <svg viewBox="0 0 300 330" style="display: block; width: 100%; height: auto">
+            <rect x="4" y="4" width="292" height="150" rx="10" class="b" stroke-width="1.6" />
+            <path d="M4 26 V14 a10 10 0 0 1 10 -10 H286 a10 10 0 0 1 10 10 V26 Z" class="by" />
+            <text x="150" y="19" class="c tb" style="font-size: 9.5px">TopBar</text>
+            <rect x="12" y="34" width="64" height="112" rx="6" class="bg" />
+            <text x="44" y="94" class="c x">NavList</text>
+            <rect x="84" y="34" width="132" height="112" rx="6" class="bl" />
+            <text x="150" y="88" class="c">Feed</text>
+            <text x="150" y="102" class="c x">main column</text>
+            <rect x="224" y="34" width="64" height="112" rx="6" class="bg" />
+            <text x="256" y="94" class="c x">RightRail</text>
+            <text x="150" y="172" class="c x">Computer: three columns</text>
+
+            <rect x="96" y="184" width="108" height="138" rx="12" class="b" stroke-width="1.6" />
+            <path d="M96 206 V196 a12 12 0 0 1 12 -12 H192 a12 12 0 0 1 12 12 V206 Z" class="by" />
+            <text x="150" y="199" class="c tb" style="font-size: 9.5px">TopBar</text>
+            <rect x="104" y="212" width="92" height="76" rx="6" class="bl" />
+            <text x="150" y="254" class="c">Feed</text>
+            <rect x="104" y="294" width="92" height="20" rx="6" class="bg" />
+            <text x="150" y="308" class="c x">BottomNav</text>
+          </svg>
+          <p class="small muted" style="text-align: center; margin-top: 2px">
+            Phone: one column and a bottom bar (<code>AppShell</code>)
+          </p>
+        </div>
+      </div>
+      <div class="cols" style="margin-top: 6px">
+        <div>
+          <h2>Installable and offline</h2>
+          <ul class="bul small">
+            <li>
+              <b>Service worker</b> (Workbox, via <code>vite-plugin-pwa</code>) caches the app files
+              and the photos you view. WebLLM and the photo model's runtime are cached the first
+              time they are used.
+            </li>
+            <li>
+              <b>“Update available”</b> prompt: a new version waits until you accept it, so a
+              refresh never interrupts you.
+            </li>
+            <li>
+              <b>Deep links</b> such as <code>/about</code> work through a <code>404.html</code>
+              copy of the app that GitHub Pages serves.
+            </li>
+            <li>
+              <b>iPhone note:</b> Safari can erase site data after 7 idle days unless the app is on
+              the Home Screen. FaceMango warns about this and nudges you to back up.
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h2>Privacy, in layers</h2>
+          <ul class="bul small">
+            <li>
+              <b>By design:</b> no server and no account; posts, photos and wellbeing data have no
+              code path to the network.
+            </li>
+            <li>
+              <b>By the browser:</b> a strict <i>Content-Security-Policy</i> only allows connections
+              to the app itself, Hugging Face and Google Analytics.
+            </li>
+            <li>
+              <b>By self-hosting:</b> fonts, emoji, sounds, model libraries and the photo model's
+              runtime are copied into the app (<code>npm run models</code>, the build) instead of
+              loaded from a CDN.
+            </li>
+            <li>
+              <b>Analytics:</b> on for the live site (the <code>GA_ID</code> build variable). It
+              sends page views with route patterns like <code>/post/:id</code>, never ids or text,
+              and waits for consent in the EU and UK.
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot"><span><b>FaceMango</b> · How it works</span><span class="pn"></span></div>
+    </section>
+
+    <!-- ===================== 13 Building, testing and shipping ===================== -->
+    <section class="page">
+      <h1><span class="n">13</span> Building, testing and shipping</h1>
+      <p class="lead">
+        Every push to <code>main</code> is checked by robots and, if everything passes, published
+        to the live site.
+      </p>
+      <figure>
+        <svg viewBox="0 0 660 254">
+          <rect x="6" y="4" width="142" height="90" rx="9" class="b" />
+          <text x="77" y="26" class="c t">1 Change code</text>
+          <text x="77" y="44" class="c m">npm run dev</text>
+          <text x="77" y="60" class="c">live reload; fetches model</text>
+          <text x="77" y="74" class="c">libraries first</text>
+
+          <rect x="168" y="4" width="142" height="90" rx="9" class="b" />
+          <text x="239" y="26" class="c t">2 Check locally</text>
+          <text x="239" y="44" class="c">lint · format · types</text>
+          <text x="239" y="60" class="c">unit tests (Vitest)</text>
+          <text x="239" y="78" class="c x">before you push</text>
+
+          <rect x="330" y="4" width="142" height="90" rx="9" class="bl" />
+          <text x="401" y="26" class="c t">3 Push to main</text>
+          <text x="401" y="44" class="c">on GitHub</text>
+          <text x="401" y="62" class="c x">pushing = deploying,</text>
+          <text x="401" y="75" class="c x">so tests come first</text>
+
+          <line x1="148" y1="49" x2="166" y2="49" class="a" />
+          <line x1="310" y1="49" x2="328" y2="49" class="a" />
+          <line x1="401" y1="94" x2="401" y2="114" class="a" />
+
+          <rect x="6" y="116" width="648" height="80" rx="12" class="bb" />
+          <text x="20" y="139" class="t" style="font-size: 13px">4 GitHub Actions · “check” job</text>
+          <rect x="20" y="150" width="68" height="34" rx="7" class="b" />
+          <text x="54" y="171" class="c">npm ci</text>
+          <rect x="96" y="150" width="68" height="34" rx="7" class="b" />
+          <text x="130" y="171" class="c">lint</text>
+          <rect x="172" y="150" width="72" height="34" rx="7" class="b" />
+          <text x="208" y="171" class="c">format</text>
+          <rect x="252" y="150" width="74" height="34" rx="7" class="b" />
+          <text x="289" y="171" class="c">typecheck</text>
+          <rect x="334" y="150" width="74" height="34" rx="7" class="b" />
+          <text x="371" y="171" class="c">unit tests</text>
+          <rect x="416" y="150" width="60" height="34" rx="7" class="b" />
+          <text x="446" y="171" class="c">build</text>
+          <rect x="484" y="150" width="158" height="34" rx="7" class="by" />
+          <text x="563" y="164" class="c tb">end-to-end tests</text>
+          <text x="563" y="177" class="c" style="font-size: 9px">Chrome · Pixel 7 · iPhone</text>
+
+          <line x1="110" y1="196" x2="110" y2="212" class="a" />
+          <rect x="6" y="214" width="210" height="36" rx="18" class="by" />
+          <text x="111" y="237" class="c tb">5 Deploy to GitHub Pages</text>
+          <text x="232" y="237">→ <tspan class="tb">face.mangoidiots.com</tspan> <tspan class="x">(Cloudflare DNS, HTTPS)</tspan></text>
+        </svg>
+        <figcaption>
+          Figure 11 · <code>.github/workflows/deploy.yml</code>. On pull requests the same checks
+          run, but nothing is deployed.
+        </figcaption>
+      </figure>
+      <div class="cols" style="margin-top: 4px">
+        <div>
+          <h2>Three kinds of tests</h2>
+          <ul class="bul small">
+            <li>
+              <b>Unit tests</b> (<code>npm test</code>): Vitest in Node with a fake database. They
+              cover the planner, limits, queue, JSON checks, life stories, the photo captioner and
+              backups (with a fake folder). The database is cleared before each test.
+            </li>
+            <li>
+              <b>End-to-end tests</b> (<code>npm run test:e2e</code>): Playwright drives the real
+              built app on desktop and phone shapes, using a <b>mock model</b> that only exists in
+              the test build (<code>VITE_MOCK_AI=1</code>).
+            </li>
+            <li>
+              <b>Real-model checks:</b> a mock cannot judge writing quality. The
+              <b>Real-model test</b> page (Advanced settings → Developer) runs the real prompts
+              through the loaded model in Chrome or Edge and reports validity, retries, speed and
+              tone mix, storing nothing.
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h2>House rules (in <code>CLAUDE.md</code>)</h2>
+          <ul class="bul small">
+            <li>Hard caps: 1,000,000 likes and 100 comments per post.</li>
+            <li>User content and wellbeing data never go over the network.</li>
+            <li>All AI calls go through <code>src/ai</code>, with Zod-checked JSON.</li>
+            <li>Never edit a shipped database version; add a new one.</li>
+            <li>No non-AI mode; the mock model is test-only.</li>
+            <li>
+              Lint enforces React Compiler rules: no <code>Date.now()</code> during render, use
+              <code>useNow()</code>.
+            </li>
+          </ul>
+        </div>
+      </div>
+      <h2>Everyday commands</h2>
+      <table class="tbl code cmd">
+        <tr>
+          <td>npm run dev</td>
+          <td>
+            Start the dev server at <code>localhost:5173</code>. It first fetches the WebLLM model
+            libraries into <code>public/models/</code> (git-ignored), so the app serves them itself.
+          </td>
+        </tr>
+        <tr>
+          <td>npm run build</td>
+          <td>
+            Type-check and make the production files in <code>dist/</code>, plus the
+            <code>404.html</code> fallback and the PWA service worker.
+          </td>
+        </tr>
+        <tr>
+          <td>npm test</td>
+          <td>Run all unit tests once (<code>test:watch</code> keeps them running).</td>
+        </tr>
+        <tr>
+          <td>npm run test:e2e</td>
+          <td>Build the mock-model version into <code>dist-e2e/</code> and run the Playwright tests against it.</td>
+        </tr>
+        <tr>
+          <td>npm run lint · format</td>
+          <td>Find problems with ESLint; tidy the code with Prettier.</td>
+        </tr>
+        <tr>
+          <td>npm run docs:pdf</td>
+          <td>
+            Print this guide from its source, <code>docs/how-it-works/how-it-works.html</code>,
+            into <code>public/</code>.
+          </td>
+        </tr>
+      </table>
+      <div class="foot"><span><b>FaceMango</b> · How it works</span><span class="pn"></span></div>
+    </section>
+
+    <!-- ===================== 14 Where to find things ===================== -->
+    <section class="page">
+      <h1><span class="n">14</span> Where to find things</h1>
+      <table class="tbl code tight narrow">
+        <tr>
+          <th>Folder</th>
+          <th>What is inside</th>
+        </tr>
+        <tr>
+          <td>src/app/</td>
+          <td>App root, routes, guards, theme, and the responsive shell (<code>shell/</code>).</td>
+        </tr>
+        <tr>
+          <td>src/features/</td>
+          <td>
+            One folder per screen: feed, compose, friends, profile, assistant, memories, activity,
+            photos, wellbeing, settings, onboarding, backup, ai (setup card), developer.
+          </td>
+        </tr>
+        <tr>
+          <td>src/engine/</td>
+          <td>
+            <code>planner</code> (the plan), <code>scheduler</code> (the clock),
+            <code>onboarding</code>, <code>userPosts</code>, <code>friendPosts</code>,
+            <code>stories</code> + <code>storyTemplates</code>, <code>describe</code>,
+            <code>personas</code>, <code>prompts</code>, <code>limits</code>, <code>config</code>, …
+          </td>
+        </tr>
+        <tr>
+          <td>src/ai/</td>
+          <td>
+            <code>detect</code> (choose a tier), <code>service</code>, <code>queue</code>,
+            <code>json</code> (validate, retry), <code>progress</code>, <code>promptApi</code>,
+            <code>webllm</code> + worker, <code>captioner</code> + worker, <code>mockProvider</code>.
+          </td>
+        </tr>
+        <tr>
+          <td>src/db/</td>
+          <td>Dexie schema and versions (<code>db.ts</code>), record types (<code>types.ts</code>), data actions.</td>
+        </tr>
+        <tr>
+          <td>src/lib/</td>
+          <td>
+            Helpers: backup and folder auto-backup (<code>backup/</code>), analytics, time-ago,
+            sounds, usage and wellbeing, image handling, platform checks.
+          </td>
+        </tr>
+        <tr>
+          <td>scripts/</td>
+          <td>Asset scripts (model libraries, emoji, sounds, photo pack) and this guide's printer.</td>
+        </tr>
+        <tr>
+          <td>e2e/</td>
+          <td>Playwright tests: onboarding, feed, sections, backup, developer page.</td>
+        </tr>
+        <tr>
+          <td>SPEC.md, docs/</td>
+          <td>
+            The spec; <code>DEVELOPMENT.md</code> (rules), <code>STATUS.md</code> (open items),
+            <code>how-it-works/</code> (this guide).
+          </td>
+        </tr>
+      </table>
+      <h2>Glossary</h2>
+      <table class="tbl tight narrow">
+        <tr>
+          <td>Persona</td>
+          <td>A simulated person: name, city, interests, writing style, stance, activity, closeness.</td>
+        </tr>
+        <tr>
+          <td>Planned event</td>
+          <td>A scheduled future like, comment, reply or request, stored with a due time.</td>
+        </tr>
+        <tr>
+          <td>Life story / beat</td>
+          <td>A friend's storyline from a curated arc / one step of it, told in one post.</td>
+        </tr>
+        <tr>
+          <td>Prompt API</td>
+          <td>A browser feature that gives web pages access to a built-in AI model.</td>
+        </tr>
+        <tr>
+          <td>WebGPU / WebLLM</td>
+          <td>WebGPU lets web pages use the graphics card; WebLLM uses it to run open AI models.</td>
+        </tr>
+        <tr>
+          <td>Photo captioner</td>
+          <td>Florence-2, a small model that turns a photo into one sentence (via Transformers.js).</td>
+        </tr>
+        <tr>
+          <td>Web Worker</td>
+          <td>A background thread in the browser, so heavy work does not freeze the screen.</td>
+        </tr>
+        <tr>
+          <td>IndexedDB / Dexie</td>
+          <td>The browser's built-in database / the friendly library on top of it.</td>
+        </tr>
+        <tr>
+          <td>Live query</td>
+          <td>A database read that re-runs by itself when the data changes, so screens update.</td>
+        </tr>
+        <tr>
+          <td>Zod</td>
+          <td>A library that describes the shape of data and checks real data against it.</td>
+        </tr>
+        <tr>
+          <td>PWA / Service worker</td>
+          <td>A website that installs like an app / the background script that makes it work offline.</td>
+        </tr>
+        <tr>
+          <td>File System Access API</td>
+          <td>A Chrome and Edge feature that lets a page save files into a folder you choose.</td>
+        </tr>
+        <tr>
+          <td>Content-Security-Policy</td>
+          <td>A rule set telling the browser which servers the page may contact.</td>
+        </tr>
+      </table>
+      <h2>Where the project stands</h2>
+      <div class="grid3 status">
+        <div class="card gr">
+          <h3>Built and live</h3>
+          <p>
+            M1 to M7, plus life stories, folder backup, photo-aware comments on every tier, the
+            new first-run wait and a developer test page. Analytics on.
+          </p>
+        </div>
+        <div class="card y">
+          <h3>Open items</h3>
+          <p>
+            Re-test Mango AI with the test page; try the new features in real browsers; grow the
+            photo pack (87 of about 250).
+          </p>
+        </div>
+        <div class="card g">
+          <h3>Parked</h3>
+          <p>
+            M8 realistic faces (no suitably licensed small image model yet); encrypted backups;
+            Messenger-lite.
+          </p>
+        </div>
+      </div>
+      <div class="foot"><span><b>FaceMango</b> · How it works</span><span class="pn"></span></div>
+    </section>
+  </body>
+</html>
