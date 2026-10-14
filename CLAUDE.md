@@ -11,7 +11,7 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 
 ## Status (2026-10-14)
 - **Built:** M1–M7 from SPEC §10, plus life stories, folder auto-backup, photo-aware comments on every tier (Florence-2 captioner via Transformers.js), the first-run setup experience and the developer real-model test page (Advanced settings → Developer).
-- **Parked:** M8 realistic faces (no suitably licensed small image model yet), encrypted backups, Messenger-lite. Details in `docs/STATUS.md`.
+- **Parked:** M8 realistic faces (SD-Turbo reviewed 2026-10-14 and parked: licence, quality, safety, size), encrypted backups, Messenger-lite, more languages. Reasons in `docs/FUTURE.md`.
 - **Analytics:** on. The repo Actions variable `GA_ID` is set.
 - **Published and live over HTTPS:** pushing to `main` runs CI (lint, unit, e2e on Chrome/Android/iPhone) and deploys to GitHub Pages. See "Deployment" below.
 - **Real-model test (owner, Qwen3 on WebGPU):** friends, posts with photos, likes, comments and Activity worked. Mango AI (chat + composer) failed. It now falls back from streaming to a single reply and shows the error. **Re-test on Qwen3 pending**: ask the owner to run the developer Real-model test and paste the copied results.
