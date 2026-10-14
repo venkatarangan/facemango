@@ -37,7 +37,13 @@ test('a post written during setup waits for the friends, then gets reactions', a
   await expect(myPost.getByLabel(/reactions:/)).toBeVisible({ timeout: 60_000 });
 });
 
-test('a photo post gets described for photo-aware comments (mock model)', async ({ page }) => {
+test('a photo post gets described for photo-aware comments (mock model)', async ({
+  page,
+  browserName,
+}) => {
+  // Playwright's WebKit contexts are ephemeral, like Safari private tabs, where IndexedDB
+  // refuses Blobs ("Error preparing Blob/File data…"). See docs/STATUS.md.
+  test.skip(browserName === 'webkit', 'WebKit private sessions cannot store photo Blobs');
   test.setTimeout(120_000);
   await signUpAndWaitForSetup(page, 'Nila Das');
 
