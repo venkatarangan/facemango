@@ -49,7 +49,8 @@ npm run test:e2e   # Playwright (uses a mock model)
 React + TypeScript + MUI, Dexie (IndexedDB), the Prompt API or WebLLM (WebGPU) for the AI, and
 Transformers.js (Florence-2) to describe photos when the AI can't see them.
 Start with [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md); the product spec is [`SPEC.md`](SPEC.md).
-Changes are in [`CHANGELOG.md`](CHANGELOG.md), open items in [`docs/STATUS.md`](docs/STATUS.md).
+Changes are in [`CHANGELOG.md`](CHANGELOG.md), open items in [`docs/STATUS.md`](docs/STATUS.md), and
+parked ideas (with why) in [`docs/FUTURE.md`](docs/FUTURE.md).
 
 ## Licence
 

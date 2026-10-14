@@ -30,6 +30,8 @@ page.
 
 ## Parked
 
+Details and reasons are in [`FUTURE.md`](FUTURE.md).
+
 - **M8 realistic faces:** blocked on licence. SD-Turbo is under the Stability AI Community License
   (revenue cap, acceptable-use policy, revocable), which is not open source. No small Apache/MIT
   image model with a browser build exists yet (FLUX.2 Klein 4B is Apache-2.0 but ~13.7 GB in the
