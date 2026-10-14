@@ -989,16 +989,6 @@
       "alt": "An ornate courtyard inside the Mysore Palace with carved arches, coloured glass and a glazed iron roof"
     },
     {
-      "id": "travel-south-asia-010",
-      "candidate": "sa-kathmandu-1",
-      "region": "south-asia",
-      "country": "Nepal",
-      "themes": ["travel", "city"],
-      "tags": ["kathmandu", "durbar square", "market", "souvenirs", "nepal"],
-      "season": null,
-      "alt": "Souvenir stalls of brass bowls, beads and trinkets spread out under umbrellas in a sunny Kathmandu square"
-    },
-    {
       "id": "city-south-asia-001",
       "candidate": "sa-colombo-1",
       "region": "south-asia",

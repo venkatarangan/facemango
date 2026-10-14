@@ -5,7 +5,7 @@ Every photo in this folder is either dedicated to the public domain under
 as stated on its source page. Attribution is not required, but we credit every author anyway.
 Photos were resized and re-encoded as WebP (one had a thin border trimmed); nothing else was changed.
 
-Total: 252 photos. Machine-readable data: [manifest.json](manifest.json).
+Total: 251 photos. Machine-readable data: [manifest.json](manifest.json).
 
 | ID | Author | Source | Licence |
 |---|---|---|---|
@@ -106,7 +106,6 @@ Total: 252 photos. Machine-readable data: [manifest.json](manifest.json).
 | travel-south-asia-007 | Dudva | [East facade of the Hawa Mahal, Jaipur.jpg](https://commons.wikimedia.org/wiki/File:East_facade_of_the_Hawa_Mahal,_Jaipur.jpg) | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
 | travel-south-asia-008 | Ria Colva | [Colva Beach, Goa, India.jpg](https://commons.wikimedia.org/wiki/File:Colva_Beach,_Goa,_India.jpg) | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
 | travel-south-asia-009 | Darakshanehaluddin | [Amba Vilas palace.jpg](https://commons.wikimedia.org/wiki/File:Amba_Vilas_palace.jpg) | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
-| travel-south-asia-010 | Dudva | [Market, Durbar Square, Kathmandu.jpg](https://commons.wikimedia.org/wiki/File:Market,_Durbar_Square,_Kathmandu.jpg) | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
 | city-south-asia-001 | Gihanud2001 | [Colombo city skyline at night.png](https://commons.wikimedia.org/wiki/File:Colombo_city_skyline_at_night.png) | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
 | city-south-asia-002 | Gihanud2001 | [Colombo city skyline.png](https://commons.wikimedia.org/wiki/File:Colombo_city_skyline.png) | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
 | nature-south-asia-001 | Kv Gopalakrishnan | [Athirappilly Waterfall (500px 211468873) 2017-05-08.jpg](https://commons.wikimedia.org/wiki/File:Athirappilly_Waterfall_(500px_211468873)_2017-05-08.jpg) | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
