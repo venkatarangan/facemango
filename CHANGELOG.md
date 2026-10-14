@@ -6,7 +6,10 @@
   job, race training, a trip, a new pet and more), told one post at a time. Posts show which
   update they are; profiles list each friend's stories. Stored in a new `stories` table (Dexie
   v3) and included in backups.
-
+- Friends now comment on what's in your photos on every browser, not just Chrome/Edge with a
+  built-in AI that can see images. Elsewhere, a small on-device photo model (Florence-2 via
+  Transformers.js, about 245 MB) downloads with your first photo post. Toggle it in Settings →
+  On-device AI. Photos never leave the device.
 - Mango AI (chat and composer) falls back to a single reply if streaming fails, and shows the reason.
   Settings → On-device AI shows the last AI error.
 - Shorter, friendlier README, About page and welcome screen.

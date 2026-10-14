@@ -17,6 +17,8 @@ export interface AIState {
   tier?: AITier;
   modelId?: string;
   modelLabel?: string;
+  /** The model can see images itself; otherwise photos go through the captioner. */
+  multimodal?: boolean;
   /** 0..1 for the current download/load. */
   progress: number;
   progressText?: string;
@@ -223,6 +225,7 @@ function becomeReady(provider: AIProvider, label: string) {
     tier: provider.tier,
     modelId: provider.modelId,
     modelLabel: label,
+    multimodal: ai.multimodal,
     progress: 1,
     secondsLeft: undefined,
   });

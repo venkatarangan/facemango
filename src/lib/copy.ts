@@ -12,7 +12,7 @@ export const UNIQUENESS =
 export const PRIVACY_STATEMENT =
   'Your posts, photos, friends, comments and wellbeing stats are stored only in this browser on this device. ' +
   'FaceMango has no servers and no accounts, and never uploads your content. ' +
-  'To run AI on your device, FaceMango downloads an AI model, either through your browser (Chrome/Edge) or from Hugging Face. ' +
+  'To run AI on your device, FaceMango downloads AI models through your browser (Chrome/Edge) or from Hugging Face. ' +
   'We use Google Analytics to count page views only. It never sees your posts, profile or usage stats.';
 
 export const IOS_DATA_NOTICE =

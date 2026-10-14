@@ -36,6 +36,31 @@ test('a post written during setup waits for the friends, then gets reactions', a
   await expect(myPost.getByLabel(/reactions:/)).toBeVisible({ timeout: 60_000 });
 });
 
+test('a photo post gets described for photo-aware comments (mock model)', async ({ page }) => {
+  test.setTimeout(120_000);
+  await signUpAndWaitForSetup(page, 'Nila Das');
+
+  await page.getByRole('button', { name: "What's on your mind, Nila?" }).click();
+  const dialog = page.getByRole('dialog', { name: 'Create post' });
+  await dialog.getByRole('textbox', { name: 'Post text' }).fill('My dog says hi');
+  await dialog.getByLabel('Post photo').setInputFiles('public/photos/pets-global-002.webp');
+  await expect(dialog.getByRole('button', { name: 'Remove photo' })).toBeVisible();
+  await dialog.getByRole('button', { name: 'Post', exact: true }).click();
+  await expect(dialog).toBeHidden();
+
+  // The mock captioner's description becomes the photo's alt text and feeds the comment prompts.
+  const myPost = page.getByRole('article', { name: 'Post by Nila Das' });
+  await expect(myPost.getByRole('img', { name: /cup of filter coffee/ })).toBeVisible({
+    timeout: 30_000,
+  });
+
+  await page.goto('/settings');
+  await expect(
+    page.getByRole('switch', { name: 'Describe my photos so friends can comment on them' }),
+  ).toBeChecked();
+  await expect(page.getByText(/downloads a small photo model \(about \d+ MB\)/)).toBeVisible();
+});
+
 test('posting, reactions, comments and notifications', async ({ page }) => {
   test.setTimeout(150_000);
   await signUpAndWaitForSetup(page, 'Ravi Kumar');

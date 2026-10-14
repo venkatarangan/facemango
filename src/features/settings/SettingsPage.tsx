@@ -33,6 +33,7 @@ import { UserAvatar } from '@/components/UserAvatar';
 import { deleteAllData } from '@/db';
 import { deleteDownloadedModel, startAI, useAIStore } from '@/ai';
 import { useUiStore } from '@/app/uiStore';
+import { PhotoDescriptionsSetting } from './PhotoDescriptionsSetting';
 import {
   formatBytes,
   getPersistenceStatus,
@@ -181,6 +182,7 @@ export function SettingsPage() {
               The built-in model is managed by your browser (see chrome://on-device-internals).
             </Typography>
           )}
+          {ai.status === 'ready' && <PhotoDescriptionsSetting />}
           {(ai.status === 'error' || ai.status === 'needs-gesture') && (
             <Button
               variant="contained"
