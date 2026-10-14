@@ -9,9 +9,10 @@ test('first run builds friends and a seed feed (mock model)', async ({ page }) =
   });
   await expect(page.getByRole('article').first()).toBeVisible();
   // The feed is virtualised: two tall photo posts can fill the screen, so scroll a little first.
-  await page.mouse.wheel(0, 1200);
+  // (window.scrollBy, not mouse.wheel: mobile WebKit has no wheel.)
+  await page.evaluate('window.scrollBy(0, 1200)');
   await expect.poll(() => page.getByRole('article').count()).toBeGreaterThan(2);
-  await page.mouse.wheel(0, -1200);
+  await page.evaluate('window.scrollTo(0, 0)');
   await expect(page.getByRole('button', { name: 'Write your first post' })).toBeVisible();
 });
 
