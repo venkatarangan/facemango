@@ -76,31 +76,39 @@ export class PromptApiProvider implements AIProvider {
     options: GenerateOptions = {},
   ): Promise<T> {
     const responseConstraint = toJsonSchema(schema);
-    return generateValidated(async (_attempt, previousError) => {
-      const session = await this.session(options.system);
-      try {
-        if (!this.constraintUnsupported) {
-          try {
-            return await session.prompt(prompt + retryHint(previousError), {
-              responseConstraint,
-              signal: options.signal,
-            });
-          } catch (error) {
-            if (options.signal?.aborted) throw error;
-            const name = error instanceof DOMException ? error.name : '';
-            if (name !== 'NotSupportedError' && !(error instanceof TypeError)) throw error;
-            console.warn('Prompt API rejected the response schema; using prompt-only JSON', error);
-            this.constraintUnsupported = true;
+    return generateValidated(
+      async (_attempt, previousError) => {
+        const session = await this.session(options.system);
+        try {
+          if (!this.constraintUnsupported) {
+            try {
+              return await session.prompt(prompt + retryHint(previousError), {
+                responseConstraint,
+                signal: options.signal,
+              });
+            } catch (error) {
+              if (options.signal?.aborted) throw error;
+              const name = error instanceof DOMException ? error.name : '';
+              if (name !== 'NotSupportedError' && !(error instanceof TypeError)) throw error;
+              console.warn(
+                'Prompt API rejected the response schema; using prompt-only JSON',
+                error,
+              );
+              this.constraintUnsupported = true;
+            }
           }
+          return await session.prompt(
+            prompt + schemaInstruction(responseConstraint) + retryHint(previousError),
+            { signal: options.signal },
+          );
+        } finally {
+          session.destroy();
         }
-        return await session.prompt(
-          prompt + schemaInstruction(responseConstraint) + retryHint(previousError),
-          { signal: options.signal },
-        );
-      } finally {
-        session.destroy();
-      }
-    }, schema);
+      },
+      schema,
+      3,
+      options.trace,
+    );
   }
 
   async *stream(prompt: string, options: GenerateOptions = {}): AsyncIterable<string> {

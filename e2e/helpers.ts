@@ -13,9 +13,11 @@ export async function signUp(page: Page, name = 'Kavya Iyer') {
 
 export async function signUpAndWaitForSetup(page: Page, name?: string) {
   await signUp(page, name);
-  await expect(page.getByRole('region', { name: 'Setting up FaceMango' })).toBeHidden({
-    timeout: 60_000,
-  });
+  // Wait for the card to appear first: right after sign-up it may not be rendered yet, and
+  // "hidden" would pass before any friends exist.
+  const setup = page.getByRole('region', { name: 'Setting up FaceMango' });
+  await expect(setup).toBeVisible();
+  await expect(setup).toBeHidden({ timeout: 60_000 });
 }
 
 export async function post(page: Page, text: string) {

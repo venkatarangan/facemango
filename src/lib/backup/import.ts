@@ -16,6 +16,7 @@ import {
   type SettingRow,
   type UsageSession,
 } from '@/db';
+import { DEVICE_ONLY_META, DEVICE_ONLY_SETTINGS } from './deviceOnly';
 import { fromMarkdown, type BackupRecord } from './format';
 
 export type RestoreMode = 'everything' | 'content-new-friends';
@@ -117,7 +118,12 @@ export async function restoreBackup(backup: ParsedBackup, mode: RestoreMode): Pr
   }
 
   await db.transaction('rw', db.tables, async () => {
+    // This browser's own rows (e.g. the automatic-backup folder) survive a restore.
+    const keepSettings = await db.settings.bulkGet([...DEVICE_ONLY_SETTINGS]);
+    const keepMeta = await db.meta.bulkGet([...DEVICE_ONLY_META]);
     await Promise.all(db.tables.map((t) => t.clear()));
+    await db.settings.bulkPut(keepSettings.filter((r): r is SettingRow => !!r));
+    await db.meta.bulkPut(keepMeta.filter((r): r is MetaRow => !!r));
     const profile = of<Profile>('profile')[0];
     if (profile) await db.profile.put(profile);
     await db.personas.bulkPut(personas);
@@ -129,8 +135,10 @@ export async function restoreBackup(backup: ParsedBackup, mode: RestoreMode): Pr
     await db.media.bulkPut(backup.media);
     await db.usageSessions.bulkPut(of<UsageSession>('usageSession'));
     await db.moods.bulkPut(of<MoodCheckIn>('mood'));
-    await db.settings.bulkPut(of<SettingRow>('setting'));
-    await db.meta.bulkPut(meta);
+    await db.settings.bulkPut(
+      of<SettingRow>('setting').filter((s) => !DEVICE_ONLY_SETTINGS.includes(s.key)),
+    );
+    await db.meta.bulkPut(meta.filter((m) => !DEVICE_ONLY_META.includes(m.key)));
     await db.chat.bulkPut(of<ChatMessage>('chat'));
   });
 }

@@ -84,8 +84,10 @@ export function Lightbox({
       open
       fullScreen
       onClose={onClose}
-      slotProps={{ paper: { sx: { bgcolor: '#000', color: '#fff' } } }}
-      aria-label="Photo viewer"
+      // The label goes on the paper, which has role="dialog".
+      slotProps={{
+        paper: { 'aria-label': 'Photo viewer', sx: { bgcolor: '#000', color: '#fff' } },
+      }}
     >
       <Stack
         direction="row"

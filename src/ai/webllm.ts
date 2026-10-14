@@ -6,6 +6,7 @@ import {
   deleteModelAllInfoInCache,
   hasModelInCache,
   type ChatCompletionMessageParam,
+  type CompletionUsage,
   type InitProgressReport,
   type WebWorkerMLCEngine,
 } from '@mlc-ai/web-llm';
@@ -98,6 +99,7 @@ export class WebLLMProvider implements AIProvider {
       max_tokens: options.maxTokens ?? 512,
       extra_body: this.extraBody(),
     });
+    traceUsage(reply.usage, options);
     return stripThink(reply.choices[0]?.message.content ?? '');
   }
 
@@ -108,34 +110,40 @@ export class WebLLMProvider implements AIProvider {
   ): Promise<T> {
     const json = toJsonSchema(schema);
     const jsonSchema = JSON.stringify(json);
-    return generateValidated(async (_attempt, previousError) => {
-      const request = (constrained: boolean) =>
-        this.engine.chat.completions.create({
-          messages: this.messages(
-            prompt + (constrained ? '' : schemaInstruction(json)) + retryHint(previousError),
-            options.system,
-          ),
-          temperature: options.temperature ?? 0.8,
-          max_tokens: options.maxTokens ?? 1024,
-          response_format: constrained
-            ? { type: 'json_object', schema: jsonSchema }
-            : { type: 'json_object' },
-          extra_body: this.extraBody(),
-        });
-      let reply;
-      if (this.schemaUnsupported) {
-        reply = await request(false);
-      } else {
-        try {
-          reply = await request(true);
-        } catch (error) {
-          console.warn('WebLLM could not apply the JSON schema; using prompt-only JSON', error);
-          this.schemaUnsupported = true;
+    return generateValidated(
+      async (_attempt, previousError) => {
+        const request = (constrained: boolean) =>
+          this.engine.chat.completions.create({
+            messages: this.messages(
+              prompt + (constrained ? '' : schemaInstruction(json)) + retryHint(previousError),
+              options.system,
+            ),
+            temperature: options.temperature ?? 0.8,
+            max_tokens: options.maxTokens ?? 1024,
+            response_format: constrained
+              ? { type: 'json_object', schema: jsonSchema }
+              : { type: 'json_object' },
+            extra_body: this.extraBody(),
+          });
+        let reply;
+        if (this.schemaUnsupported) {
           reply = await request(false);
+        } else {
+          try {
+            reply = await request(true);
+          } catch (error) {
+            console.warn('WebLLM could not apply the JSON schema; using prompt-only JSON', error);
+            this.schemaUnsupported = true;
+            reply = await request(false);
+          }
         }
-      }
-      return reply.choices[0]?.message.content ?? '';
-    }, schema);
+        traceUsage(reply.usage, options);
+        return reply.choices[0]?.message.content ?? '';
+      },
+      schema,
+      3,
+      options.trace,
+    );
   }
 
   async *stream(prompt: string, options: GenerateOptions = {}): AsyncIterable<string> {
@@ -164,6 +172,17 @@ export class WebLLMProvider implements AIProvider {
       if (delta) yield delta;
     }
   }
+}
+
+/** Reports WebLLM's token counts to the developer test page, when it is listening. */
+function traceUsage(usage: CompletionUsage | undefined, options: GenerateOptions): void {
+  if (!usage || !options.trace) return;
+  options.trace({
+    kind: 'usage',
+    promptTokens: usage.prompt_tokens,
+    completionTokens: usage.completion_tokens,
+    tokensPerSecond: usage.extra?.decode_tokens_per_s,
+  });
 }
 
 function stripThink(text: string): string {
