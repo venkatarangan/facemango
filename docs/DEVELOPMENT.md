@@ -5,14 +5,14 @@ Requires Node 22+. `npm run dev` / `npm run build` first fetch the WebLLM model 
 
 ## Code map
 
-| Path            | What                                                                                         |
-| --------------- | -------------------------------------------------------------------------------------------- |
-| `src/ai/`       | AI tiers: Prompt API → WebLLM (Web Worker) → unsupported. Priority queue, Zod-validated JSON |
-| `src/engine/`   | The simulation: personas, engagement planner, scheduler, living feed, first-run setup        |
-| `src/db/`       | Dexie schema and data actions (everything lives in IndexedDB)                                |
-| `src/features/` | Screens, one folder each                                                                     |
-| `src/lib/`      | Helpers: backup, usage tracking, analytics, time ago, …                                      |
-| `scripts/`      | Asset scripts (model libraries, sounds, photo pack)                                          |
+| Path            | What                                                                                                          |
+| --------------- | ------------------------------------------------------------------------------------------------------------- |
+| `src/ai/`       | AI tiers: Prompt API → WebLLM (Web Worker) → unsupported. Priority queue, Zod-validated JSON. Photo captioner |
+| `src/engine/`   | The simulation: personas, engagement planner, scheduler, living feed, first-run setup                         |
+| `src/db/`       | Dexie schema and data actions (everything lives in IndexedDB)                                                 |
+| `src/features/` | Screens, one folder each                                                                                      |
+| `src/lib/`      | Helpers: backup, usage tracking, analytics, time ago, …                                                       |
+| `scripts/`      | Asset scripts (model libraries, sounds, photo pack)                                                           |
 
 ## Rules
 
@@ -24,6 +24,19 @@ Requires Node 22+. `npm run dev` / `npm run build` first fetch the WebLLM model 
 - **Database changes:** add a new Dexie version; never edit a shipped one.
 - **Mock model:** exists only in the e2e build (`npm run build:e2e`, `VITE_MOCK_AI=1`). The app has
   no non-AI mode.
+
+## Photo captioner
+
+`src/ai/captioner*.ts`: Florence-2-base-ft via `@huggingface/transformers` in a Web Worker, for
+photo-aware comments when the AI can't see images. It loads lazily on the first photo post; the
+GPU step runs through the shared AI queue, and the worker is shut down after use.
+
+- **Self-hosted runtime:** Transformers.js points ONNX Runtime at jsDelivr by default. The worker
+  imports `onnxruntime-web/ort-wasm-simd-threaded.asyncify.wasm?url` (Vite emits it as a hashed
+  asset) and sets `wasmPaths` to it. This relies on npm deduping `onnxruntime-web` to the version
+  Transformers.js pins; check it after upgrading the library.
+- **Service worker:** the captioner worker and the `.wasm` are runtime-cached, not precached. The
+  weights live in the `facemango-photo-model` cache.
 
 ## How-it-works guide (PDF)
 

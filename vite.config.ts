@@ -99,8 +99,9 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
-        // WebLLM (~6 MB) is only needed on the WebGPU tier; it is cached at runtime instead.
-        globIgnores: ['**/assets/webllm*.js'],
+        // WebLLM (~6 MB) is only needed on the WebGPU tier, and the photo captioner only when a
+        // photo needs it; both are cached at runtime instead. (.wasm is never precached.)
+        globIgnores: ['**/assets/webllm*.js', '**/assets/captioner.worker*.js'],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         navigateFallback: 'index.html',
         // Let the installed app open the how-it-works PDF instead of serving the app shell for it.
@@ -122,6 +123,14 @@ export default defineConfig({
               sameOrigin && /^\/assets\/webllm.*\.js$/.test(url.pathname),
             handler: 'CacheFirst',
             options: { cacheName: 'facemango-webllm', expiration: { maxEntries: 6 } },
+          },
+          {
+            // Photo captioner worker + ONNX Runtime .wasm (hashed names; weights use their own cache).
+            urlPattern: ({ url, sameOrigin }) =>
+              sameOrigin &&
+              /^\/assets\/(captioner\.worker|ort-wasm).*\.(js|wasm)$/.test(url.pathname),
+            handler: 'CacheFirst',
+            options: { cacheName: 'facemango-photo-runtime', expiration: { maxEntries: 4 } },
           },
           {
             urlPattern: ({ url, sameOrigin }) => sameOrigin && url.pathname.startsWith('/models/'),

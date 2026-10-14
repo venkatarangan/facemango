@@ -134,7 +134,7 @@ When a post is created, its whole engagement timeline is **pre-planned** as futu
 3. **Who:** friends are weighted by closeness, interest match and activity. Public profiles fill the remaining likes. Beyond the named pool, the summary shows "and 1,234 others".
 4. **Type:** from the comment mix, nudged by the commenter's stance. By default there are at most 1–2 critical comments per post.
 5. **Timing:** front-loaded decay with random bursts and lulls. The speed setting compresses time.
-6. **Text:** generated just in time, in batches, from the post text, photo (multimodal where supported) and persona.
+6. **Text:** generated just in time, in batches, from the post text, photo description (§8 #5) and persona.
 7. **Catch-up:** past-due events are applied with their original timestamps → "While you were away: 14 reactions, 3 comments".
 
 ### 4.3 Living feed
@@ -173,6 +173,7 @@ detect() ─▶ Tier 1: Prompt API (window.LanguageModel)
               • Desktop:           Qwen3-1.7B or Gemma-3-1B (q4)
           ─▶ Tier 3: Unsupported screen
 ```
+- **Photo captioner** (photo-aware comments when the model can't see images: WebGPU tier, or a Prompt API model without image input): **Florence-2-base-ft** (MIT) via **Transformers.js** in its own Web Worker, WebGPU with a WASM fallback on desktop. Downloaded on the first photo post (~245 MB: weights from Hugging Face, ONNX Runtime .wasm from our origin), runs once per photo when the text model is idle, then is freed. Toggle in Settings → On-device AI (on by default). Phones with < 4 GB reported memory, or that crash twice, skip it.
 - One `AIProvider` interface (`generate`, `generateJSON`, `stream`, `describeImage?`).
 - A priority queue in a Web Worker: the assistant and composer go before background generation.
 - Settings show the tier, model, storage used and a "Delete model" button.
@@ -210,7 +211,7 @@ detect() ─▶ Tier 1: Prompt API (window.LanguageModel)
 | Forms / validation | **React Hook Form** + **Zod** (also validates AI JSON) |
 | Dates | **date-fns** (time ago, Memories) |
 | Images | **browser-image-compression** (WebP) |
-| AI | **Prompt API** · **@mlc-ai/web-llm** (WebGPU) in a Web Worker via **Comlink** |
+| AI | **Prompt API** · **@mlc-ai/web-llm** (WebGPU) in a Web Worker via **Comlink** · **@huggingface/transformers** (Apache-2.0, ONNX Runtime Web) for the photo captioner |
 | Avatars | **DiceBear** (bundled) |
 | Export | **JSZip** + **yaml** (front-matter) |
 | PWA | **vite-plugin-pwa** (Workbox) |
@@ -251,7 +252,7 @@ public/
 ## 7. Privacy statement & rules
 
 **Public wording:**
-> *Your posts, photos, friends, comments and wellbeing stats are stored only in this browser on this device. FaceMango has no servers and no accounts, and never uploads your content. To run AI on your device, FaceMango downloads an AI model, either through your browser (Chrome/Edge) or from Hugging Face. We use Google Analytics to count page views only. It never sees your posts, profile or usage stats.*
+> *Your posts, photos, friends, comments and wellbeing stats are stored only in this browser on this device. FaceMango has no servers and no accounts, and never uploads your content. To run AI on your device, FaceMango downloads AI models through your browser (Chrome/Edge) or from Hugging Face. We use Google Analytics to count page views only. It never sees your posts, profile or usage stats.*
 
 **Engineering rules:**
 - User content and wellbeing data are **never** sent over the network.
@@ -265,7 +266,7 @@ public/
 2. "While you were away" catch-up summary.
 3. Typing indicators: "Priya is writing a comment…".
 4. Friends who reply back. Critics push back, fans defend.
-5. Comments that refer to what's in the photo (multimodal where supported).
+5. Comments that refer to what's in the photo (the built-in model where it is multimodal, otherwise the on-device photo captioner, §5.1).
 6. Micro-celebrations: confetti and sound at milestones, "Your best post this week".
 7. Personal callbacks to earlier posts.
 8. Social-proof copy ("Arun and 23 others").
@@ -320,3 +321,4 @@ public/
 - **v1.0:** faces plan approved; CC0 worldwide family-friendly photo pack; reset keeps old engagement under old names (former friends); "Mango AI" confirmed; Wellbeing usage tracker; GitHub Pages + Cloudflare DNS; AGPL-3.0 and a best-in-class library stack.
 - **v1.0.1:** new FaceMango logo to be designed; repo `facemango` (local first, GitHub after the user okays the local build).
 - **v1.0.2 (during M1–M4):** MUI v9 instead of v7; byline "The most personal social network ever built. And the most private."; yellow text on white uses `#B28900` only for large text/icons and `#8A6A00` for body text (WCAG AA); WebLLM model libraries (.wasm) and the Lottie player are served from our own origin, so the only third parties stay Hugging Face (weights) and Google Analytics; WebLLM models: Qwen3-1.7B (desktop), Gemma-3-1B (phones), Qwen3 q4f32 fallbacks for GPUs without shader-f16; avatars use the DiceBear "Personas" style (CC BY 4.0).
+- **v1.0.3:** photo-aware comments on every tier: an on-device photo captioner (Florence-2-base-ft, MIT, via Transformers.js, Apache-2.0) for models that can't see images, with a Settings toggle; its ONNX Runtime .wasm is served from our own origin.
