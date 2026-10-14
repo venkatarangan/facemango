@@ -15,6 +15,11 @@ page.
   copy the results; the Mango AI tests show the full error.
 - **Real-browser checks:** life stories, folder backup, the photo captioner (Florence-2) and the
   setup experience have only run against the mock model or headless Chromium.
+- **Photos in Safari private tabs:** WebKit's IndexedDB refuses Blobs in private (ephemeral)
+  sessions, so photo posts, avatars and restores with images fail there with "Error preparing
+  Blob/File data…" (the composer now shows this). Normal Safari tabs are fine. Fix: store media as
+  `ArrayBuffer` + MIME type (new Dexie version with a migration). The WebKit e2e photo test is
+  skipped until then.
 - **Setup experience:** try the first-run wait on a real download (time left, slow-network note,
   "Waking it up" stage) in Chrome/Edge and on a phone.
 
