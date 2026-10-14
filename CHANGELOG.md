@@ -5,6 +5,12 @@
 - Mango AI (chat and composer) falls back to a single reply if streaming fails, and shows the reason.
   Settings → On-device AI shows the last AI error.
 - Shorter, friendlier README, About page and welcome screen.
+- **Setup experience** for the first-run wait: three plain-language stages (downloading your AI,
+  waking it up, meeting your friends) with real progress, download size and time left, a calm
+  note on slow connections, and clear retry. Rotating tips (privacy, features, backup, iOS note)
+  that stay still with reduced motion. Posts written while waiting are kept until the friends
+  arrive. When it's ready: confetti and a chime, or a local notification if the tab is hidden and
+  notifications are on.
 
 ## 0.1.0 (2026-10-03): first public build
 

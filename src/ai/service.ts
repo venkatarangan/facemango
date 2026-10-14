@@ -3,6 +3,7 @@ import type { z } from 'zod';
 import { db } from '@/db';
 import { detectTier } from './detect';
 import { MODEL_LABELS, type WebLLMModelId } from './models';
+import { EtaEstimator, webllmPhase, type LoadPhase } from './progress';
 import { PromptApiProvider } from './promptApi';
 import type { AIPriority, AIProvider, AITier, GenerateOptions } from './provider';
 import { AIQueue } from './queue';
@@ -18,6 +19,12 @@ export interface AIState {
   /** 0..1 for the current download/load. */
   progress: number;
   progressText?: string;
+  /** Whether the model is being downloaded (once only) or loaded from this device. */
+  phase?: LoadPhase;
+  /** Rough download time left, when the rate is known. */
+  secondsLeft?: number;
+  /** When progress last moved (to spot a stalled download). */
+  progressAt?: number;
   error?: string;
   /** The most recent generation error, shown in Settings → On-device AI for troubleshooting. */
   lastError?: string;
@@ -26,6 +33,22 @@ export interface AIState {
 export const useAIStore = create<AIState>(() => ({ status: 'idle', progress: 0 }));
 
 const set = (patch: Partial<AIState>) => useAIStore.setState(patch);
+
+const eta = new EtaEstimator();
+
+/** Records progress, with a time-left estimate while downloading. */
+export function reportProgress(progress: number, text: string | undefined, phase: LoadPhase) {
+  const now = Date.now();
+  if (phase === 'download') eta.add(now, progress);
+  else eta.reset();
+  set({
+    progress,
+    progressText: text,
+    phase,
+    secondsLeft: phase === 'download' ? eta.secondsLeft() : undefined,
+    progressAt: now,
+  });
+}
 
 /** The provider, wrapped so every call goes through the priority queue. */
 export interface AI {
@@ -120,6 +143,7 @@ function becomeReady(provider: AIProvider, label: string) {
     modelId: provider.modelId,
     modelLabel: label,
     progress: 1,
+    secondsLeft: undefined,
   });
   void db.meta.put({
     key: 'ai',
@@ -143,13 +167,21 @@ export function startAI({ userGesture }: { userGesture: boolean }): Promise<void
 }
 
 async function run(userGesture: boolean): Promise<void> {
-  set({ status: 'detecting', progress: 0, error: undefined, progressText: undefined });
+  set({
+    status: 'detecting',
+    progress: 0,
+    error: undefined,
+    progressText: undefined,
+    phase: undefined,
+    secondsLeft: undefined,
+  });
+  eta.reset();
 
   if (import.meta.env.VITE_MOCK_AI === '1') {
     const { MockProvider } = await import('./mockProvider');
-    set({ status: 'downloading', tier: 'webgpu', modelLabel: 'Mock model' });
+    set({ status: 'downloading', tier: 'webgpu', modelLabel: 'Mock model', phase: 'download' });
     const provider = await MockProvider.load((progress, text) =>
-      set({ progress, progressText: text }),
+      reportProgress(progress, text, 'download'),
     );
     becomeReady(provider, 'Mock model');
     return;
@@ -162,16 +194,21 @@ async function run(userGesture: boolean): Promise<void> {
       return;
     }
     try {
+      const stored = detection.availability === 'available';
       set({
         status: 'downloading',
         tier: 'prompt-api',
         progressText: 'Preparing the built-in AI…',
+        phase: stored ? 'load' : 'download',
+        progressAt: Date.now(),
       });
       const provider = await PromptApiProvider.load((progress) =>
-        set({
+        // After the download, the browser still needs a moment to set the model up.
+        reportProgress(
           progress,
-          progressText: `Downloading the built-in AI… ${Math.round(progress * 100)}%`,
-        }),
+          `Downloading the built-in AI… ${Math.round(progress * 100)}%`,
+          stored || progress >= 1 ? 'load' : 'download',
+        ),
       );
       becomeReady(provider, provider.modelId);
       return;
@@ -197,6 +234,8 @@ async function run(userGesture: boolean): Promise<void> {
     const label = MODEL_LABELS[modelId as WebLLMModelId];
     try {
       const cached = await WebLLMProvider.isCached(modelId).catch(() => false);
+      let phase: LoadPhase = cached ? 'load' : 'download';
+      eta.reset();
       set({
         status: 'downloading',
         tier: 'webgpu',
@@ -204,10 +243,14 @@ async function run(userGesture: boolean): Promise<void> {
         modelLabel: label,
         progress: 0,
         progressText: cached ? `Loading ${label}…` : `Downloading ${label}…`,
+        phase,
+        secondsLeft: undefined,
+        progressAt: Date.now(),
       });
-      const provider = await WebLLMProvider.load(modelId, (progress, text) =>
-        set({ progress, progressText: text }),
-      );
+      const provider = await WebLLMProvider.load(modelId, (progress, text) => {
+        phase = webllmPhase(text, phase);
+        reportProgress(progress, text, phase);
+      });
       becomeReady(provider, label);
       return;
     } catch (error) {

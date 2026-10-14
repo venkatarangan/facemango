@@ -32,6 +32,7 @@ import { useUiStore } from '@/app/uiStore';
 import { AuthorAvatar } from '@/components/AuthorAvatar';
 import { createUserPost, db, updatePost, type Post } from '@/db';
 import { onUserPost } from '@/engine';
+import { useEngineStore } from '@/engine/store';
 import { compressToWebP, POST_PHOTO_MAX_PX } from '@/lib/imaging';
 import { firstName } from '@/lib/text';
 import type { Author } from '@/features/feed/useAuthors';
@@ -60,6 +61,7 @@ export function ComposerDialog({ open, onClose, me, editing, initialText }: Comp
   const fullScreen = useMediaQuery('(max-width:600px)');
   const showToast = useUiStore((s) => s.showToast);
   const aiReady = useAIStore((s) => s.status === 'ready');
+  const setupDone = useEngineStore((s) => s.setup.stage === 'done');
   const [text, setText] = useState(editing?.text ?? initialText ?? '');
   const [feeling, setFeeling] = useState<string | undefined>(editing?.feeling);
   const [photo, setPhoto] = useState<Blob | null>(null);
@@ -174,7 +176,11 @@ export function ComposerDialog({ open, onClose, me, editing, initialText }: Comp
           mentions: liveMentions,
         });
         void onUserPost(post);
-        showToast('Posted! Your friends will see it soon. 🥭');
+        showToast(
+          setupDone
+            ? 'Posted! Your friends will see it soon. 🥭'
+            : 'Posted! Your friends will see it as soon as they arrive. 🥭',
+        );
       }
       reset();
       onClose();

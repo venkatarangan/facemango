@@ -13,4 +13,5 @@ Milestones M1–M7 from `SPEC.md` are built. M8 (realistic on-device faces) is n
   shows the error (also in Settings → On-device AI). Re-test needed.
 - **Analytics:** add the Actions variable `GA_ID` (`G-…`) to turn it on.
 - **Photo pack:** 87 photos so far, against ~250 planned (`scripts/photos/`).
-- **Parked:** a richer "setup experience" for the first-run wait.
+- **Setup experience:** try the first-run wait on a real download (time left, slow-network note,
+  "Waking it up" stage) in Chrome/Edge and on a phone.

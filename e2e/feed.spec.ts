@@ -8,8 +8,32 @@ test('first run builds friends and a seed feed (mock model)', async ({ page }) =
     timeout: 60_000,
   });
   await expect(page.getByRole('article').first()).toBeVisible();
-  expect(await page.getByRole('article').count()).toBeGreaterThan(2);
+  // The feed is virtualised: two tall photo posts can fill the screen, so scroll a little first.
+  await page.mouse.wheel(0, 1200);
+  await expect.poll(() => page.getByRole('article').count()).toBeGreaterThan(2);
+  await page.mouse.wheel(0, -1200);
   await expect(page.getByRole('button', { name: 'Write your first post' })).toBeVisible();
+});
+
+test('a post written during setup waits for the friends, then gets reactions', async ({ page }) => {
+  test.setTimeout(120_000);
+  await signUp(page, 'Mira Das');
+  const setup = page.getByRole('region', { name: 'Setting up FaceMango' });
+  await expect(setup).toBeVisible();
+  await expect(setup.getByTestId('setup-tip')).not.toBeEmpty();
+
+  await setup.getByRole('button', { name: 'Write a post' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Create post' });
+  await dialog.getByRole('textbox', { name: 'Post text' }).fill('Posted while my AI woke up');
+  await dialog.getByRole('button', { name: 'Post', exact: true }).click();
+  await expect(page.getByText(/as soon as they arrive/)).toBeVisible();
+  await expect(dialog).toBeHidden();
+  await expect(setup).toBeVisible(); // the page is no longer aria-hidden behind the dialog
+
+  await expect(setup).toBeHidden({ timeout: 60_000 });
+  await expect(page.getByText('Your friends are here! 🥭')).toBeVisible();
+  const myPost = page.getByRole('article', { name: 'Post by Mira Das' });
+  await expect(myPost.getByLabel(/reactions:/)).toBeVisible({ timeout: 60_000 });
 });
 
 test('posting, reactions, comments and notifications', async ({ page }) => {

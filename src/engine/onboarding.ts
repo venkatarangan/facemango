@@ -1,10 +1,13 @@
 import { whenAIReady } from '@/ai';
 import { db, ME } from '@/db';
+import { showSystemNotification } from '@/lib/systemNotify';
+import { celebrate } from './celebrations';
 import { createPersonaPost } from './friendPosts';
 import { buildFriendSkeletons, generateFriends, generatePublics } from './personas';
 import { defaultRng, randInt, uniform, weightedSample } from './random';
 import { getEngagementConfig, getMeta, setMeta } from './settings';
 import { setSetup } from './store';
+import { planWaitingPosts } from './userPosts';
 
 const HOUR = 3_600_000;
 let running: Promise<void> | null = null;
@@ -95,7 +98,12 @@ async function setup(): Promise<void> {
 
     await setMeta('setupComplete', true);
     await setMeta('nextFriendPostAt', Date.now() + uniform(rng, 20, 60) * 60_000);
+    await planWaitingPosts();
     setSetup({ stage: 'done' });
+    // The ready moment: confetti, a chime and a toast if the tab is visible, else a local
+    // notification (only if the user turned them on in Settings).
+    celebrate({ title: 'Your friends are here! 🥭' });
+    void showSystemNotification('Your friends are here. Come and say hi! 🥭', 'setup-done');
   } catch (error) {
     console.error('Setup failed', error);
     setSetup({
