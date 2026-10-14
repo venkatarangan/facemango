@@ -33,7 +33,7 @@ unless you export it.
 ## How it works
 
 Curious what happens under the hood? Read the
-[illustrated guide (PDF)](https://face.mangoidiots.com/FaceMango-How-It-Works.pdf): a 13-page,
+[illustrated guide (PDF)](https://face.mangoidiots.com/FaceMango-How-It-Works.pdf): a 15-page,
 plain-English tour of the architecture, libraries, on-device AI, simulation engine, data and backups,
 and how the app is built and shipped.
 

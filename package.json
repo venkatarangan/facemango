@@ -25,7 +25,8 @@
     "models": "node scripts/fetch-model-libs.mjs && node scripts/copy-assets.mjs",
     "predev": "npm run models",
     "prebuild": "npm run models",
-    "build:e2e": "npm run models && tsc -b && vite build --mode e2e --outDir dist-e2e"
+    "build:e2e": "npm run models && tsc -b && vite build --mode e2e --outDir dist-e2e",
+    "docs:pdf": "node scripts/render-how-it-works.mjs"
   },
   "dependencies": {
     "@dicebear/core": "^9.4.3",

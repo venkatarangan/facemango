@@ -55,7 +55,7 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - Never edit a shipped Dexie version; add a new one (currently v3: `stories`).
 - The mock model exists only in the e2e build (`VITE_MOCK_AI=1`, `dist-e2e/`).
 - Keep `SPEC.md`, `CLAUDE.md` and `input.txt` out of Prettier.
-- **How-it-works PDF:** `public/FaceMango-How-It-Works.pdf` is served at `/FaceMango-How-It-Works.pdf` and linked from the README. When a publish includes a major change to the architecture, framework or libraries (only then), update the PDF before pushing. It was printed from HTML with Chromium; the source is not in the repo, so rebuild it to match the existing layout.
+- **How-it-works PDF:** `public/FaceMango-How-It-Works.pdf` is served at `/FaceMango-How-It-Works.pdf` and linked from the README. When a publish includes a major change to the architecture, framework or libraries (only then), update the PDF before pushing: edit `docs/how-it-works/how-it-works.html`, then `npm run docs:pdf`.
 - Lint follows React Compiler rules: no `Date.now()` or ref reads during render (use `useNow()`).
 
 ## Environment
