@@ -67,6 +67,18 @@ export const defaultEngagementConfig: EngagementConfig = {
   speed: 1,
 };
 
+/** Friends' life stories (SPEC §4.3.1). Tuned here, not in Settings. */
+export const storyConfig = {
+  /** Share of friend posts that advance a story (or start one when none is due). */
+  share: 0.3,
+  /** At most this share of friends have an active story at once (always at least 1). */
+  maxActiveShare: 1 / 3,
+  /** Hours between two new stories starting (divided by the engagement speed). */
+  startGapHours: 16,
+  /** Days a friend rests after a story ends before starting another (divided by speed). */
+  cooldownDays: 7,
+};
+
 /** Applies age rules: under-18s never get Super-critical comments (moved to Critical). */
 export function effectiveConfig(config: EngagementConfig, userAge: number): EngagementConfig {
   if (userAge >= ADULT_AGE || config.commentMix.superCritical === 0) return config;

@@ -31,6 +31,7 @@ import { usePackPhoto } from '@/features/feed/usePackPhoto';
 import { useAuthors } from '@/features/feed/useAuthors';
 import { packPhotoUrl, PACK_PREFIX } from '@/lib/photos';
 import { EditProfileDialog } from './EditProfileDialog';
+import { LifeStories } from './LifeStories';
 
 function Fact({ icon, children }: { icon: ReactElement; children: ReactNode }) {
   return (
@@ -240,6 +241,8 @@ export function ProfilePage() {
           </CardContent>
         </Card>
       )}
+
+      {persona && <LifeStories personaId={persona.id} />}
 
       <Typography variant="h6" component="h2" sx={{ px: { xs: 0.5, sm: 0 } }}>
         Posts

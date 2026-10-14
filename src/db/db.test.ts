@@ -1,3 +1,4 @@
+import Dexie from 'dexie';
 import { FaceMangoDB } from './db';
 import { ME } from './types';
 
@@ -29,8 +30,63 @@ describe('FaceMangoDB schema', () => {
         'settings',
         'usageSessions',
         'chat',
+        'stories',
       ].sort(),
     );
+  });
+
+  it('upgrades a v2 database to v3, keeping existing data', async () => {
+    const name = `facemango-migrate-${crypto.randomUUID()}`;
+    // The shipped v1 + v2 schema, as an older app version created it.
+    const old = new Dexie(name);
+    old.version(1).stores({
+      profile: 'id',
+      personas: 'id, kind, createdAt',
+      posts: 'id, authorId, createdAt',
+      comments: 'id, postId, authorId, parentId, createdAt',
+      reactions: 'id, postId, [postId+personaId], createdAt',
+      events: 'id, postId, personaId, [status+dueAt]',
+      notifications: 'id, createdAt, read',
+      media: 'id, kind, createdAt',
+      usageSessions: 'id, startedAt',
+      moods: 'id, at',
+      settings: 'key',
+      meta: 'key',
+    });
+    old.version(2).stores({ chat: 'id, createdAt' });
+    await old.open();
+    await old.table('posts').add({ id: 'p1', authorId: 'f1', text: 'Hello', createdAt: 5 });
+    await old.table('chat').add({ id: 'c1', role: 'user', text: 'Hi', createdAt: 6 });
+    await old.table('meta').put({ key: 'setupComplete', value: true });
+    old.close();
+
+    const upgraded = new FaceMangoDB(name);
+    await upgraded.open();
+    expect(upgraded.verno).toBe(3);
+    expect((await upgraded.posts.get('p1'))?.text).toBe('Hello');
+    expect((await upgraded.chat.get('c1'))?.text).toBe('Hi');
+    expect((await upgraded.meta.get('setupComplete'))?.value).toBe(true);
+    expect(await upgraded.stories.count()).toBe(0);
+    await upgraded.stories.add({
+      id: 's1',
+      personaId: 'f1',
+      kind: 'garden',
+      title: 'Growing a tomato garden',
+      slots: { plant: 'tomato' },
+      stages: [{ title: 'Seeds', brief: 'Planted seeds.' }],
+      currentStage: 0,
+      status: 'active',
+      startedAt: 1,
+      nextBeatAt: 2,
+      postIds: [],
+    });
+    expect(
+      await upgraded.stories
+        .where('[status+nextBeatAt]')
+        .between(['active', 0], ['active', 3])
+        .count(),
+    ).toBe(1);
+    await upgraded.delete();
   });
 
   it('queries planned events by status and due time', async () => {

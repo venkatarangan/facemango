@@ -1,8 +1,9 @@
 import { whenAIReady } from '@/ai';
 import { db, ME } from '@/db';
-import { createPersonaPost } from './friendPosts';
+import { storyConfig } from './config';
+import { createPersonaPost, createStoryPost } from './friendPosts';
 import { buildFriendSkeletons, generateFriends, generatePublics } from './personas';
-import { defaultRng, randInt, uniform, weightedSample } from './random';
+import { chance, defaultRng, randInt, uniform, weightedSample } from './random';
 import { getEngagementConfig, getMeta, setMeta } from './settings';
 import { setSetup } from './store';
 
@@ -89,7 +90,12 @@ async function setup(): Promise<void> {
       const [author] = weightedSample(rng, friendsNow, (p) => p.activity, 1);
       if (!author) break;
       const hoursAgo = (i / seedTarget) * 70 + uniform(rng, 0.2, 2);
-      await createPersonaPost(ai, author, Math.round(now - hoursAgo * HOUR), rng);
+      const createdAt = Math.round(now - hoursAgo * HOUR);
+      // A few seed posts already begin friends' life stories (SPEC §4.3.1).
+      const storyPost = chance(rng, storyConfig.share)
+        ? await createStoryPost(ai, createdAt, rng)
+        : null;
+      if (!storyPost) await createPersonaPost(ai, author, createdAt, rng);
       setSetup({ done: i + 1 });
     }
 

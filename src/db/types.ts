@@ -93,6 +93,44 @@ export interface Post {
   /** Aggregates applied so far (named reactions + anonymous "others"). */
   reactionCounts: Partial<Record<ReactionType, number>>;
   commentCount: number;
+  /** Set when this post is an update in a friend's life story (beat is 1-based). */
+  story?: { id: Id; title: string; beat: number; total: number };
+}
+
+export type StoryStatus = 'active' | 'completed' | 'abandoned';
+
+/** One planned update in a life story. */
+export interface StoryBeat {
+  title: string;
+  /** What happens in this update, already filled in with the story's specifics. */
+  brief: string;
+  /** The post that told this beat, once posted. */
+  postId?: Id;
+  postedAt?: Timestamp;
+}
+
+/**
+ * A friend's ongoing storyline (SPEC §4.3.1). Kept as structured data so small models stay
+ * consistent: the arc comes from a curated template; the model only fills in specifics.
+ */
+export interface Story {
+  id: Id;
+  personaId: Id;
+  /** Template id from src/engine/storyTemplates.ts. */
+  kind: string;
+  title: string;
+  /** Model-filled specifics, e.g. { destination: 'Kyoto' }. */
+  slots: Record<string, string>;
+  stages: StoryBeat[];
+  /** Index of the next beat to post; equals stages.length when finished. */
+  currentStage: number;
+  status: StoryStatus;
+  startedAt: Timestamp;
+  /** The next beat may be posted from this time on. */
+  nextBeatAt: Timestamp;
+  endedAt?: Timestamp;
+  /** Posts this story produced, in order. */
+  postIds: Id[];
 }
 
 export type ReactionType = 'like' | 'love' | 'care' | 'haha' | 'wow' | 'sad' | 'angry';
