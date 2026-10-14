@@ -218,7 +218,7 @@ export function ModelTestPage() {
     () => () => {
       abort.current?.abort();
       setAITrace(null);
-      setSchedulerPaused(false);
+      void setSchedulerPaused(false);
     },
     [],
   );
@@ -231,8 +231,10 @@ export function ModelTestPage() {
     if (!model || abort.current) return;
     const controller = new AbortController();
     abort.current = controller;
-    setSchedulerPaused(true);
+    setRunning(tests[0]!.id);
     try {
+      // Let a background step that is already running finish, so it doesn't land in the results.
+      await setSchedulerPaused(true);
       for (const test of tests) {
         if (controller.signal.aborted) break;
         setRunning(test.id);
@@ -250,7 +252,7 @@ export function ModelTestPage() {
         setResults((r) => ({ ...r, [test.id]: result }));
       }
     } finally {
-      setSchedulerPaused(false);
+      void setSchedulerPaused(false);
       setRunning(null);
       abort.current = null;
     }

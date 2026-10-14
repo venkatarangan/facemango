@@ -1,9 +1,73 @@
 import type { z } from 'zod';
-import { generateValidated, retryHint, schemaInstruction, toJsonSchema } from './json';
+import {
+  generateValidated,
+  jsonEnd,
+  OutputTooLongError,
+  retryHint,
+  schemaInstruction,
+  toJsonSchema,
+} from './json';
 import type { AIProvider, GenerateOptions } from './provider';
 
 const TEXT_EN: LanguageModelExpected[] = [{ type: 'text', languages: ['en'] }];
 const IMAGE_IN: LanguageModelExpected[] = [{ type: 'text', languages: ['en'] }, { type: 'image' }];
+
+/**
+ * The Prompt API has no max-tokens option, and Gemini Nano sometimes runs on for minutes until
+ * Chrome stops it with QuotaExceededError. So replies are streamed and cut at a length budget
+ * (generous: about 6 characters per token).
+ */
+export const charBudget = (maxTokens: number) => maxTokens * 6;
+
+const isQuotaError = (error: unknown) =>
+  error instanceof DOMException && error.name === 'QuotaExceededError';
+
+interface CappedReply {
+  text: string;
+  /** Stopped at the budget or by Chrome's output limit. */
+  truncated: boolean;
+}
+
+/** Streams a reply, stopping at `maxChars` or, with `stopAtJsonEnd`, once the JSON is complete. */
+export async function readCapped(
+  session: LanguageModelSession,
+  prompt: string,
+  options: {
+    signal?: AbortSignal;
+    responseConstraint?: object;
+    maxChars: number;
+    stopAtJsonEnd?: boolean;
+  },
+): Promise<CappedReply> {
+  let reader: ReadableStreamDefaultReader<string> | undefined;
+  let text = '';
+  try {
+    reader = session
+      .promptStreaming(prompt, {
+        signal: options.signal,
+        responseConstraint: options.responseConstraint,
+      })
+      .getReader();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) return { text, truncated: false };
+      if (!value) continue;
+      text += value;
+      if (options.stopAtJsonEnd) {
+        const end = jsonEnd(text);
+        if (end > 0) return { text: text.slice(0, end), truncated: false };
+      }
+      if (text.length > options.maxChars) return { text, truncated: true };
+    }
+  } catch (error) {
+    // With no text yet, it was the input that was too long: not worth retrying.
+    if (text && isQuotaError(error)) return { text, truncated: true };
+    throw error;
+  } finally {
+    // Stops generation when we return early.
+    void reader?.cancel().catch(() => {});
+  }
+}
 
 export type PromptApiProgress = (progress: number) => void;
 
@@ -64,7 +128,11 @@ export class PromptApiProvider implements AIProvider {
   async generate(prompt: string, options: GenerateOptions = {}): Promise<string> {
     const session = await this.session(options.system);
     try {
-      return (await session.prompt(prompt, { signal: options.signal })).trim();
+      const reply = await readCapped(session, prompt, {
+        signal: options.signal,
+        maxChars: charBudget(options.maxTokens ?? 512),
+      });
+      return reply.text.trim();
     } finally {
       session.destroy();
     }
@@ -76,16 +144,25 @@ export class PromptApiProvider implements AIProvider {
     options: GenerateOptions = {},
   ): Promise<T> {
     const responseConstraint = toJsonSchema(schema);
+    const maxChars = charBudget(options.maxTokens ?? 768);
+    const finish = (reply: CappedReply) => {
+      if (reply.truncated) throw new OutputTooLongError(reply.text);
+      return reply.text;
+    };
     return generateValidated(
       async (_attempt, previousError) => {
         const session = await this.session(options.system);
         try {
           if (!this.constraintUnsupported) {
             try {
-              return await session.prompt(prompt + retryHint(previousError), {
-                responseConstraint,
-                signal: options.signal,
-              });
+              return finish(
+                await readCapped(session, prompt + retryHint(previousError), {
+                  responseConstraint,
+                  signal: options.signal,
+                  maxChars,
+                  stopAtJsonEnd: true,
+                }),
+              );
             } catch (error) {
               if (options.signal?.aborted) throw error;
               const name = error instanceof DOMException ? error.name : '';
@@ -97,9 +174,12 @@ export class PromptApiProvider implements AIProvider {
               this.constraintUnsupported = true;
             }
           }
-          return await session.prompt(
-            prompt + schemaInstruction(responseConstraint) + retryHint(previousError),
-            { signal: options.signal },
+          return finish(
+            await readCapped(
+              session,
+              prompt + schemaInstruction(responseConstraint) + retryHint(previousError),
+              { signal: options.signal, maxChars },
+            ),
           );
         } finally {
           session.destroy();
@@ -113,14 +193,23 @@ export class PromptApiProvider implements AIProvider {
 
   async *stream(prompt: string, options: GenerateOptions = {}): AsyncIterable<string> {
     const session = await this.session(options.system);
+    const maxChars = charBudget(options.maxTokens ?? 1024);
+    let reader: ReadableStreamDefaultReader<string> | undefined;
+    let length = 0;
     try {
-      const reader = session.promptStreaming(prompt, { signal: options.signal }).getReader();
-      while (true) {
+      reader = session.promptStreaming(prompt, { signal: options.signal }).getReader();
+      while (length <= maxChars) {
         const { done, value } = await reader.read();
         if (done) return;
-        if (value) yield value;
+        if (!value) continue;
+        length += value.length;
+        yield value;
       }
+    } catch (error) {
+      // Chrome's own output limit: keep what was already shown.
+      if (!(length && isQuotaError(error))) throw error;
     } finally {
+      void reader?.cancel().catch(() => {});
       session.destroy();
     }
   }

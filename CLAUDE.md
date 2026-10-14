@@ -14,7 +14,8 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - **Parked:** M8 realistic faces (no suitably licensed small image model yet), encrypted backups, Messenger-lite. Details in `docs/STATUS.md`.
 - **Analytics:** on. The repo Actions variable `GA_ID` is set.
 - **Published and live over HTTPS:** pushing to `main` runs CI (lint, unit, e2e on Chrome/Android/iPhone) and deploys to GitHub Pages. See "Deployment" below.
-- **Real-model test (owner, Qwen3 on WebGPU):** friends, posts with photos, likes, comments and Activity worked. Mango AI (chat + composer) failed. It now falls back from streaming to a single reply and shows the error. **Re-test pending**: ask the owner to run the developer Real-model test and paste the copied results.
+- **Real-model test (owner, Qwen3 on WebGPU):** friends, posts with photos, likes, comments and Activity worked. Mango AI (chat + composer) failed. It now falls back from streaming to a single reply and shows the error. **Re-test on Qwen3 pending**: ask the owner to run the developer Real-model test and paste the copied results.
+- **Real-model test (owner, Gemini Nano via the Prompt API, 2026-10-14):** all 10 tests passed, Mango AI included, but the run took ~1 hour because of runaway replies (`QuotaExceededError`). Prompt API replies are now capped (`readCapped` in `src/ai/promptApi.ts`). Re-run pending to confirm the time.
 - **Open items:**
   - real-browser checks of life stories, folder backup, the photo captioner and the first-run setup experience
 - **Photo pack:** 251 photos (target reached).

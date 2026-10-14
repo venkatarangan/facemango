@@ -271,6 +271,7 @@ export function commentsPrompt(
         '. Someone may ask how it is going or mention an earlier update.'
       : '',
     'Write one comment from each person below, in their own voice. 3–25 words each, at most 1–2 emoji, no hashtags.',
+    `Each comment is the text alone: don't start with or sign the commenter's own name. Speak to ${postAuthor}, not to the other commenters.`,
     ...requests.map(
       (r) =>
         `- id "${r.id}": ${personaLine(r.persona)} Tone: ${CATEGORY_TEXT[r.category]}.` +

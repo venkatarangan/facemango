@@ -30,6 +30,37 @@ export function extractJson(raw: string): unknown {
   }
 }
 
+/** Where the first complete top-level JSON object or array in `text` ends, or -1 if not yet. */
+export function jsonEnd(text: string): number {
+  const start = text.search(/[[{]/);
+  if (start < 0) return -1;
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  for (let i = start; i < text.length; i++) {
+    const c = text[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (c === '\\') escaped = true;
+      else if (c === '"') inString = false;
+    } else if (c === '"') inString = true;
+    else if (c === '{' || c === '[') depth++;
+    else if ((c === '}' || c === ']') && --depth === 0) return i + 1;
+  }
+  return -1;
+}
+
+/** A reply cut off for running past its length budget; generateValidated retries it. */
+export class OutputTooLongError extends Error {
+  readonly partial: string;
+
+  constructor(partial: string) {
+    super('The reply was too long and was cut off');
+    this.name = 'OutputTooLongError';
+    this.partial = partial;
+  }
+}
+
 export class AIOutputError extends Error {
   readonly lastOutput: string;
 
@@ -54,7 +85,21 @@ export async function generateValidated<T>(
   let lastError: string | undefined;
   for (let attempt = 0; attempt < attempts; attempt++) {
     const started = performance.now();
-    lastOutput = await generate(attempt, lastError);
+    try {
+      lastOutput = await generate(attempt, lastError);
+    } catch (error) {
+      if (!(error instanceof OutputTooLongError)) throw error;
+      lastOutput = error.partial;
+      lastError = `${error.message}; keep it short`;
+      trace?.({
+        kind: 'attempt',
+        attempt,
+        raw: lastOutput,
+        ms: performance.now() - started,
+        error: lastError,
+      });
+      continue;
+    }
     const ms = performance.now() - started;
     try {
       const parsed = schema.safeParse(extractJson(lastOutput));

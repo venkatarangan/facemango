@@ -14,7 +14,7 @@ import { buildFriendSkeletons, generateFriends, generatePublics } from '@/engine
 import { planEngagement } from '@/engine/planner';
 import type { CommentRequest } from '@/engine/prompts';
 import { seededRng, shuffle } from '@/engine/random';
-import { generateCommentBatch } from '@/engine/scheduler';
+import { cleanCommentText, generateCommentBatch } from '@/engine/scheduler';
 import { rewritePost } from '@/features/compose/mangoRewrite';
 import { loadPhotoManifest, packPhotoUrl } from '@/lib/photos';
 import {
@@ -275,7 +275,8 @@ export const MODEL_TESTS: ModelTest[] = [
           recent: outputs.slice(-6),
         });
         for (const [i, r] of requests.entries()) {
-          const text = result.comments.find((c) => c.id === r.id)?.text ?? result.comments[i]?.text;
+          const raw = result.comments.find((c) => c.id === r.id)?.text ?? result.comments[i]?.text;
+          const text = raw ? cleanCommentText(raw, r.persona.name) : '';
           if (!text) {
             missing++;
             continue;

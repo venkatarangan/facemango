@@ -13,6 +13,11 @@ page.
 - **Mango AI on real models:** the first owner test on Qwen3 (WebGPU) worked for friends, posts,
   likes and comments, but Mango AI failed. Run Advanced settings → Developer → Real-model test and
   copy the results; the Mango AI tests show the full error.
+- **Gemini Nano (Prompt API), 2026-10-14:** all 10 tests passed, Mango AI included, but the run
+  took about an hour. Nano sometimes ran on until Chrome's output limit (`QuotaExceededError`), and
+  background steps already running leaked into the tests. Fixed: Prompt API replies are now
+  streamed and capped (JSON stops when complete; cut-off replies retry), the test page waits for
+  the running step, and commenters no longer open with their own name. Re-run to confirm the time.
 - **Real-browser checks:** life stories, folder backup, the photo captioner (Florence-2) and the
   setup experience have only run against the mock model or headless Chromium.
 - **Photos in Safari private tabs:** WebKit's IndexedDB refuses Blobs in private (ephemeral)
