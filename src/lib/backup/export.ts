@@ -1,6 +1,6 @@
 import JSZip from 'jszip';
 import { format } from 'date-fns';
-import { db, ME, type Persona } from '@/db';
+import { db, ME, type Persona, type Story } from '@/db';
 import { avatarSvg } from '@/engine/avatar';
 import { BACKUP_VERSION, toMarkdown, type BackupRecord } from './format';
 
@@ -24,6 +24,7 @@ export async function buildBackup(now = Date.now()): Promise<{ blob: Blob; filen
     settings,
     meta,
     chat,
+    stories,
   ] = await Promise.all([
     db.profile.get(ME),
     db.personas.toArray(),
@@ -38,6 +39,7 @@ export async function buildBackup(now = Date.now()): Promise<{ blob: Blob; filen
     db.settings.toArray(),
     db.meta.toArray(),
     db.chat.toArray(),
+    db.stories.toArray(),
   ]);
   const zip = new JSZip();
   const names = new Map<string, string>(personas.map((p) => [p.id, p.name]));
@@ -100,14 +102,15 @@ export async function buildBackup(now = Date.now()): Promise<{ blob: Blob; filen
     ]),
   );
 
-  // friends.md — friends, public profiles and former friends.
+  // friends.md — friends, public profiles, former friends and their life stories.
   const describe = (p: Persona) =>
     `${p.name} (${p.kind}) · ${p.age} · ${p.occupation} · ${p.city}, ${p.country}\n\n${p.bio ?? ''}`;
+  const describeStory = (s: Story) =>
+    `${s.title} (${s.status})\n\n${s.stages.map((b, i) => `${i + 1}. ${b.title}${b.postedAt ? ' ✓' : ''}`).join('\n')}`;
   zip.file(
     'friends.md',
-    toMarkdown(
-      'Friends',
-      personas.map((p) => ({
+    toMarkdown('Friends', [
+      ...personas.map((p) => ({
         record: rec('persona', p.id, p, {
           author: p.name,
           timestamp: iso(p.createdAt),
@@ -115,7 +118,14 @@ export async function buildBackup(now = Date.now()): Promise<{ blob: Blob; filen
         }),
         body: describe(p),
       })),
-    ),
+      ...stories.map((s) => ({
+        record: rec('story', s.id, s, {
+          author: names.get(s.personaId) ?? s.personaId,
+          timestamp: iso(s.startedAt),
+        }),
+        body: describeStory(s),
+      })),
+    ]),
   );
   for (const p of personas) zip.file(`avatars/${p.id}.svg`, avatarSvg(p));
 
