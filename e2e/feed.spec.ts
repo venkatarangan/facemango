@@ -47,10 +47,14 @@ test('a photo post gets described for photo-aware comments (mock model)', async 
   await dialog.getByLabel('Post photo').setInputFiles('public/photos/pets-global-002.webp');
   await expect(dialog.getByRole('button', { name: 'Remove photo' })).toBeVisible();
   await dialog.getByRole('button', { name: 'Post', exact: true }).click();
+  // Either the post appears or the composer says why it couldn't be saved; fail with that reason.
+  const myPost = page.getByRole('article', { name: 'Post by Nila Das' });
+  const saveError = page.getByText(/Couldn't save your post/);
+  await expect(myPost.or(saveError).first()).toBeVisible({ timeout: 15_000 });
+  if (await saveError.isVisible()) throw new Error(`${await saveError.textContent()}`);
   await expect(dialog).toBeHidden();
 
   // The mock captioner's description becomes the photo's alt text and feeds the comment prompts.
-  const myPost = page.getByRole('article', { name: 'Post by Nila Das' });
   await expect(myPost.getByRole('img', { name: /cup of filter coffee/ })).toBeVisible({
     timeout: 30_000,
   });
