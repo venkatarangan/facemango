@@ -103,6 +103,8 @@ export default defineConfig({
         globIgnores: ['**/assets/webllm*.js'],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         navigateFallback: 'index.html',
+        // Let the installed app open the how-it-works PDF instead of serving the app shell for it.
+        navigateFallbackDenylist: [/\.pdf$/],
         cleanupOutdatedCaches: true,
         // Photo pack and emoji load lazily and stay available offline once seen (SPEC §4.5).
         runtimeCaching: [
