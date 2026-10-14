@@ -611,6 +611,15 @@ export function resultsToMarkdown(info: RunInfo, results: TestResult[]): string 
         `Detected vs target: ${r.tone.distance} points apart.`,
       );
     }
+    const invalid = r.attempts.filter((a) => a.error);
+    if (invalid.length)
+      lines.push(
+        '',
+        ...invalid.map(
+          (a) =>
+            `- Attempt ${a.attempt + 1} invalid (${a.raw.length} chars, ${(a.ms / 1000).toFixed(1)} s): ${a.error!.replace(/\s+/g, ' ').slice(0, 200)}`,
+        ),
+      );
     if (r.errors.length) lines.push('', '```text', ...r.errors, '```');
     if (r.outputs.length) lines.push('', ...r.outputs.map((o) => `> ${o.replace(/\n/g, ' ')}`));
   }

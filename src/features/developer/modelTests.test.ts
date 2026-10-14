@@ -69,6 +69,15 @@ describe('developer real-model tests (mock model)', () => {
     );
     expect(markdown).toMatch(/^# FaceMango real-model test/);
     expect(markdown).toContain('| Friend posts | PASS |');
+
+    // A retried attempt says why it was invalid.
+    const retried = {
+      ...byId['friend-post']!,
+      attempts: [{ attempt: 0, ms: 1500, raw: '{"a":', error: 'Unterminated JSON\nin output' }],
+    };
+    expect(
+      resultsToMarkdown({ model: 'M', tier: 't', device: [], app: 'A', at: 'now' }, [retried]),
+    ).toContain('- Attempt 1 invalid (5 chars, 1.5 s): Unterminated JSON in output');
   });
 
   it('marks a cancelled run as cancelled', async () => {
