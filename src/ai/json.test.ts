@@ -1,5 +1,12 @@
 import { z } from 'zod';
-import { AIOutputError, extractJson, generateValidated, toJsonSchema } from './json';
+import {
+  AIOutputError,
+  extractJson,
+  generateValidated,
+  jsonEnd,
+  OutputTooLongError,
+  toJsonSchema,
+} from './json';
 
 describe('extractJson', () => {
   it('handles think blocks, code fences and surrounding prose', () => {
@@ -39,6 +46,32 @@ describe('generateValidated', () => {
     await expect(generateValidated(async () => '{}', schema, 2)).rejects.toBeInstanceOf(
       AIOutputError,
     );
+  });
+});
+
+describe('jsonEnd', () => {
+  it('finds the end of the first complete object or array, ignoring brackets in strings', () => {
+    expect(jsonEnd('{"a":[1,{"b":"}"}]}\n\n\n')).toBe(19);
+    expect(jsonEnd(' [1,2] tail')).toBe(6);
+    expect(jsonEnd('{"a":"x\\"}"')).toBe(-1);
+    expect(jsonEnd('{"a":[1,2')).toBe(-1);
+    expect(jsonEnd('no json')).toBe(-1);
+  });
+});
+
+describe('generateValidated with a cut-off reply', () => {
+  it('retries an OutputTooLongError with a "keep it short" hint', async () => {
+    const hints: (string | undefined)[] = [];
+    const result = await generateValidated(
+      async (attempt, error) => {
+        hints.push(error);
+        if (attempt === 0) throw new OutputTooLongError('{"name":"Ash');
+        return '{"name":"Asha"}';
+      },
+      z.object({ name: z.string() }),
+    );
+    expect(result).toEqual({ name: 'Asha' });
+    expect(hints[1]).toMatch(/too long/);
   });
 });
 

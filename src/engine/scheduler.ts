@@ -27,10 +27,18 @@ const COMMENT_BATCH = 4;
 
 let running = false;
 let paused = false;
+let currentStep: Promise<unknown> = Promise.resolve();
 
-/** Pauses the loop (the developer test page uses this so its timings are clean). */
-export function setSchedulerPaused(value: boolean): void {
+/**
+ * Pauses the loop (the developer test page uses this so its timings are clean). Resolves once a
+ * step that was already running has finished.
+ */
+export function setSchedulerPaused(value: boolean): Promise<void> {
   paused = value;
+  return currentStep.then(
+    () => {},
+    () => {},
+  );
 }
 
 /** Starts the engagement loop (SPEC §4.2): applies due events, writes comments just in time. */
@@ -42,7 +50,11 @@ export function startScheduler(): void {
     while (running) {
       let worked = false;
       try {
-        if (!paused) worked = await step(Date.now());
+        if (!paused) {
+          const running = step(Date.now());
+          currentStep = running;
+          worked = await running;
+        }
       } catch (error) {
         console.warn('Scheduler step failed', error);
       }
@@ -176,12 +188,21 @@ async function updateTypingLookahead(now: number): Promise<void> {
   for (const [postId, names] of byPost) setTyping(postId, [...new Set(names)]);
 }
 
-function cleanText(text: string, name: string): string {
-  return text
+const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/**
+ * Strips quotes and a leading self-name the model sometimes adds: "Priya:", "Priya Raman here!",
+ * "Lena Weber. …", "Kofi, …".
+ */
+export function cleanCommentText(text: string, name: string): string {
+  const names = [name, name.split(' ')[0]!].map(escapeRegExp).join('|');
+  const selfName = new RegExp(`^(?:${names})(?:\\s+(?:here|again))*\\s*[:,.!—–-]+\\s*`, 'i');
+  const cleaned = text
     .trim()
     .replace(/^["“]|["”]$/g, '')
-    .replace(new RegExp(`^${name.split(' ')[0]}\\s*:\\s*`, 'i'), '')
+    .replace(selfName, '')
     .trim();
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
 }
 
 /** Asks the model for one batch of comments (up to 4). Stores nothing. */
@@ -297,7 +318,7 @@ async function writeComments(ai: AI, events: PlannedEvent[]): Promise<void> {
     let added = 0;
     for (const [i, r] of requests.entries()) {
       const raw = result.comments.find((c) => c.id === r.id)?.text ?? result.comments[i]?.text;
-      const text = raw ? cleanText(raw, r.persona.name) : '';
+      const text = raw ? cleanCommentText(raw, r.persona.name) : '';
       if (!text || seen.has(text.toLowerCase())) {
         await db.events.update(r.event.id, { status: 'cancelled' });
         continue;
