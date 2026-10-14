@@ -15,7 +15,6 @@ page.
   copy the results; the Mango AI tests show the full error.
 - **Real-browser checks:** life stories, folder backup, the photo captioner (Florence-2) and the
   setup experience have only run against the mock model or headless Chromium.
-- **Photo pack:** 87 photos so far, against ~250 planned (`scripts/photos/`).
 - **Setup experience:** try the first-run wait on a real download (time left, slow-network note,
   "Waking it up" stage) in Chrome/Edge and on a phone.
 
@@ -28,3 +27,9 @@ page.
 - **Encrypted backups:** skipped for now.
 - **Messenger-lite** (private chats with a friend persona): parked; a v1 non-goal, and needs clear
   "simulated" labelling and Wellbeing tracking if built.
+
+## Done
+
+- **Photo pack:** 252 photos, the ~250 target (`scripts/photos/`). Work and family themes are
+  thin (few usable CC0 photos on Commons). Fetching needs `NODE_USE_ENV_PROXY=1` in the sandbox and
+  `thumb.wikimedia.org` allowed alongside `commons` and `upload.wikimedia.org`.

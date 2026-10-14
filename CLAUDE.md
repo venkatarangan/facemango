@@ -16,8 +16,8 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - **Published and live over HTTPS:** pushing to `main` runs CI (lint, unit, e2e on Chrome/Android/iPhone) and deploys to GitHub Pages. See "Deployment" below.
 - **Real-model test (owner, Qwen3 on WebGPU):** friends, posts with photos, likes, comments and Activity worked. Mango AI (chat + composer) failed. It now falls back from streaming to a single reply and shows the error. **Re-test pending**: ask the owner to run the developer Real-model test and paste the copied results.
 - **Open items:**
-  - photo pack 87/~250
-  - try the new first-run setup experience on a real model download
+  - real-browser checks of life stories, folder backup, the photo captioner and the first-run setup experience
+- **Photo pack:** 252 photos (target reached).
 
 ## Working agreements
 - **Commits:** only when the owner asks. Work on `main` (or a short branch). The old milestone branches (`m1-skeleton`, `m2-m4`, `m5-m7`) are local-only history.
