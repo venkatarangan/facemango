@@ -23,7 +23,7 @@ const steps = [
 const privacy = [
   'No account and no servers: your posts, photos, friends and stats are stored only on this device.',
   'The AI runs on your device. Nothing you write is sent to it over the internet.',
-  'The only downloads are the AI model (from your browser or Hugging Face) and the app itself.',
+  'The only downloads are the AI models (from your browser or Hugging Face) and the app itself.',
   'Google Analytics counts page views, and nothing else. It never sees your posts, profile or stats.',
 ];
 

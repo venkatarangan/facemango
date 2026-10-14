@@ -4,6 +4,8 @@
  * It fabricates schema-valid JSON so the whole app can be exercised without a model.
  */
 import type { z } from 'zod';
+import type { CaptionDevice } from './captionModel';
+import type { CaptionBackend } from './captioner';
 import { toJsonSchema } from './json';
 import type { AIProvider, GenerateOptions } from './provider';
 
@@ -135,3 +137,22 @@ export class MockProvider implements AIProvider {
     }
   }
 }
+
+/** Stands in for the photo captioner worker (captioner.ts); nothing is downloaded. */
+export class MockCaptionBackend implements CaptionBackend {
+  async load(_device: CaptionDevice, onProgress: (progress: number) => void): Promise<void> {
+    for (let i = 1; i <= 5; i++) {
+      await delay(40);
+      onProgress(i / 5);
+    }
+  }
+
+  async caption(_image: Blob): Promise<string> {
+    await delay(40);
+    return MOCK_PHOTO_CAPTION;
+  }
+
+  dispose(): void {}
+}
+
+export const MOCK_PHOTO_CAPTION = 'A sunny photo of a cup of filter coffee on a wooden table.';
