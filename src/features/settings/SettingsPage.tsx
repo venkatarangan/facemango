@@ -1,14 +1,9 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router';
-import { format } from 'date-fns';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '@/db';
 import { resetFriends } from '@/engine/reset';
-import { RestoreDialog } from '@/features/backup/RestoreDialog';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import { backupRemindersEnabled } from '@/lib/backup/reminders';
-import { folderBackupSupported } from '@/lib/backup/autoBackup';
 import { promptInstall, useInstallStore } from '@/lib/install';
 import { setSoundsEnabled, soundsEnabled } from '@/lib/sound';
 import {
@@ -68,22 +63,14 @@ export function SettingsPage() {
   const [usage, setUsage] = useState<string>();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
-  const [restoreOpen, setRestoreOpen] = useState(false);
-  const [exporting, setExporting] = useState(false);
   const [sounds, setSounds] = useState(soundsEnabled());
-  const [folderBackups] = useState(() => folderBackupSupported());
   const prefs = useLiveQuery(
     async () => ({
       notify: await systemNotificationsEnabled(),
-      backups: await backupRemindersEnabled(),
     }),
     [],
   );
   const installPrompt = useInstallStore((s) => s.prompt);
-  const lastBackupAt = useLiveQuery(
-    async () => (await db.meta.get('lastBackupAt'))?.value as number | undefined,
-    [],
-  );
   const ai = useAIStore();
   const showToast = useUiStore((s) => s.showToast);
 
@@ -225,17 +212,6 @@ export function SettingsPage() {
             }
             label="Notify me about reactions and comments while FaceMango is in the background"
           />
-          <FormControlLabel
-            control={
-              <Switch
-                checked={!!prefs?.backups}
-                onChange={(e) =>
-                  void db.settings.put({ key: 'backupReminders', value: e.target.checked })
-                }
-              />
-            }
-            label="Remind me to back up every week"
-          />
         </Stack>
         {installPrompt && !isStandalone() && (
           <Button variant="contained" sx={{ mt: 1.5 }} onClick={() => void promptInstall()}>
@@ -251,39 +227,6 @@ export function SettingsPage() {
         <Button variant="outlined" component={RouterLink} to="/settings/advanced">
           Advanced settings
         </Button>
-      </Section>
-
-      <Section title="Backup & restore">
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-          Download everything (posts, photos, friends, feed and wellbeing) as Markdown and images in
-          a zip file.
-          {lastBackupAt
-            ? ` Last backup: ${format(lastBackupAt, 'd MMMM yyyy, h:mm a')}.`
-            : ' No backup yet.'}
-          {folderBackups && ' To save one to a folder every week, see Advanced settings.'}
-        </Typography>
-        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
-          <Button
-            variant="contained"
-            disabled={exporting}
-            onClick={async () => {
-              setExporting(true);
-              try {
-                const { buildBackup, downloadBlob } = await import('@/lib/backup/export');
-                const { blob, filename } = await buildBackup();
-                downloadBlob(blob, filename);
-                showToast('Backup downloaded. Keep it somewhere safe.');
-              } finally {
-                setExporting(false);
-              }
-            }}
-          >
-            {exporting ? 'Preparing…' : 'Download backup'}
-          </Button>
-          <Button variant="outlined" onClick={() => setRestoreOpen(true)}>
-            Restore from a backup
-          </Button>
-        </Stack>
       </Section>
 
       <Section title="Friends">
@@ -333,8 +276,7 @@ export function SettingsPage() {
 
       <Section title="Danger zone">
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-          Permanently deletes your profile, posts, friends and stats from this browser. Make a
-          backup first if you might want them back.
+          Permanently deletes your profile, posts, friends and stats from this browser.
         </Typography>
         <Button variant="outlined" color="error" onClick={() => setConfirmOpen(true)}>
           Delete all FaceMango data
@@ -345,7 +287,6 @@ export function SettingsPage() {
         FaceMango v{__APP_VERSION__} · AGPL-3.0
       </Typography>
 
-      <RestoreDialog open={restoreOpen} onClose={() => setRestoreOpen(false)} />
       <Dialog open={resetOpen} onClose={() => setResetOpen(false)}>
         <DialogTitle>Reset friends?</DialogTitle>
         <DialogContent>

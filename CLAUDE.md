@@ -4,20 +4,20 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 
 ## What this is
 **FaceMango**: a private, single-player, Facebook-style "dopamine site". Every friend, like and comment is simulated by **AI running on the user's device**. All data stays in the browser (IndexedDB). No backend.
-- **Uniqueness (use this message):** unlike other feel-good apps, the data and the AI models are entirely local; nothing leaves unless the user exports it (`UNIQUENESS` in `src/lib/copy.ts`).
+- **Uniqueness (use this message):** unlike other feel-good apps, the data and the AI models are entirely local; nothing ever leaves the device (`UNIQUENESS` in `src/lib/copy.ts`).
 - **Byline:** "The most personal social network ever built. And the most private." (`BYLINE`)
 - **Live site:** https://face.mangoidiots.com · **Repo:** https://github.com/venkatarangan/facemango (public, AGPL-3.0)
 - **Owner:** Venkatarangan (GitHub `venkatarangan`). Original brief: `input.txt`.
 
-## Status (2026-10-14)
-- **Built:** M1–M7 from SPEC §10, plus life stories, folder auto-backup, photo-aware comments on every tier (Florence-2 captioner via Transformers.js), the first-run setup experience and the developer real-model test page (Advanced settings → Developer).
-- **Parked:** M8 realistic faces (SD-Turbo reviewed 2026-10-14 and parked: licence, quality, safety, size), encrypted backups, Messenger-lite, more languages. Reasons in `docs/FUTURE.md`.
+## Status (2026-11-13)
+- **Built:** M1–M7 from SPEC §10, plus life stories, photo-aware comments on every tier (Florence-2 captioner via Transformers.js), the first-run setup experience and the developer real-model test page (Advanced settings → Developer).
+- **Parked:** M8 realistic faces (SD-Turbo reviewed 2026-10-14 and parked: licence, quality, safety, size), Messenger-lite, more languages. Reasons in `docs/FUTURE.md`.
 - **Analytics:** on. The repo Actions variable `GA_ID` is set.
 - **Published and live over HTTPS:** pushing to `main` runs CI (lint, unit, e2e on Chrome/Android/iPhone) and deploys to GitHub Pages. See "Deployment" below.
 - **Real-model test (owner, Qwen3 on WebGPU):** friends, posts with photos, likes, comments and Activity worked. Mango AI (chat + composer) failed. It now falls back from streaming to a single reply and shows the error. **Re-test on Qwen3 pending**: ask the owner to run the developer Real-model test and paste the copied results.
 - **Real-model test (owner, Gemini Nano via the Prompt API, 2026-10-14):** all 10 tests passed, Mango AI included, but the run took ~1 hour because of runaway replies (`QuotaExceededError`). Prompt API replies are now capped (`readCapped` in `src/ai/promptApi.ts`). Re-run pending to confirm the time.
 - **Open items:**
-  - real-browser checks of life stories, folder backup, the photo captioner and the first-run setup experience
+  - real-browser checks of life stories, the photo captioner and the first-run setup experience
 - **Photo pack:** 251 photos (target reached).
 
 ## Working agreements
@@ -44,8 +44,7 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 | Third parties | Only Hugging Face (model weights) and Google Analytics (page views, route patterns, EU/UK consent). CDN assets are self-hosted via `npm run models`. |
 | Engagement | Comments 0–9 by default (cap 100); likes = comments × 3–5 (cap 1,000,000); mix Good 60 / Appreciative 25 / Nonsense 10 / Critical 5 / Super-critical 0; ≤2 critical per post; Super-critical off for under-18s |
 | Friends | 25 by default + 2× public profiles; reset keeps old likes and comments under "former friends" |
-| Backup | Zip of me.md, friends.md, feed.md, wellbeing.md (YAML front-matter) + images/ + avatars/; restore "everything" or "my content + new friends" |
-| iOS | Data-loss warning on the landing page and at signup; banner every 7 days in a non-installed tab; weekly backup reminders on by default |
+| iOS | Data-loss warning on the landing page and at signup; banner every 7 days in a non-installed tab |
 | Colours | White, `#FFC400` accent, `#111111` text; yellow text `#8A6A00` (body) / `#B28900` (large only) |
 | Avatars / photos | DiceBear "Personas" (CC BY 4.0); CC0/PD photo pack, family-friendly, no identifiable faces or children |
 
@@ -60,9 +59,9 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - Lint follows React Compiler rules: no `Date.now()` or ref reads during render (use `useNow()`).
 
 ## Environment
-- **Machine-specific setup** (folders, sync, sandbox, new-PC checklist) is in `CLAUDE.local.md`, which is git-ignored. Read it first. If it's missing, ask the owner for it.
-- WSL with Node 22; the Windows host has no Node.
+- **Machine-specific setup** is in `CLAUDE.local.md`, which is git-ignored. Read it first. If it's missing, ask the owner for it.
+- WSL only, with Node 22 (`.nvmrc`). Work in this folder from WSL.
 - Vitest uses 3 reused threads; clear the DB in `beforeEach`.
-- Test the real AI in Chrome/Edge on Windows at http://localhost:5173 (`npm run dev` in WSL). This environment has no GPU.
+- Test the real AI in Chrome/Edge at http://localhost:5173 (`npm run dev` in WSL). This environment has no GPU.
 - Playwright WebKit (iPhone project) passes in CI; running it locally needs `sudo npx playwright install-deps webkit`.
 - `gh` CLI is logged in as `venkatarangan` (repo + workflow scopes).

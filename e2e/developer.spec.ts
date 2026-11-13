@@ -6,7 +6,6 @@ test('developer real-model test page runs with the mock model', async ({ page })
   await signUpAndWaitForSetup(page, 'Dev Tester');
 
   await page.goto('/settings/advanced');
-  await expect(page.getByRole('region', { name: 'Automatic backup to a folder' })).toBeVisible();
   await page.getByRole('link', { name: 'Real-model test (for developers)' }).click();
   await expect(page.getByRole('heading', { name: 'Real-model test' })).toBeVisible();
 

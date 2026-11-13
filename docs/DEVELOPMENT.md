@@ -12,7 +12,7 @@ Requires Node 22+. `npm run dev` / `npm run build` first fetch the WebLLM model 
 | `src/engine/stories.ts` | Friends' life stories: beat logic; the curated arcs are in `storyTemplates.ts`                                |
 | `src/db/`               | Dexie schema and data actions (everything lives in IndexedDB)                                                 |
 | `src/features/`         | Screens, one folder each                                                                                      |
-| `src/lib/`              | Helpers: backup, usage tracking, analytics, time ago, …                                                       |
+| `src/lib/`              | Helpers: usage tracking, analytics, time ago, …                                                               |
 | `scripts/`              | Asset scripts (model libraries, sounds, photo pack)                                                           |
 
 ## Rules
@@ -78,16 +78,6 @@ pauses while it runs.
 
 Tracing uses `setAITrace()` in `src/ai/service.ts`; providers report attempts and token usage
 through `GenerateOptions.trace`.
-
-## Automatic backup to a folder
-
-`src/lib/backup/autoBackup.ts` and `folder.ts`: opt-in under Advanced settings, Chrome/Edge on
-computers only (`showDirectoryPicker`). The folder handle lives in `settings.autoBackup` (no new
-Dexie version); it and `meta.autoBackupStatus` are device-only, so they are left out of backups and
-kept on restore. Weekly, never prompts in the background; when the browser wants permission again,
-the feed's backup card asks for a click. Keeps the newest 5 `facemango-auto-backup-*.zip` files
-and never touches other files. Headless Chromium crashes when it reads a stored folder handle, so
-this flow is covered by unit tests with a fake folder, not e2e.
 
 ## Deploy
 

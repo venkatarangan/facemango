@@ -83,10 +83,10 @@ export function AboutPage() {
           <Section title="Your privacy">
             <List items={privacy} />
           </Section>
-          <Section title="Keep your data safe">
+          <Section title="Where your data lives">
             <Typography>
-              Clearing your browser data removes FaceMango. Download a backup now and then from
-              Settings → Backup &amp; restore.
+              Clearing your browser data removes FaceMango, because everything is stored only in
+              this browser.
             </Typography>
             <Typography color="text.secondary" sx={{ mt: 1 }}>
               {IOS_DATA_NOTICE}
@@ -96,8 +96,8 @@ export function AboutPage() {
             <Typography>
               Curious how it's built? <i>How FaceMango works</i> is an illustrated, plain-English
               guide (PDF): the architecture, the libraries, the on-device AI tiers and photo
-              captioner, the simulation engine and friends' life stories, where data lives and how
-              backups work, and how the app is tested and shipped.
+              captioner, the simulation engine and friends' life stories, where data lives, and how
+              the app is tested and shipped.
             </Typography>
             <Stack direction="row" spacing={2} sx={{ mt: 1.5, flexWrap: 'wrap' }}>
               <Link

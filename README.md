@@ -11,7 +11,7 @@ friend is imagined by AI.
 
 **What makes it different:** other feel-good apps run on someone else's servers. FaceMango runs
 entirely on your device: your posts, your friends, even the AI behind them. Nothing ever leaves
-unless you export it.
+your device.
 
 ## Using it
 
@@ -23,8 +23,8 @@ unless you export it.
 
 **Good to know**
 
-- No account, no cloud. Clearing your browser data erases FaceMango, so use **Settings → Backup &
-  restore** now and then.
+- No account, no cloud. Everything stays in your browser, so clearing your browser data erases
+  FaceMango.
 - On iPhone, add FaceMango to your Home Screen; Safari may otherwise erase site data after 7 days
   without a visit.
 - The friends are simulated, not real people. For ages 13+.
@@ -34,7 +34,7 @@ unless you export it.
 
 Curious what happens under the hood? Read the
 [illustrated guide (PDF)](https://face.mangoidiots.com/FaceMango-How-It-Works.pdf): a 15-page,
-plain-English tour of the architecture, libraries, on-device AI, simulation engine, data and backups,
+plain-English tour of the architecture, libraries, on-device AI, simulation engine, data,
 and how the app is built and shipped.
 
 ## For developers

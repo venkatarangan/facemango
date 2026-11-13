@@ -53,7 +53,7 @@ describe('tips', () => {
     expect(ios[0]).toBe(UNIQUENESS);
     expect(ios).toContain(IOS_DATA_NOTICE);
     expect(other).not.toContain(IOS_DATA_NOTICE);
-    expect(other.some((t) => /Backup & restore/.test(t))).toBe(true);
+    expect(other.some((t) => /only in this browser/.test(t))).toBe(true);
   });
 
   it('rotates and wraps around', () => {

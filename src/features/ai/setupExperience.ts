@@ -56,13 +56,13 @@ export function friendsProgress(setup: { stage: SetupStage; done: number; total:
 
 /** Short tips shown one at a time while waiting. */
 export function setupTips({ ios }: { ios: boolean }): string[] {
-  const backup = ios
+  const storage = ios
     ? IOS_DATA_NOTICE
-    : 'Your data lives only in this browser. Back it up any time from Settings → Backup & restore.';
+    : 'Your data lives only in this browser on this device. Clearing site data removes it.';
   return [
     UNIQUENESS,
     'The download happens once. Next time, FaceMango opens in seconds.',
-    backup,
+    storage,
     'Mention a friend with @ in a post and they will always reply.',
     'Stuck for words? ✨ Mango AI can write or polish a post for you.',
     'Wellbeing shows how long you spend here, and you can set a gentle daily goal.',

@@ -24,7 +24,6 @@ import { WeeklySummaryCard } from '@/features/wellbeing/WeeklySummaryCard';
 import { postingStreak } from '@/lib/streak';
 import { firstName } from '@/lib/text';
 import { useNow } from '@/lib/useNow';
-import { BackupReminderCard } from './cards/BackupReminderCard';
 import { BestPostCard } from './cards/BestPostCard';
 import { DailyIdeaCard } from './cards/DailyIdeaCard';
 import { IosBanner } from './cards/IosBanner';
@@ -140,7 +139,6 @@ export function HomePage() {
       <AwayBanner />
       <SetupCard onWritePost={() => openComposer()} />
       <IosBanner />
-      <BackupReminderCard />
       <WeeklySummaryCard />
       {setupDone && <DailyIdeaCard onUse={(idea) => openComposer(`${idea}\n\n`)} />}
       <BestPostCard />

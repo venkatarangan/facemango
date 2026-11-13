@@ -7,7 +7,7 @@ export const BYLINE = 'The most personal social network ever built. And the most
 
 /** What sets FaceMango apart from other dopamine apps. */
 export const UNIQUENESS =
-  "Other feel-good apps run on someone else's servers. FaceMango runs entirely on your device: your posts, your friends, even the AI behind them. Nothing ever leaves unless you export it.";
+  "Other feel-good apps run on someone else's servers. FaceMango runs entirely on your device: your posts, your friends, even the AI behind them. Nothing ever leaves your device.";
 
 export const PRIVACY_STATEMENT =
   'Your posts, photos, friends, comments and wellbeing stats are stored only in this browser on this device. ' +
@@ -17,11 +17,11 @@ export const PRIVACY_STATEMENT =
 
 export const IOS_DATA_NOTICE =
   "On iPhone/iPad, Safari may erase FaceMango's data if you don't open it for 7 days. " +
-  'Add FaceMango to your Home Screen and export a backup regularly.';
+  'Add FaceMango to your Home Screen to keep it longer.';
 
 export const LOCAL_DATA_NOTICE =
   'Everything you create stays in this browser on this device. ' +
-  'Clearing site data or uninstalling the browser removes it, so export a backup regularly.';
+  'Clearing site data or uninstalling the browser removes it.';
 
 export const SIMULATED_FRIENDS_NOTE =
   'Every friend, like and comment on FaceMango is simulated by AI running on your device. None of them are real people.';

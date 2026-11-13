@@ -10,7 +10,6 @@ import { useProfile } from '@/app/useProfile';
 import { startAI } from '@/ai';
 import { startEngine } from '@/engine';
 import { startUsageTracking } from '@/lib/usage';
-import { startAutoBackup } from '@/lib/backup/autoBackup';
 import { WellbeingNudges } from '@/features/wellbeing/WellbeingNudges';
 import { Celebrations } from '@/features/celebrations/Celebrations';
 import { loadSoundPreference } from '@/lib/sound';
@@ -26,7 +25,6 @@ export function AppShell() {
     void startAI({ userGesture: false });
     startEngine();
     startUsageTracking();
-    startAutoBackup();
     void loadSoundPreference();
   }, [signedUp]);
   if (!profile) return null; // RequireProfile guarantees this after loading.

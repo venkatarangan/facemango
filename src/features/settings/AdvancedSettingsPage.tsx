@@ -22,7 +22,6 @@ import {
 import { ADULT_AGE, MAX_COMMENTS_PER_POST, MAX_LIKES_PER_POST } from '@/engine/limits';
 import { setMixValue } from '@/engine/mix';
 import { getEngagementConfig, saveEngagementConfig } from '@/engine/settings';
-import { AutoBackupSection } from '@/features/backup/AutoBackupSection';
 
 const SPEEDS = [
   { value: 0.5, label: 'Relaxed (half speed)' },
@@ -287,10 +286,6 @@ export function AdvancedSettingsPage() {
           Reset to defaults
         </Button>
       </Stack>
-
-      <Section title="Automatic backup to a folder">
-        <AutoBackupSection />
-      </Section>
 
       <Section
         title="Developer"

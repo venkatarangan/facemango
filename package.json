@@ -49,7 +49,6 @@
     "dexie": "^4.4.6",
     "dexie-react-hooks": "^4.4.0",
     "howler": "^2.2.4",
-    "jszip": "^3.10.2",
     "motion": "^14.0.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
@@ -57,7 +56,6 @@
     "react-router": "^8.4.0",
     "react-virtuoso": "^4.18.16",
     "workbox-window": "^7.4.1",
-    "yaml": "^2.9.1",
     "zod": "^4.6.5",
     "zustand": "^5.0.15"
   },

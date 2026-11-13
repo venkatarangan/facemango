@@ -31,7 +31,7 @@ const steps = [
   {
     icon: <HomeRounded />,
     title: 'Open FaceMango from the Home Screen',
-    body: 'Data kept by the Home Screen app is not erased after 7 days. Still export a backup now and then.',
+    body: 'Data kept by the Home Screen app is not erased after 7 days.',
   },
 ];
 

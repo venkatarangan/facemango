@@ -2,13 +2,15 @@
 
 ## Unreleased
 
+- **Backup removed:** backup and restore (zip export, restore, automatic folder backup and weekly
+  reminders) is gone, along with its Settings sections and the landing-page restore link.
 - Footer on the landing page and in the menus: a shorter simulated-friends line, a
   face.mangoidiots.com link and the running version (grows with every publish). About page has a
   "For developers" section linking the How-It-Works guide and the code.
 - **Friends' life stories:** friends now have storylines that unfold over days and weeks (a new
   job, race training, a trip, a new pet and more), told one post at a time. Posts show which
   update they are; profiles list each friend's stories. Stored in a new `stories` table (Dexie
-  v3) and included in backups.
+  v3).
 - Friends now comment on what's in your photos on every browser, not just Chrome/Edge with a
   built-in AI that can see images. Elsewhere, a small on-device photo model (Florence-2 via
   Transformers.js, about 245 MB) downloads with your first photo post. Toggle it in Settings →
@@ -18,12 +20,10 @@
 - Shorter, friendlier README, About page and welcome screen.
 - **Setup experience** for the first-run wait: three plain-language stages (downloading your AI,
   waking it up, meeting your friends) with real progress, download size and time left, a calm
-  note on slow connections, and clear retry. Rotating tips (privacy, features, backup, iOS note)
+  note on slow connections, and clear retry. Rotating tips (privacy, features, iOS note)
   that stay still with reduced motion. Posts written while waiting are kept until the friends
   arrive. When it's ready: confetti and a chime, or a local notification if the tab is hidden and
   notifications are on.
-- Automatic weekly backup to a folder you choose (Advanced settings; Chrome and Edge on computers).
-  Keeps the latest 5 and counts as your weekly backup.
 - Real-model test page for developers (Advanced settings → Developer): runs the real prompts
   through the loaded model and reports validity, retries, speed, repetition and tone mix, with the
   full error when Mango AI streaming fails. Stores nothing.
@@ -38,6 +38,6 @@
 - **M4:** simulation engine: AI friends, planned engagement within hard caps, living feed,
   notifications, photo pack.
 - **M5:** profiles, Mango AI chat, Memories, Activity, Photos, Wellbeing tracker.
-- **M6:** advanced settings, backup and restore (Markdown + images), friends reset.
+- **M6:** advanced settings, friends reset.
 - **M7:** celebrations, friend requests, daily ideas, streaks, pushback from fans, local
   notifications, analytics hook (page views only).

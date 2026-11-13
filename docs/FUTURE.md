@@ -39,7 +39,7 @@ DiceBear "Personas" illustrations.
 - The weights would be converted from the official model and hosted on Hugging Face with the
   licence and Notice files.
 - Faces would be made in the background, then the model unloaded. They would be stored in a new
-  Dexie version and included in backups.
+  Dexie version.
 
 **Revisit when** a small text-to-image model with an open licence (Apache-2.0 or MIT) and a
 browser build of about 3 GB or less appears. FLUX.2 Klein 4B is Apache-2.0, but about 13.7 GB in
@@ -49,11 +49,6 @@ the browser.
 
 Private one-to-one chats with a friend persona. It was a v1 non-goal. Building it would need clear
 "simulated" labelling and Wellbeing tracking, so chat time counts like feed time.
-
-## Encrypted backups
-
-A password-protected backup zip. Skipped for v1. To weigh: a forgotten password makes a backup
-useless, and the Markdown files would no longer be readable without the app.
 
 ## More languages
 

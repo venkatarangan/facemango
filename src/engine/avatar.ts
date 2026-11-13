@@ -88,9 +88,3 @@ export function avatarDataUri(persona: Pick<Persona, 'id' | 'avatar'>): string {
   cache.set(key, svg);
   return svg;
 }
-
-/** The raw SVG markup, used by the backup export (avatars/*.svg). */
-export function avatarSvg(persona: Pick<Persona, 'avatar'>): string {
-  const uri = avatarDataUri({ id: 'export', ...persona });
-  return decodeURIComponent(uri.replace(/^data:image\/svg\+xml;charset=utf-8,/, ''));
-}
