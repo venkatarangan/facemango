@@ -61,7 +61,7 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 
 ## Environment
 - **Machine-specific setup** is in `CLAUDE.local.md`, which is git-ignored. Read it first. If it's missing, ask the owner for it.
-- WSL only, with Node 24 (`.nvmrc`). Work in this folder from WSL.
+- WSL only, with Node 26 (`.nvmrc`). Work in this folder from WSL.
 - Vitest uses 3 reused threads; clear the DB in `beforeEach`.
 - Test the real AI in Chrome/Edge at http://localhost:5173 (`npm run dev` in WSL). This environment has no GPU.
 - Playwright WebKit (iPhone project) passes in CI; running it locally needs `sudo npx playwright install-deps webkit`.

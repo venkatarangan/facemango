@@ -21,7 +21,7 @@ folder while you curate: `build.mjs` needs `candidates.json` and the raw files.
 
 ## Running
 
-Requires Node 24+ and `sharp` (already in `node_modules`). Run from the repo root:
+Requires Node 26+ and `sharp` (already in `node_modules`). Run from the repo root:
 
 ```bash
 export PHOTO_WORK=~/facemango-photo-work

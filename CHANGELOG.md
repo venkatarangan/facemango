@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- **Node 24** everywhere (`.nvmrc`, CI, `engines`, docs).
+- **Node 26** everywhere (`.nvmrc`, CI, `engines`, docs); libraries updated to their latest compatible versions.
 
 - **Social previews:** full Open Graph and Twitter tags with a preview image made from
   screenshots of the app (made-up profile, no real data), plus per-page tags for `/welcome`,
