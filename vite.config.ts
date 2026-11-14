@@ -209,7 +209,7 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
-    // /mnt/c (WSL) is slow to start many workers; a few threads are faster and reliable.
+    // On slower filesystems, starting many workers is slow; a few threads are faster and reliable.
     pool: 'threads',
     maxWorkers: 3,
     isolate: false,
