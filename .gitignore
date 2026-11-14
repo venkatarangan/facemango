@@ -28,5 +28,3 @@ public/emoji/*.wasm
 # Owner-only local setup (not for the public repo)
 CLAUDE.local.md
 .claude/settings.local.json
-.claude/hooks/
-.claude/sync-excludes

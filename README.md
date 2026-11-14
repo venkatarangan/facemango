@@ -23,8 +23,8 @@ your device.
 
 **Good to know**
 
-- No account, no cloud. Everything stays in your browser, so clearing your browser data erases
-  FaceMango.
+- No account, no cloud. Clearing your browser data erases FaceMango, so use **Settings → Backup &
+  restore** now and then.
 - On iPhone, add FaceMango to your Home Screen; Safari may otherwise erase site data after 7 days
   without a visit.
 - The friends are simulated, not real people. For ages 13+.
@@ -34,7 +34,7 @@ your device.
 
 Curious what happens under the hood? Read the
 [illustrated guide (PDF)](https://face.mangoidiots.com/FaceMango-How-It-Works.pdf): a 15-page,
-plain-English tour of the architecture, libraries, on-device AI, simulation engine, data,
+plain-English tour of the architecture, libraries, on-device AI, simulation engine, data and backups,
 and how the app is built and shipped.
 
 ## For developers

@@ -10,6 +10,8 @@ import { useProfile } from '@/app/useProfile';
 import { startAI } from '@/ai';
 import { startEngine } from '@/engine';
 import { startUsageTracking } from '@/lib/usage';
+import { startAutoBackup } from '@/lib/backup/autoBackup';
+import { RESTORE_CHANNEL, TAB_ID } from '@/lib/backup/channel';
 import { WellbeingNudges } from '@/features/wellbeing/WellbeingNudges';
 import { Celebrations } from '@/features/celebrations/Celebrations';
 import { loadSoundPreference } from '@/lib/sound';
@@ -25,7 +27,19 @@ export function AppShell() {
     void startAI({ userGesture: false });
     startEngine();
     startUsageTracking();
+    startAutoBackup();
+    // Another tab restored a backup: reload so this one doesn't keep running on old data.
+    let channel: BroadcastChannel | undefined;
+    try {
+      channel = new BroadcastChannel(RESTORE_CHANNEL);
+      channel.onmessage = (e) => {
+        if (e.data !== TAB_ID) window.location.reload();
+      };
+    } catch {
+      /* no BroadcastChannel: nothing to do */
+    }
     void loadSoundPreference();
+    return () => channel?.close();
   }, [signedUp]);
   if (!profile) return null; // RequireProfile guarantees this after loading.
 

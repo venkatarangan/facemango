@@ -9,7 +9,7 @@
 
 ## 1. Summary
 
-FaceMango is a private, single-player social feed in the spirit of [dopamine sites](https://en.wikipedia.org/wiki/Dopamine_sites) and foodnevercomes.com. It looks and feels like the Facebook centre feed, but every friend, like and comment is simulated by an AI that runs **on the user's own device**. There is no account, no server and no cloud storage.
+FaceMango is a private, single-player social feed in the spirit of [dopamine sites](https://en.wikipedia.org/wiki/Dopamine_sites) and foodnevercomes.com. It looks and feels like the Facebook centre feed, but every friend, like and comment is simulated by an AI that runs **on the user's own device**. There is no account, no server and no cloud storage. The user can export everything to Markdown and images, and restore it on a new install.
 
 **Selling point:** *"A social network that is entirely yours. Your posts, photos and friends live only on your device."*
 
@@ -19,7 +19,7 @@ FaceMango is a private, single-player social feed in the spirit of [dopamine sit
 - Engagement (likes, comments, replies) that feels real, can be configured, and stays within hard limits.
 - Tiered local AI: Prompt API, then WebGPU with a small Gemma/Qwen model. If neither works, show the Unsupported screen. **There is no non-AI mode.**
 - **Mango AI** assistant, Memories, Activity, Photos, and a **Wellbeing** usage tracker.
-- The friends list can be reset at any time.
+- Full backup and restore with Markdown and images. The friends list can be reset at any time.
 - Responsive, polished, animated Material UI on PC, Mac, iPhone and Android. Installable as a PWA.
 
 ### Non-goals (v1)
@@ -42,9 +42,9 @@ FaceMango is a private, single-player social feed in the spirit of [dopamine sit
 ### iOS data-loss warning (required UI)
 Safari on iPhone and iPad can **delete site data after 7 days without use** unless the app is added to the Home Screen.
 - **Landing/home page:** an info card for iOS visitors with a step-by-step "Add to Home Screen" guide.
-  *"On iPhone/iPad, Safari may erase FaceMango's data if you don't open it for 7 days. Add FaceMango to your Home Screen to keep it longer."*
+  *"On iPhone/iPad, Safari may erase FaceMango's data if you don't open it for 7 days. Add FaceMango to your Home Screen and export a backup regularly."*
 - **Signup:** the same notice, with a required "I understand" checkbox.
-- **Afterwards:** a banner every 7 days in a Safari tab that isn't installed.
+- **Afterwards:** a banner every 7 days in a Safari tab that isn't installed. A backup reminder when the last export is more than 7 days old (on by default on iOS, optional elsewhere).
 - `navigator.storage.persist()` is requested on every platform, and its status is shown in Settings.
 
 ---
@@ -98,11 +98,28 @@ A private, on-device dashboard in the style of a mental-health or digital-wellbe
 - **Mood check-in (optional):** at the end of a session, a one-tap emoji mood ("How do you feel? 😊 😐 😟"). A chart shows mood against time spent.
 - **Daily goal (optional):** set a target such as 30 min/day. A ring fills up during the day, with a gentle, non-blocking nudge when it's exceeded.
 - **Weekly summary card** in the feed every Monday ("You spent 2h 10m on FaceMango last week, 15% less than the week before").
+- Included in the full backup.
 
 ### 3.10 Friends reset
-- Settings → **"Reset friends"** works at any time.
+- Settings → **"Reset friends"** works at any time, and is also offered on import.
 - It regenerates friends and public profiles from the current config. The user's posts, photos and comments stay.
 - **Existing likes and comments from old friends are kept as they are, under the old names.** Old personas become read-only "former friends": they appear in no new engagement, and their **future planned events are cancelled**.
+
+### 3.11 Export / backup & restore
+```
+facemango-backup-2026-10-03.zip
+  me.md            ← your profile, posts, comments (readable)
+  friends.md       ← friends, public profiles, former friends
+  feed.md          ← friends' posts, all comments, reaction summaries
+  wellbeing.md     ← usage stats and mood check-ins
+  images/          ← your photos
+  avatars/         ← generated avatars (SVG)
+```
+- Each record has a YAML front-matter header (id, author, timestamp, type, image ref): readable by people and reliable to parse. Photo-pack images are referenced by id, not copied.
+- **Restore** happens on the first-run screen or in Settings: **Restore everything**, or **Restore my content + new friends**.
+- **Safe by design (format 2).** `backup.json` records the format version and record counts. A restore first checks everything without writing: zip checksums, the version (a backup from a newer FaceMango is refused; older ones still restore), every record against its schema and the hard caps, and the counts (a cut-off file is refused). It also checks free space (`navigator.storage.estimate`) and asks for persistent storage before a big restore. Photos are added in small batches, then all other data is swapped in one transaction; if anything fails (including running out of space) the added photos are removed and the current data is left untouched. Other open tabs reload after a restore.
+- **Saving.** Photos are stored as they are (already compressed); text is compressed. Chrome/Edge on computers stream the zip to a Save dialog file; iPhone and iPad use the share sheet ("Save to Files", with a second tap if Safari needs one); other browsers download. "Last backup" is recorded only after the file is saved. The iOS warnings link to **Settings → Backup → Back up now**, and the weekly reminder is on by default on iOS.
+- **Automatic backup to a folder** (opt-in, Advanced settings; Chrome/Edge on computers): the same zip, weekly, to a folder the user picks, keeping the latest 5 (`facemango-auto-backup-YYYY-MM-DD-HHmm.zip`). It counts as the weekly backup. When the browser needs permission again, the backup card asks for a click; it never prompts on its own.
 
 ---
 
@@ -134,7 +151,7 @@ When a post is created, its whole engagement timeline is **pre-planned** as futu
 - About 30 % of friend posts tell a story (`storyConfig` in `src/engine/config.ts`): the most overdue beat goes first; otherwise a new story starts if there is room. At most one active story per friend, at most a third of friends at once, new stories at least 16 h apart, and a 7-day rest after a story ends. Beat spacing follows the engagement speed. A few seed posts already start stories.
 - The post prompt gets the story title, the earlier beats and the current one, so posts refer back ("Week 3 of training…"). Comment prompts get a one-line summary, so friends can ask how it's going.
 - Post cards show "{story} · update 3 of 6"; profile pages list ongoing, completed and ended stories, with each update linking to its post.
-- A friends reset ends the old friends' unfinished stories.
+- Backup: stories are `type: story` records in `friends.md`; older backups without them still restore. A friends reset (or "my content + new friends" restore) ends the old friends' unfinished stories.
 
 ### 4.4 Comment categories
 | Type | Default | Example tone |
@@ -208,6 +225,7 @@ detect() ─▶ Tier 1: Prompt API (window.LanguageModel)
 | Images | **browser-image-compression** (WebP) |
 | AI | **Prompt API** · **@mlc-ai/web-llm** (WebGPU) in a Web Worker via **Comlink** · **@huggingface/transformers** (Apache-2.0, ONNX Runtime Web) for the photo captioner |
 | Avatars | **DiceBear** (bundled) |
+| Export | **JSZip** + **yaml** (front-matter) |
 | PWA | **vite-plugin-pwa** (Workbox) |
 | Quality | **Vitest**, **Testing Library**, **Playwright** (desktop + mobile emulation), ESLint, Prettier |
 | CI/CD | **GitHub Actions** → build → test → deploy to **GitHub Pages** |
@@ -217,12 +235,12 @@ detect() ─▶ Tier 1: Prompt API (window.LanguageModel)
 src/
   app/            routes, responsive shell (3-col desktop / bottom-nav mobile), theme
   features/       onboarding, feed, compose, friends, assistant, memories,
-                  activity, photos, wellbeing, settings
+                  activity, photos, wellbeing, settings, backup
   engine/         personas, planner, scheduler, content prompts, photoPicker,
                   celebrations, notifications
   ai/             provider, promptApi, webllm.worker, queue
   db/             Dexie schema + migrations
-  lib/            timeAgo, imaging, analytics, usage tracking
+  lib/            timeAgo, imaging, markdown export/import, analytics, usage tracking
 public/
   photos/         CC0 photo pack + manifest.json
 ```
@@ -246,7 +264,7 @@ public/
 ## 7. Privacy statement & rules
 
 **Public wording:**
-> *Your posts, photos, friends, comments and wellbeing stats are stored only in this browser on this device. FaceMango has no servers and no accounts, and never uploads your content. To run AI on your device, FaceMango downloads AI models through your browser (Chrome/Edge) or from Hugging Face. We use Google Analytics to count page views only. It never sees your posts, profile or usage stats.*
+> *Your posts, photos, friends, comments and wellbeing stats are stored only in this browser on this device. FaceMango has no servers and no accounts, and never uploads your content. Nothing ever leaves unless you export it. To run AI on your device, FaceMango downloads AI models through your browser (Chrome/Edge) or from Hugging Face. We use Google Analytics to count page views only. It never sees your posts, profile or usage stats.*
 
 **Engineering rules:**
 - User content and wellbeing data are **never** sent over the network.
@@ -281,7 +299,7 @@ public/
 | Large model download on phones | Smallest model on mobile, progress UI, signup runs during the download |
 | Small models produce repetitive text | Persona style prompts, de-duplication, sample-and-filter |
 | Safety filters soften critique | Constructive framing |
-| iOS storage eviction | Home-page and signup warnings, install guide |
+| iOS storage eviction | Home-page and signup warnings, install guide, backup reminders |
 | Prompt API still evolving | Isolated behind `AIProvider` |
 | Photo pack curation effort and licence mistakes | CC0/PD only, a manifest with sources, a manual family-friendly review checklist |
 | Repo/page weight from the photo pack | Lazy loading and WebP; Git LFS isn't needed at about 35 MB |
@@ -297,7 +315,7 @@ public/
 | M3 | Feed core | Composer + photo, post cards, animated reactions, comments, time ago |
 | M4 | Engine | Personas, planner/scheduler, catch-up, notifications, living feed, photo pack v1 |
 | M5 | Sections | Profiles + avatars, Mango AI, Memories, Activity, Photos, Wellbeing |
-| M6 | Config | Advanced settings, friends reset |
+| M6 | Config & backup | Advanced settings, export/restore, friends reset |
 | M7 | Engagement & polish | §8 features, performance, GA hook, cross-browser QA, deploy to face.mangoidiots.com |
 | M8 (v1.1) | Realistic faces | On-device diffusion, opt-in |
 
@@ -311,7 +329,7 @@ public/
 
 ## 12. Change log
 - **v0.1:** first draft.
-- **v0.2:** name FaceMango; iOS warnings; privacy wording now permits Hugging Face + GA; no Lite mode; likes = 3–5× comments; public profiles = 2× friends; friends reset.
+- **v0.2:** name FaceMango; iOS warnings; privacy wording now permits Hugging Face + GA; no Lite mode; likes = 3–5× comments; public profiles = 2× friends; full backup; friends reset.
 - **v1.0:** faces plan approved; CC0 worldwide family-friendly photo pack; reset keeps old engagement under old names (former friends); "Mango AI" confirmed; Wellbeing usage tracker; GitHub Pages + Cloudflare DNS; AGPL-3.0 and a best-in-class library stack.
 - **v1.0.1:** new FaceMango logo to be designed; repo `facemango` (local first, GitHub after the user okays the local build).
 - **v1.0.2 (during M1–M4):** MUI v9 instead of v7; byline "The most personal social network ever built. And the most private."; yellow text on white uses `#B28900` only for large text/icons and `#8A6A00` for body text (WCAG AA); WebLLM model libraries (.wasm) and the Lottie player are served from our own origin, so the only third parties stay Hugging Face (weights) and Google Analytics; WebLLM models: Qwen3-1.7B (desktop), Gemma-3-1B (phones), Qwen3 q4f32 fallbacks for GPUs without shader-f16; avatars use the DiceBear "Personas" style (CC BY 4.0).

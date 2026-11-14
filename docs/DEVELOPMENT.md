@@ -13,7 +13,7 @@ Requires Node 26+. `npm run dev` / `npm run build` first fetch the WebLLM model 
 | `src/engine/stories.ts` | Friends' life stories: beat logic; the curated arcs are in `storyTemplates.ts`                                |
 | `src/db/`               | Dexie schema and data actions (everything lives in IndexedDB)                                                 |
 | `src/features/`         | Screens, one folder each                                                                                      |
-| `src/lib/`              | Helpers: usage tracking, analytics, time ago, …                                                               |
+| `src/lib/`              | Helpers: backup, usage tracking, analytics, time ago, …                                                       |
 | `scripts/`              | Asset scripts (model libraries, sounds, photo pack)                                                           |
 
 ## Rules
@@ -79,6 +79,27 @@ pauses while it runs.
 
 Tracing uses `setAITrace()` in `src/ai/service.ts`; providers report attempts and token usage
 through `GenerateOptions.trace`.
+
+## Backup and restore
+
+`src/lib/backup/`: `export.ts` (snapshot in one read transaction, `buildZip`, `zipToBlob`/`zipToWritable`
+streaming), `save.ts` (Save dialog, iOS share sheet, download; records `lastBackupAt` only after a
+real save), `import.ts` (`parseBackup` = dry run: CRC32, version, `schema.ts` Zod validation,
+`backup.json` counts; `restoreBackup` = space check, photos in batches, then one transaction that
+awaits only Dexie calls; failure removes the staged photos), `format.ts` (Markdown+YAML,
+`BACKUP_VERSION`). When a Dexie table or field changes, update `schema.ts` and bump
+`BACKUP_VERSION` only if old readers can't cope. `__fixtures__/backup-v1.zip` is a made-up format 1
+backup; regenerate with `MAKE_FIXTURE=1 npx vitest run src/lib/backup/fixture.test.ts`.
+
+## Automatic backup to a folder
+
+`src/lib/backup/autoBackup.ts` and `folder.ts`: opt-in under Advanced settings, Chrome/Edge on
+computers only (`showDirectoryPicker`). The folder handle lives in `settings.autoBackup` (no new
+Dexie version); it and `meta.autoBackupStatus` are device-only, so they are left out of backups and
+kept on restore. Weekly, never prompts in the background; when the browser wants permission again,
+the feed's backup card asks for a click. Keeps the newest 5 `facemango-auto-backup-*.zip` files
+and never touches other files. Headless Chromium crashes when it reads a stored folder handle, so
+this flow is covered by unit tests with a fake folder, not e2e.
 
 ## Deploy
 

@@ -11,8 +11,11 @@
 - Libraries upgraded to their latest versions (TypeScript and DiceBear held back for
   compatibility).
 
-- **Backup removed:** backup and restore (zip export, restore, automatic folder backup and weekly
-  reminders) is gone, along with its Settings sections and the landing-page restore link.
+- **Backup and restore is back** (it was removed by mistake), now more robust: a restore checks
+  the whole file (checksums, version, every record, counts) before it writes anything, checks free
+  space, and leaves your data untouched if it fails or runs out of space. Photos are stored as they
+  are and restored in small batches; computers save the zip straight to a file you choose; iPhone
+  and iPad use the share sheet. Backups from the earlier format still restore.
 - Footer on the landing page and in the menus: a shorter simulated-friends line, a
   face.mangoidiots.com link and the running version (grows with every publish). About page has a
   "For developers" section linking the How-It-Works guide and the code.

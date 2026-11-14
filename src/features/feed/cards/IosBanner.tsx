@@ -19,7 +19,7 @@ export function IosBanner() {
   if (!show) return null;
   return (
     <Box sx={{ position: 'relative' }}>
-      <IosDataNotice />
+      <IosDataNotice backupLink />
       <IconButton
         size="small"
         aria-label="Dismiss for a week"

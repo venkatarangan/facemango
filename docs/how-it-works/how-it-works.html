@@ -638,7 +638,7 @@
           <tr>
             <td>11</td>
             <td>Your data</td>
-            <td>The database and the friends reset</td>
+            <td>The database, backups and the friends reset</td>
           </tr>
           <tr>
             <td>12</td>
@@ -712,6 +712,12 @@
           <text x="339" y="270" class="x">if the AI can't</text>
           <text x="339" y="281" class="x">see photos</text>
 
+          <rect x="26" y="290" width="180" height="66" rx="9" class="b dash" />
+          <text x="116" y="312" class="c t">Your backup folder</text>
+          <text x="116" y="330" class="c">optional: a weekly zip on your</text>
+          <text x="116" y="344" class="c">own disk (Chrome, Edge)</text>
+          <line x1="116" y1="255" x2="116" y2="288" class="a" />
+          <text x="124" y="276" class="x">weekly zip</text>
 
           <rect x="26" y="372" width="396" height="58" rx="9" class="bg" />
           <text x="224" y="393" class="c t">Browser file storage + Service Worker</text>
@@ -809,7 +815,7 @@
 
           <rect x="70" y="282" width="460" height="74" rx="10" class="bg" />
           <text x="88" y="306" class="t">4 · Data</text>
-          <text x="200" y="306" class="m">src/db</text>
+          <text x="200" y="306" class="m">src/db · src/lib/backup</text>
           <text x="88" y="326">Dexie on top of IndexedDB: 14 tables. The single source of truth,</text>
           <text x="88" y="341">and the only thing that survives closing the tab.</text>
 
@@ -952,7 +958,7 @@
           </td>
         </tr>
         <tr class="grp">
-          <td colspan="2">Media and offline</td>
+          <td colspan="2">Media, backup and offline</td>
         </tr>
         <tr>
           <td>DiceBear Personas</td>
@@ -961,6 +967,14 @@
         <tr>
           <td>browser-image-compression</td>
           <td>Shrinks your photo to WebP on the device before saving it.</td>
+        </tr>
+        <tr>
+          <td>JSZip + yaml</td>
+          <td>Builds and reads the backup zip with readable Markdown files.</td>
+        </tr>
+        <tr>
+          <td>File System Access API</td>
+          <td>Chrome and Edge feature: the automatic backup writes its zip to your folder.</td>
         </tr>
         <tr>
           <td>vite-plugin-pwa + Workbox</td>
@@ -1492,7 +1506,7 @@
       <div class="callout">
         <b>Where you see them.</b> Post cards say “Training for the Lakeside 10K · update 3 of 6”,
         commenters may ask how it is going, and profiles list ongoing, completed and ended stories.
-        A friends reset ends the old friends' unfinished ones.
+        Stories are in backups; a friends reset ends the old friends' unfinished ones.
       </div>
       <div class="foot"><span><b>FaceMango</b> · How it works</span><span class="pn"></span></div>
     </section>
@@ -1769,7 +1783,7 @@
           <h3>Settings</h3>
           <p><span class="pill g">settings</span> your choices</p>
           <p>
-            <span class="pill g">meta</span> internal flags: setup done, next friend
+            <span class="pill g">meta</span> internal flags: setup done, last backup, next friend
             post
           </p>
         </div>
@@ -1780,6 +1794,34 @@
             <code>stories</code>). That keeps every existing user's data safe.
           </p>
         </div>
+      </div>
+      <h2>Backup and restore</h2>
+      <div class="cols" style="gap: 16px">
+        <pre class="box">
+facemango-backup-2026-10-14.zip
+├─ me.md         your profile, posts, comments
+├─ friends.md    friends, public, former,
+│                and their life stories
+├─ feed.md       friends' posts + comments
+├─ wellbeing.md  usage and mood check-ins
+├─ images/       your photos
+└─ avatars/      generated avatars (SVG)</pre
+        >
+        <div class="small">
+          <p>
+            Each record is a block of YAML front-matter (id, author, time, type) followed by
+            readable text, so a person can read it and the app can parse it reliably. Photo-pack
+            pictures are referenced by id, not copied.
+          </p>
+          <p><b>Restore</b> <i>everything</i> or <i>my content + new friends</i>; the file is fully checked first.</p>
+          
+        </div>
+      </div>
+      <div class="callout small" style="margin-top: 12px">
+        <b>Automatic backup to a folder</b> (opt-in, Advanced settings; Chrome and Edge on
+        computers). Every week the same zip is written straight to a folder you pick, through the
+        browser's File System Access API, and the newest 5 are kept. Nothing is uploaded. If the
+        browser wants your permission again, the backup card in the feed asks for one click.
       </div>
       <h2>Resetting your friends</h2>
       <figure>
@@ -1987,7 +2029,8 @@ Needs a profile (inside AppShell)
           <ul class="bul small">
             <li>
               <b>Unit tests</b> (<code>npm test</code>): Vitest in Node with a fake database. They
-              cover the planner, limits, queue, JSON checks, life stories and the photo captioner. The database is cleared before each test.
+              cover the planner, limits, queue, JSON checks, life stories, the photo captioner and
+              backups (with a fake folder). The database is cleared before each test.
             </li>
             <li>
               <b>End-to-end tests</b> (<code>npm run test:e2e</code>): Playwright drives the real
@@ -2072,7 +2115,7 @@ Needs a profile (inside AppShell)
           <td>src/features/</td>
           <td>
             One folder per screen: feed, compose, friends, profile, assistant, memories, activity,
-            photos, wellbeing, settings, onboarding, ai (setup card), developer.
+            photos, wellbeing, settings, onboarding, backup, ai (setup card), developer.
           </td>
         </tr>
         <tr>
@@ -2099,7 +2142,7 @@ Needs a profile (inside AppShell)
         <tr>
           <td>src/lib/</td>
           <td>
-            Helpers: analytics, time-ago,
+            Helpers: backup and folder auto-backup (<code>backup/</code>), analytics, time-ago,
             sounds, usage and wellbeing, image handling, platform checks.
           </td>
         </tr>
@@ -2109,7 +2152,7 @@ Needs a profile (inside AppShell)
         </tr>
         <tr>
           <td>e2e/</td>
-          <td>Playwright tests: onboarding, feed, sections, developer page.</td>
+          <td>Playwright tests: onboarding, feed, sections, backup, developer page.</td>
         </tr>
         <tr>
           <td>SPEC.md, docs/</td>
@@ -2166,6 +2209,10 @@ Needs a profile (inside AppShell)
           <td>A website that installs like an app / the background script that makes it work offline.</td>
         </tr>
         <tr>
+          <td>File System Access API</td>
+          <td>A Chrome and Edge feature that lets a page save files into a folder you choose.</td>
+        </tr>
+        <tr>
           <td>Content-Security-Policy</td>
           <td>A rule set telling the browser which servers the page may contact.</td>
         </tr>
@@ -2175,7 +2222,7 @@ Needs a profile (inside AppShell)
         <div class="card gr">
           <h3>Built and live</h3>
           <p>
-            M1 to M7, plus life stories, photo-aware comments on every tier, the
+            M1 to M7, plus life stories, folder backup, photo-aware comments on every tier, the
             new first-run wait, a developer test page and a 251-photo pack. Analytics on.
           </p>
         </div>
@@ -2188,7 +2235,7 @@ Needs a profile (inside AppShell)
         <div class="card g">
           <h3>Parked</h3>
           <p>
-            M8 realistic faces (no suitably licensed small image model yet);
+            M8 realistic faces (no suitably licensed small image model yet); encrypted backups;
             Messenger-lite.
           </p>
         </div>

@@ -4,12 +4,13 @@ import { motion, useReducedMotion } from 'motion/react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
+import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
 import LockRounded from '@mui/icons-material/LockRounded';
 import MemoryRounded from '@mui/icons-material/MemoryRounded';
-import CodeRounded from '@mui/icons-material/CodeRounded';
+import SaveAltRounded from '@mui/icons-material/SaveAltRounded';
 import ArrowForwardRounded from '@mui/icons-material/ArrowForwardRounded';
 import { LogoMark, Wordmark } from '@/components/brand/Logo';
 import { brand } from '@/app/tokens';
@@ -20,6 +21,7 @@ import { requestPersistentStorage } from '@/lib/storage';
 import { startAI } from '@/ai';
 import { IosDataNotice } from './IosDataNotice';
 import { PreviewPost } from './PreviewPost';
+import { RestoreDialog } from '@/features/backup/RestoreDialog';
 
 const highlights = [
   {
@@ -33,9 +35,9 @@ const highlights = [
     body: 'Friends who post, like and comment, all imagined by AI running in your browser.',
   },
   {
-    icon: <CodeRounded />,
-    title: 'Open source',
-    body: 'Free and open source (AGPL-3.0). Every line of code is on GitHub.',
+    icon: <SaveAltRounded />,
+    title: 'Yours to keep',
+    body: 'Export everything whenever you like, and bring it back on any device.',
   },
 ];
 
@@ -43,6 +45,7 @@ export function LandingPage() {
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
   const [ios] = useState(() => isIOS());
+  const [restoreOpen, setRestoreOpen] = useState(false);
 
   const getStarted = () => {
     // persist() must run inside the user gesture on some browsers; don't wait for it.
@@ -147,6 +150,14 @@ export function LandingPage() {
                 How it works
               </Button>
             </Stack>
+            <Link
+              component="button"
+              onClick={() => setRestoreOpen(true)}
+              color="text.secondary"
+              sx={{ alignSelf: { xs: 'center', md: 'flex-start' }, fontWeight: 600 }}
+            >
+              Have a backup? Restore it
+            </Link>
             {ios && (
               <Box sx={{ maxWidth: 560, mx: { xs: 'auto', md: 0 }, textAlign: 'left' }}>
                 <IosDataNotice />
@@ -201,6 +212,7 @@ export function LandingPage() {
 
         <SiteFooter sx={{ display: 'block', mt: 6, textAlign: 'center' }} />
       </Container>
+      <RestoreDialog open={restoreOpen} onClose={() => setRestoreOpen(false)} />
     </Box>
   );
 }

@@ -18,8 +18,9 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - **Real-model test (owner, Gemini Nano via the Prompt API, 2026-10-14):** all 10 tests passed, Mango AI included, but the run took ~1 hour because of runaway replies (`QuotaExceededError`). Prompt API replies are now capped (`readCapped` in `src/ai/promptApi.ts`). Re-run pending to confirm the time.
 - **2026-11-13:** backup removed; libraries upgraded (e2e green); About "Books by the author"; social-preview tags and image (`npm run og-image`).
 - **2026-11-14:** Actions bumped to latest majors; fixed the WebLLM setup error "Model library not bundled" (web-llm 0.2.88 renamed the Gemma library; `model-libs.json` now `v0_2_87`, regression test added). Verify in a real browser after deploy.
+- **2026-11-14:** backup and restore is back (it was removed by mistake) and hardened: format 2 with `backup.json`, full validation before any write, photos staged in batches then one swap transaction, streamed save, iOS share sheet. Real-browser checks (Chrome folder/stream, iPhone share) pending.
 - **Open items:**
-  - real-browser checks of life stories, the photo captioner and the first-run setup experience
+  - real-browser checks of backup (Chrome streamed save and folder backup, iPhone share sheet, a large restore), life stories, the photo captioner and the first-run setup experience
 - **Photo pack:** 251 photos (target reached).
 
 ## Working agreements
@@ -44,6 +45,7 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 | Stack | Vite 8, React 19, TypeScript 6 (strict), MUI v9, Dexie, Zustand, Motion, Vitest, Playwright |
 | AI tiers | Prompt API (Chrome/Edge) → WebLLM on WebGPU (Qwen3-1.7B desktop, Gemma-3-1B phones, q4f32 fallbacks) → Unsupported screen. **No non-AI mode.** Photo captions: the Prompt API when it can see images, else Florence-2-base-ft (MIT) via Transformers.js (Apache-2.0), downloaded with the first photo post. |
 | Third parties | Only Hugging Face (model weights) and Google Analytics (page views, route patterns, EU/UK consent). CDN assets are self-hosted via `npm run models`. |
+| Backup | Markdown+YAML zip (JSZip, `src/lib/backup`), both restore modes, opt-in weekly folder backup (Chrome/Edge); validated dry run before any write; format 1 backups still restore |
 | Engagement | Comments 0–9 by default (cap 100); likes = comments × 3–5 (cap 1,000,000); mix Good 60 / Appreciative 25 / Nonsense 10 / Critical 5 / Super-critical 0; ≤2 critical per post; Super-critical off for under-18s |
 | Friends | 25 by default + 2× public profiles; reset keeps old likes and comments under "former friends" |
 | iOS | Data-loss warning on the landing page and at signup; banner every 7 days in a non-installed tab |
