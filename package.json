@@ -26,7 +26,8 @@
     "predev": "npm run models",
     "prebuild": "npm run models",
     "build:e2e": "npm run models && tsc -b && vite build --mode e2e --outDir dist-e2e",
-    "docs:pdf": "node scripts/render-how-it-works.mjs"
+    "docs:pdf": "node scripts/render-how-it-works.mjs",
+    "og-image": "node scripts/make-og-image.mjs"
   },
   "dependencies": {
     "@dicebear/core": "^9.4.3",
@@ -35,9 +36,9 @@
     "@emotion/styled": "^11.14.1",
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource-variable/nunito": "^5.3.0",
-    "@hookform/resolvers": "^5.9.1",
+    "@hookform/resolvers": "^7.0.6",
     "@huggingface/transformers": "^4.3.1",
-    "@lottiefiles/dotlottie-react": "^0.19.16",
+    "@lottiefiles/dotlottie-react": "^0.22.2",
     "@mlc-ai/web-llm": "^0.2.85",
     "@mui/icons-material": "^9.4.0",
     "@mui/material": "^9.4.0",
@@ -71,7 +72,7 @@
     "@types/node": "^26.6.4",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "@vite-pwa/assets-generator": "^1.0.4",
+    "@vite-pwa/assets-generator": "^2.0.0",
     "@vitejs/plugin-react": "^6.1.1",
     "eslint": "^10.12.0",
     "eslint-config-prettier": "^10.1.8",
@@ -79,13 +80,13 @@
     "eslint-plugin-react-refresh": "^0.5.7",
     "fake-indexeddb": "^6.2.5",
     "globals": "^17.13.0",
-    "happy-dom": "^20.14.5",
-    "jsdom": "^30.1.1",
+    "happy-dom": "^21.0.4",
+    "jsdom": "^31.0.1",
     "prettier": "^3.9.9",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.71.0",
     "vite": "^8.3.2",
-    "vite-plugin-pwa": "^1.3.0",
+    "vite-plugin-pwa": "^2.0.0",
     "vitest": "^5.0.3"
   }
 }

@@ -13,11 +13,29 @@ import { Logo } from '@/components/brand/Logo';
 import { brand } from '@/app/tokens';
 import { BYLINE, HOW_IT_WORKS_PDF, IOS_DATA_NOTICE, SOURCE_URL, UNIQUENESS } from '@/lib/copy';
 
+const books = [
+  {
+    title: 'The Founder Catalyst',
+    href: 'https://thefoundercatalyst.com/fcbook/',
+    note: 'a practical field guide to the founder-to-CEO journey.',
+  },
+  {
+    title: 'Seyaligalin Kathai (செயலிகளின் கதை)',
+    href: 'https://thefoundercatalyst.com/seyaligalinkathaibook/',
+    note: 'the founding stories behind 52 mobile apps, in Tamil.',
+  },
+  {
+    title: 'Nutpam (நுட்பம்)',
+    href: 'https://thefoundercatalyst.com/nutpambook/',
+    note: 'phones and computers explained, in Tamil.',
+  },
+];
+
 const steps = [
   'Tell FaceMango a little about yourself: your name, age, city and languages.',
   'Your browser gets a small AI model. Chrome and Edge have one built in; other browsers download one once.',
   'The AI imagines 20–30 friends and a wider circle of people around you. They post, react and comment on what you share.',
-  'Everything stays in this browser. Back it up whenever you like.',
+  'Everything stays in this browser, on your device.',
 ];
 
 const privacy = [
@@ -140,6 +158,26 @@ export function AboutPage() {
               </Link>
             </Stack>
           </Section>
+          <Box component="section" aria-label="Books by the author" sx={{ px: 1 }}>
+            <Typography variant="subtitle2" component="h2" color="text.secondary" gutterBottom>
+              Books by the author
+            </Typography>
+            <Box component="ul" sx={{ pl: 2.5, m: 0, display: 'grid', gap: 0.5 }}>
+              {books.map((b) => (
+                <Typography component="li" variant="body2" color="text.secondary" key={b.href}>
+                  <Link
+                    href={b.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ fontWeight: 600, color: 'text.primary' }}
+                  >
+                    {b.title}
+                  </Link>
+                  : {b.note}
+                </Typography>
+              ))}
+            </Box>
+          </Box>
         </Stack>
       </Container>
     </Box>

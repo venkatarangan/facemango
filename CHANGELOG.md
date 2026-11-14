@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- **Social previews:** full Open Graph and Twitter tags with a preview image made from
+  screenshots of the app (made-up profile, no real data), plus per-page tags for `/welcome`,
+  `/about` and `/credits`. `npm run og-image` regenerates the image.
+- About page: a subtle "Books by the author" section at the end.
+- Libraries upgraded to their latest versions (TypeScript and DiceBear held back for
+  compatibility).
+
 - **Backup removed:** backup and restore (zip export, restore, automatic folder backup and weekly
   reminders) is gone, along with its Settings sections and the landing-page restore link.
 - Footer on the landing page and in the menus: a shorter simulated-friends line, a

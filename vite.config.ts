@@ -1,5 +1,5 @@
 /// <reference types="vitest/config" />
-import { copyFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath, URL } from 'node:url';
 import path from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
@@ -60,6 +60,61 @@ function spaFallback(): Plugin {
   };
 }
 
+const SITE = 'https://face.mangoidiots.com';
+const PAGES = [
+  {
+    route: 'welcome',
+    title: 'FaceMango: your own private social network',
+    description:
+      'A friendly Facebook-style feed of friends, likes and comments, all simulated by AI that runs on your device. Nothing ever leaves your device.',
+  },
+  {
+    route: 'about',
+    title: 'About and privacy | FaceMango',
+    description:
+      'How FaceMango works and why it is private: your data and the AI models stay on your device, with no accounts and no servers.',
+  },
+  {
+    route: 'credits',
+    title: 'Credits | FaceMango',
+    description:
+      'The open-source libraries, models, photos and avatars that make FaceMango possible.',
+  },
+];
+
+const escAttr = (v: string) => v.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+
+/** Per-page social previews: crawlers do not run JS, so deep links get their own static index.html. */
+function pagePreviews(): Plugin {
+  let outDir = 'dist';
+  return {
+    name: 'facemango:page-previews',
+    apply: 'build',
+    configResolved: (config) => {
+      outDir = path.resolve(config.root, config.build.outDir);
+    },
+    closeBundle: async () => {
+      const base = await readFile(path.join(outDir, 'index.html'), 'utf8');
+      for (const { route, title, description } of PAGES) {
+        const url = `${SITE}/${route}`;
+        const t = escAttr(title);
+        const d = escAttr(description);
+        const html = base
+          .replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
+          .replace(/(<meta\s+name="description"\s+content=")[^"]*"/, `$1${d}"`)
+          .replace(/(<link rel="canonical" href=")[^"]*"/, `$1${url}"`)
+          .replace(/(property="og:url" content=")[^"]*"/, `$1${url}"`)
+          .replace(/(property="og:title" content=")[^"]*"/, `$1${t}"`)
+          .replace(/(property="og:description"\s+content=")[^"]*"/, `$1${d}"`)
+          .replace(/(name="twitter:title" content=")[^"]*"/, `$1${t}"`)
+          .replace(/(name="twitter:description"\s+content=")[^"]*"/, `$1${d}"`);
+        await mkdir(path.join(outDir, route), { recursive: true });
+        await writeFile(path.join(outDir, route, 'index.html'), html);
+      }
+    },
+  };
+}
+
 /** major.minor from package.json; the patch is CI's run number, so it grows with every publish. */
 const [major, minor] = pkg.version.split('.');
 const APP_VERSION = process.env.BUILD_NUMBER
@@ -75,6 +130,7 @@ export default defineConfig({
     react(),
     cspMeta(),
     spaFallback(),
+    pagePreviews(),
     VitePWA({
       registerType: 'prompt',
       injectRegister: false,

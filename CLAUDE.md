@@ -7,7 +7,7 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - **Uniqueness (use this message):** unlike other feel-good apps, the data and the AI models are entirely local; nothing ever leaves the device (`UNIQUENESS` in `src/lib/copy.ts`).
 - **Byline:** "The most personal social network ever built. And the most private." (`BYLINE`)
 - **Live site:** https://face.mangoidiots.com · **Repo:** https://github.com/venkatarangan/facemango (public, AGPL-3.0)
-- **Owner:** Venkatarangan (GitHub `venkatarangan`). Original brief: `input.txt`.
+- **Owner:** Venkatarangan (GitHub `venkatarangan`).
 
 ## Status (2026-11-13)
 - **Built:** M1–M7 from SPEC §10, plus life stories, photo-aware comments on every tier (Florence-2 captioner via Transformers.js), the first-run setup experience and the developer real-model test page (Advanced settings → Developer).
@@ -16,6 +16,7 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - **Published and live over HTTPS:** pushing to `main` runs CI (lint, unit, e2e on Chrome/Android/iPhone) and deploys to GitHub Pages. See "Deployment" below.
 - **Real-model test (owner, Qwen3 on WebGPU):** friends, posts with photos, likes, comments and Activity worked. Mango AI (chat + composer) failed. It now falls back from streaming to a single reply and shows the error. **Re-test on Qwen3 pending**: ask the owner to run the developer Real-model test and paste the copied results.
 - **Real-model test (owner, Gemini Nano via the Prompt API, 2026-10-14):** all 10 tests passed, Mango AI included, but the run took ~1 hour because of runaway replies (`QuotaExceededError`). Prompt API replies are now capped (`readCapped` in `src/ai/promptApi.ts`). Re-run pending to confirm the time.
+- **2026-11-13:** backup removed; libraries upgraded (e2e green); About "Books by the author"; social-preview tags and image (`npm run og-image`).
 - **Open items:**
   - real-browser checks of life stories, the photo captioner and the first-run setup experience
 - **Photo pack:** 251 photos (target reached).
@@ -54,7 +55,7 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - All AI calls go through `src/ai` (priority queue; Zod-validated JSON with retries).
 - Never edit a shipped Dexie version; add a new one (currently v3: `stories`).
 - The mock model exists only in the e2e build (`VITE_MOCK_AI=1`, `dist-e2e/`).
-- Keep `SPEC.md`, `CLAUDE.md` and `input.txt` out of Prettier.
+- Keep `SPEC.md` and `CLAUDE.md` out of Prettier.
 - **How-it-works PDF:** `public/FaceMango-How-It-Works.pdf` is served at `/FaceMango-How-It-Works.pdf` and linked from the README. When a publish includes a major change to the architecture, framework or libraries (only then), update the PDF before pushing: edit `docs/how-it-works/how-it-works.html`, then `npm run docs:pdf`.
 - Lint follows React Compiler rules: no `Date.now()` or ref reads during render (use `useNow()`).
 

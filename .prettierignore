@@ -9,7 +9,6 @@ LICENSE
 # Hand-formatted project docs
 SPEC.md
 CLAUDE.md
-input.txt
 public/photos/CREDITS.md
 # How-it-works guide source: hand-laid-out HTML with inline SVG
 docs/how-it-works
