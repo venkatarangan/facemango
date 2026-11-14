@@ -19,7 +19,12 @@ page.
   streamed and capped (JSON stops when complete; cut-off replies retry), the test page waits for
   the running step, and commenters no longer open with their own name. Re-run to confirm the time.
 - **Real-browser checks:** life stories, folder backup, the photo captioner (Florence-2) and the
-  setup experience have only run against the mock model or headless Chromium.
+  setup experience have only run against the mock model or headless Chromium. The hardened backup
+  (2026-11-14) is tested with unit tests and Chromium; still to try for real: Chrome's streamed
+  Save dialog, the iPhone share sheet ("Save to Files") and a large restore (~200 MB).
+- **WebLLM libraries:** after the web-llm upgrade the Gemma library file was renamed and setup
+  failed until `src/ai/model-libs.json` was updated (fixed 2026-11-14). Re-run the Real-model test
+  on Qwen3 and Gemma to confirm.
 - **Photos in Safari private tabs:** WebKit's IndexedDB refuses Blobs in private (ephemeral)
   sessions, so photo posts, avatars and restores with images fail there with "Error preparing
   Blob/File data…" (the composer now shows this). Normal Safari tabs are fine. Fix: store media as

@@ -9,7 +9,9 @@ import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import ArrowBackRounded from '@mui/icons-material/ArrowBackRounded';
+import { alpha } from '@mui/material/styles';
 import { brand } from '@/app/tokens';
+import { SiteFooter } from '@/components/SiteFooter';
 import { loadPhotoManifest, packPhotoUrl, type PackPhoto } from '@/lib/photos';
 
 /** Credits for bundled media (SPEC §4.5: listed even though CC0 doesn't require it). */
@@ -20,7 +22,14 @@ export function CreditsPage() {
     void loadPhotoManifest().then(setPhotos);
   }, []);
   return (
-    <Box sx={{ minHeight: '100dvh', bgcolor: brand.surface, pt: 'env(safe-area-inset-top)' }}>
+    <Box
+      sx={{
+        minHeight: '100dvh',
+        background: `radial-gradient(1200px 600px at 85% -10%, ${alpha(brand.mango, 0.22)}, transparent 60%), ${brand.background}`,
+        pt: 'env(safe-area-inset-top)',
+        pb: 'env(safe-area-inset-bottom)',
+      }}
+    >
       <Container maxWidth="md" sx={{ py: { xs: 2, sm: 5 } }}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
           <IconButton aria-label="Back" onClick={() => navigate(-1)} edge="start">
@@ -132,6 +141,7 @@ export function CreditsPage() {
             </CardContent>
           </Card>
         </Stack>
+        <SiteFooter sx={{ display: 'block', mt: 4, textAlign: 'center' }} />
       </Container>
     </Box>
   );

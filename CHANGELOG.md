@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- **About page:** now matches the welcome page (same background, footer), shows the running
+  version prominently, and the code link has a GitHub logo. Credits gets the same footer.
+- **Fix: AI setup failed** with "Model library not bundled" after the web-llm upgrade renamed the
+  Gemma 3 1B library file. `src/ai/model-libs.json` now matches the installed version, and a test
+  fails if a library file is ever missing again.
+- **CI:** GitHub Actions moved to their latest majors (checkout 7, setup-node 7, artifacts 7/5,
+  deploy-pages 5).
+- Privacy wording: "Nothing ever leaves unless you export it." in the About privacy list and SPEC.
+
 - **Node 26** everywhere (`.nvmrc`, CI, `engines`, docs); libraries updated to their latest compatible versions.
 
 - **Social previews:** full Open Graph and Twitter tags with a preview image made from

@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import Chip from '@mui/material/Chip';
 import CardContent from '@mui/material/CardContent';
 import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
@@ -9,6 +10,9 @@ import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import ArrowBackRounded from '@mui/icons-material/ArrowBackRounded';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import { alpha } from '@mui/material/styles';
+import { SiteFooter } from '@/components/SiteFooter';
 import { Logo } from '@/components/brand/Logo';
 import { brand } from '@/app/tokens';
 import { BYLINE, HOW_IT_WORKS_PDF, IOS_DATA_NOTICE, SOURCE_URL, UNIQUENESS } from '@/lib/copy';
@@ -72,7 +76,14 @@ const List = ({ items, ordered }: { items: string[]; ordered?: boolean }) => (
 export function AboutPage() {
   const navigate = useNavigate();
   return (
-    <Box sx={{ minHeight: '100dvh', bgcolor: brand.surface, pt: 'env(safe-area-inset-top)' }}>
+    <Box
+      sx={{
+        minHeight: '100dvh',
+        background: `radial-gradient(1200px 600px at 85% -10%, ${alpha(brand.mango, 0.22)}, transparent 60%), ${brand.background}`,
+        pt: 'env(safe-area-inset-top)',
+        pb: 'env(safe-area-inset-bottom)',
+      }}
+    >
       <Container maxWidth="sm" sx={{ py: { xs: 2, sm: 5 } }}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
           <IconButton aria-label="Back" onClick={() => navigate(-1)} edge="start">
@@ -83,9 +94,21 @@ export function AboutPage() {
         <Stack spacing={2}>
           <Card>
             <CardContent>
-              <Typography variant="h5" component="h1" gutterBottom>
-                About FaceMango
-              </Typography>
+              <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+                <Typography variant="h5" component="h1">
+                  About FaceMango
+                </Typography>
+                <Chip
+                  label={`Version ${__APP_VERSION__}`}
+                  data-testid="app-version"
+                  sx={{
+                    bgcolor: brand.mango,
+                    color: brand.ink,
+                    fontWeight: 800,
+                    fontSize: '0.95rem',
+                  }}
+                />
+              </Stack>
               <Typography sx={{ fontWeight: 600 }}>{BYLINE}</Typography>
               <Typography color="text.secondary" sx={{ mt: 1 }}>
                 A cosy, Facebook-style feed where friends cheer you on. The twist: every friend is
@@ -131,8 +154,15 @@ export function AboutPage() {
                 href={SOURCE_URL}
                 target="_blank"
                 rel="noreferrer"
-                sx={{ fontWeight: 600, color: 'text.primary' }}
+                sx={{
+                  fontWeight: 600,
+                  color: 'text.primary',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 0.75,
+                }}
               >
+                <GitHubIcon fontSize="small" aria-hidden />
                 Code on GitHub
               </Link>
             </Stack>
@@ -142,14 +172,6 @@ export function AboutPage() {
               For ages 13 and up. Free and open source (AGPL-3.0).
             </Typography>
             <Stack direction="row" spacing={2} sx={{ mt: 1.5 }}>
-              <Link
-                href={SOURCE_URL}
-                target="_blank"
-                rel="noreferrer"
-                sx={{ fontWeight: 600, color: 'text.primary' }}
-              >
-                Source code
-              </Link>
               <Link
                 component={RouterLink}
                 to="/credits"
@@ -180,6 +202,7 @@ export function AboutPage() {
             </Box>
           </Box>
         </Stack>
+        <SiteFooter sx={{ display: 'block', mt: 4, textAlign: 'center' }} />
       </Container>
     </Box>
   );

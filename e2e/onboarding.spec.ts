@@ -62,6 +62,13 @@ test('responsive shell: bottom nav on phones, side nav on desktop', async ({ pag
   }
 });
 
+test('about page shows the version, a footer and the GitHub link', async ({ page }) => {
+  await page.goto('/about');
+  await expect(page.getByTestId('app-version')).toContainText(/Version \S+/);
+  await expect(page.getByRole('contentinfo')).toContainText('Privacy & about');
+  await expect(page.getByRole('link', { name: 'Code on GitHub' }).locator('svg')).toBeVisible();
+});
+
 test('about page links developers to the guide and the code', async ({ page }) => {
   await page.goto('/about');
   const dev = page.getByRole('region', { name: 'For developers' });
