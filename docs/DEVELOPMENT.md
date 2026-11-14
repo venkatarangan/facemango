@@ -1,7 +1,8 @@
 # Development
 
 Requires Node 26+. `npm run dev` / `npm run build` first fetch the WebLLM model libraries into
-`public/models/` (gitignored), so the app serves them itself.
+`public/models/` (gitignored), so the app serves them itself. After upgrading `@mlc-ai/web-llm`, update `src/ai/model-libs.json`
+(library folder and file names); `webllm.config.test.ts` fails if a file is missing.
 
 ## Code map
 

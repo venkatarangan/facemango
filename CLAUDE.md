@@ -17,6 +17,7 @@ Handover notes for Claude Code sessions. `SPEC.md` is the product spec; `docs/DE
 - **Real-model test (owner, Qwen3 on WebGPU):** friends, posts with photos, likes, comments and Activity worked. Mango AI (chat + composer) failed. It now falls back from streaming to a single reply and shows the error. **Re-test on Qwen3 pending**: ask the owner to run the developer Real-model test and paste the copied results.
 - **Real-model test (owner, Gemini Nano via the Prompt API, 2026-10-14):** all 10 tests passed, Mango AI included, but the run took ~1 hour because of runaway replies (`QuotaExceededError`). Prompt API replies are now capped (`readCapped` in `src/ai/promptApi.ts`). Re-run pending to confirm the time.
 - **2026-11-13:** backup removed; libraries upgraded (e2e green); About "Books by the author"; social-preview tags and image (`npm run og-image`).
+- **2026-11-14:** Actions bumped to latest majors; fixed the WebLLM setup error "Model library not bundled" (web-llm 0.2.88 renamed the Gemma library; `model-libs.json` now `v0_2_87`, regression test added). Verify in a real browser after deploy.
 - **Open items:**
   - real-browser checks of life stories, the photo captioner and the first-run setup experience
 - **Photo pack:** 251 photos (target reached).
