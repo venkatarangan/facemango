@@ -1,6 +1,6 @@
 # Development
 
-Requires Node 22+. `npm run dev` / `npm run build` first fetch the WebLLM model libraries into
+Requires Node 24+. `npm run dev` / `npm run build` first fetch the WebLLM model libraries into
 `public/models/` (gitignored), so the app serves them itself.
 
 ## Code map

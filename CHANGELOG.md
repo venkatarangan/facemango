@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Node 24** everywhere (`.nvmrc`, CI, `engines`, docs).
+
 - **Social previews:** full Open Graph and Twitter tags with a preview image made from
   screenshots of the app (made-up profile, no real data), plus per-page tags for `/welcome`,
   `/about` and `/credits`. `npm run og-image` regenerates the image.
